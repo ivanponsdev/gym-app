@@ -1,0 +1,33 @@
+{
+  "name": "gym-app-fase1-usuarios",
+  "version": "1.0.0",
+  "description": "Fase 1: Sistema de gestión de usuarios con autenticación JWT y bcrypt",
+  "main": "server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "nodemon --signal SIGINT backend/server.js",
+    "seed": "node backend/seeds/index.js"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.2",
+    "dotenv": "^17.2.3",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.19.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "mongodb",
+    "jwt",
+    "bcrypt",
+    "usuarios",
+    "autenticacion"
+  ],
+  "author": "Tu Nombre",
+  "license": "MIT"
+}
