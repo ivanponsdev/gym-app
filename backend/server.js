@@ -13,23 +13,47 @@ connectDB();
 //Middleware para procesar datos JSON en las peticiones
 app.use(express.json());
 
+// Middleware para logging de peticiones (útil para debug)
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path}`);
+  next();
+});
+
 //Importar las rutas (solo usuarios y autenticación en esta fase)
 const rutasUsuarios = require('./routes/userRoutes');
 const rutasAutenticacion = require('./routes/authRoutes');
+const rutasClases = require('./routes/claseRoutes');
 
 //Configurar las rutas de la API
 // Todas las rutas de usuarios van bajo /api/users
 app.use('/api/users', rutasUsuarios);
 // Todas las rutas de login/registro van bajo /api/auth  
 app.use('/api/auth', rutasAutenticacion);
+// Todas las rutas de clases van bajo /api/clases
+app.use('/api/clases', rutasClases);
 
-//Servir los archivos del frontend (HTML, CSS, JS)
-app.use(express.static(path.join(__dirname, '../frontend')));
-
-//Para cualquier ruta que no sea de la API devolver index.html. Esto permite que funcione como Single Page Application (SPA)
-app.get('*', (peticion, respuesta) => {
-  respuesta.sendFile(path.join(__dirname, '../frontend/index.html'));
-});
+// En desarrollo, el frontend corre en Vite (puerto 3000)
+// En producción, servir archivos estáticos
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../frontend-react/dist')));
+  
+  app.get('*', (peticion, respuesta) => {
+    if (!peticion.path.startsWith('/api')) {
+      respuesta.sendFile(path.join(__dirname, '../frontend-react/dist/index.html'));
+    } else {
+      respuesta.status(404).json({ message: 'Endpoint no encontrado' });
+    }
+  });
+} else {
+  // En desarrollo, solo manejar rutas de API no encontradas
+  app.use('*', (peticion, respuesta) => {
+    if (peticion.path.startsWith('/api')) {
+      respuesta.status(404).json({ message: 'Endpoint de API no encontrado' });
+    } else {
+      respuesta.status(404).json({ message: 'El frontend corre en http://localhost:3000' });
+    }
+  });
+}
 
 //Configurar el puerto del servidor 
 const PORT = process.env.PORT || 5001;
