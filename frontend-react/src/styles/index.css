@@ -660,3 +660,35 @@ body {
         padding: 1rem;
     }
 }
+
+/* --- Grid de Clases --- */
+.clases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.clases-grid .card {
+    padding: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+.clases-grid .card:hover {
+    transform: translateY(-5px);
+}
+
+.clases-grid .card h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.clases-grid .card p {
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.clases-grid .card button {
+    width: 100%;
+}
