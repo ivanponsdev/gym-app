@@ -105,11 +105,7 @@ claseSchema.virtual('estaCompleta').get(function() {
 claseSchema.set('toJSON', { virtuals: true });
 claseSchema.set('toObject', { virtuals: true });
 
-/**
- * Método de instancia: verificar si un usuario está apuntado a esta clase
- * @param {String|ObjectId} usuarioId - ID del usuario a verificar
- * @returns {Boolean} true si el usuario está inscrito, false en caso contrario
- */
+
 claseSchema.methods.estaApuntado = function(usuarioId) {
   return this.alumnosApuntados.some(id => id.toString() === usuarioId.toString());
 };

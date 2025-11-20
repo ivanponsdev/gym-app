@@ -193,7 +193,7 @@ const AdminDashboard = () => {
                           <td>{clase.horaInicio} - {clase.horaFin}</td>
                           <td>{clase.cupoMaximo}</td>
                           <td>{clase.numeroInscritos || clase.alumnosApuntados?.length || 0}</td>
-                          <td>{clase.activa ? '✅ Activa' : '❌ Inactiva'}</td>
+                          <td>{clase.activa ? ' Activa' : 'Inactiva'}</td>
                           <td>
                             <button className="btn-secondary-neon" style={{ marginRight: '0.5rem' }}>
                               Editar
