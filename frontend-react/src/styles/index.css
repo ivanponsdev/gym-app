@@ -3,7 +3,7 @@
 :root {
     --primary-color: #9400D3; /* Morado Neón */
     --secondary-color: #00BFFF; /* Azul Neón */
-    --background-color: #121212;
+    --background-color: #160F1F;
     --surface-color: #1e1e1e;
     --text-color: #e0e0e0;
     --text-color-dark: #a0a0a0;
@@ -41,6 +41,36 @@ body {
 }
 
 /* --- Landing Page --- */
+#landing-container {
+    position: relative;
+    background-color: #160F1F;
+}
+
+#landing-container::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 1000px;
+    height: 100%;
+    background-image: url('/Sporty Online Gym Logo featuring \'UG\' (1).png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.35;
+    z-index: 0;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 30%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,0) 100%);
+    -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 30%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,0) 100%);
+}
+
+#landing-container > * {
+    position: relative;
+    z-index: 1;
+}
+
 #landing-container h1 {
     font-size: 2.5rem;
     color: var(--text-color);
@@ -782,4 +812,33 @@ body {
 .modal-buttons button {
     flex: 1;
     padding: 0.8rem;
+}
+
+/* --- Botón Flotante de Salir --- */
+.exit-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: transparent;
+    border: 2px solid var(--danger-color);
+    color: var(--danger-color);
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 0 10px rgba(233, 69, 96, 0.3);
+}
+
+.exit-button:hover {
+    background-color: var(--danger-color);
+    color: #fff;
+    box-shadow: 0 0 20px rgba(233, 69, 96, 0.6);
+    transform: translateY(-2px);
+}
+
+.exit-button:active {
+    transform: translateY(0);
 }
