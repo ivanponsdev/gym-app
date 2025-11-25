@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { userAPI, clasesAPI } from '../services/api'
 import Sidebar from '../components/Sidebar'
+import CustomModal from '../components/CustomModal'
 
 const Dashboard = () => {
   const { user, updateUser } = useAuth()
@@ -26,6 +27,14 @@ const Dashboard = () => {
   const [loadingClases, setLoadingClases] = useState(false)
   const [loadingMisClases, setLoadingMisClases] = useState(false)
   const [loadingProfile, setLoadingProfile] = useState(false)
+  
+  // Estados para modales personalizados
+  const [modalConfig, setModalConfig] = useState({
+    isOpen: false,
+    type: 'alert',
+    message: '',
+    onConfirm: null
+  })
 
   useEffect(() => {
     if (user) {
@@ -99,9 +108,19 @@ const Dashboard = () => {
       const response = await userAPI.updateProfile(profileData)
       updateUser(response.usuario)
       setIsEditingProfile(false)
-      alert('Perfil actualizado correctamente')
+      setModalConfig({
+        isOpen: true,
+        type: 'alert',
+        message: 'Perfil actualizado correctamente',
+        onConfirm: null
+      })
     } catch (error) {
-      alert('Error al actualizar perfil: ' + error.message)
+      setModalConfig({
+        isOpen: true,
+        type: 'alert',
+        message: 'Error al actualizar perfil: ' + error.message,
+        onConfirm: null
+      })
     } finally {
       setLoadingProfile(false)
     }
@@ -110,22 +129,48 @@ const Dashboard = () => {
   const handleInscribirse = async (claseId) => {
     try {
       await clasesAPI.inscribirse(claseId)
-      alert('Te has inscrito correctamente')
+      setModalConfig({
+        isOpen: true,
+        type: 'alert',
+        message: 'Te has inscrito correctamente',
+        onConfirm: null
+      })
       refreshClases() // Refrescar ambas listas
     } catch (error) {
-      alert('Error: ' + error.message)
+      setModalConfig({
+        isOpen: true,
+        type: 'alert',
+        message: error.message,
+        onConfirm: null
+      })
     }
   }
 
   const handleDesinscribirse = async (claseId) => {
-    if (!confirm('¿Seguro que quieres desinscribirte de esta clase?')) return
-    try {
-      await clasesAPI.desinscribirse(claseId)
-      alert('Te has desinscrito correctamente')
-      refreshClases() // Refrescar ambas listas
-    } catch (error) {
-      alert('Error: ' + error.message)
-    }
+    setModalConfig({
+      isOpen: true,
+      type: 'confirm',
+      message: '¿Seguro que quieres desinscribirte de esta clase?',
+      onConfirm: async () => {
+        try {
+          await clasesAPI.desinscribirse(claseId)
+          setModalConfig({
+            isOpen: true,
+            type: 'alert',
+            message: 'Te has desinscrito correctamente',
+            onConfirm: null
+          })
+          refreshClases() // Refrescar ambas listas
+        } catch (error) {
+          setModalConfig({
+            isOpen: true,
+            type: 'alert',
+            message: 'Error: ' + error.message,
+            onConfirm: null
+          })
+        }
+      }
+    })
   }
 
   const handleLogout = () => {
@@ -304,6 +349,14 @@ const Dashboard = () => {
           </section>
         )}
       </main>
+
+      <CustomModal
+        type={modalConfig.type}
+        message={modalConfig.message}
+        isOpen={modalConfig.isOpen}
+        onConfirm={modalConfig.onConfirm || (() => setModalConfig({ ...modalConfig, isOpen: false }))}
+        onCancel={() => setModalConfig({ ...modalConfig, isOpen: false })}
+      />
     </div>
   )
 }

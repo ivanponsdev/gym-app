@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { userAPI, clasesAPI } from '../services/api'
 import Sidebar from '../components/Sidebar'
+import CustomModal from '../components/CustomModal'
 
 const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState('users')
@@ -16,6 +17,14 @@ const AdminDashboard = () => {
   })
   
   const [loading, setLoading] = useState(false)
+  
+  // Estados para modales personalizados
+  const [modalConfig, setModalConfig] = useState({
+    isOpen: false,
+    type: 'alert',
+    message: '',
+    onConfirm: null
+  })
   
   // Estados usuarios
   const [showUserModal, setShowUserModal] = useState(false)
@@ -81,25 +90,57 @@ const AdminDashboard = () => {
   }
 
   const handleDeleteUser = async (userId) => {
-    if (!confirm('¿Estás seguro de eliminar este usuario?')) return
-    try {
-      await userAPI.deleteUser(userId)
-      alert('Usuario eliminado correctamente')
-      loadUsers()
-    } catch (error) {
-      alert('Error al eliminar usuario: ' + error.message)
-    }
+    setModalConfig({
+      isOpen: true,
+      type: 'confirm',
+      message: '¿Estás seguro de eliminar este usuario?',
+      onConfirm: async () => {
+        try {
+          await userAPI.deleteUser(userId)
+          setModalConfig({
+            isOpen: true,
+            type: 'alert',
+            message: 'Usuario eliminado correctamente',
+            onConfirm: null
+          })
+          loadUsers()
+        } catch (error) {
+          setModalConfig({
+            isOpen: true,
+            type: 'alert',
+            message: 'Error al eliminar usuario: ' + error.message,
+            onConfirm: null
+          })
+        }
+      }
+    })
   }
 
   const handleDeleteClase = async (claseId) => {
-    if (!confirm('¿Estás seguro de eliminar esta clase?')) return
-    try {
-      await clasesAPI.delete(claseId)
-      alert('Clase eliminada correctamente')
-      loadClases()
-    } catch (error) {
-      alert('Error al eliminar clase: ' + error.message)
-    }
+    setModalConfig({
+      isOpen: true,
+      type: 'confirm',
+      message: '¿Estás seguro de eliminar esta clase?',
+      onConfirm: async () => {
+        try {
+          await clasesAPI.delete(claseId)
+          setModalConfig({
+            isOpen: true,
+            type: 'alert',
+            message: 'Clase eliminada correctamente',
+            onConfirm: null
+          })
+          loadClases()
+        } catch (error) {
+          setModalConfig({
+            isOpen: true,
+            type: 'alert',
+            message: 'Error al eliminar clase: ' + error.message,
+            onConfirm: null
+          })
+        }
+      }
+    })
   }
 
   // Funciones para usuarios
@@ -136,20 +177,40 @@ const AdminDashboard = () => {
         const updateData = { ...userForm }
         if (!updateData.password) delete updateData.password // No actualizar password si está vacío
         await userAPI.updateUser(editingUser._id, updateData)
-        alert('Usuario actualizado correctamente')
+        setModalConfig({
+          isOpen: true,
+          type: 'alert',
+          message: 'Usuario actualizado correctamente',
+          onConfirm: null
+        })
       } else {
         // Crear nuevo usuario
         if (!userForm.password) {
-          alert('La contraseña es obligatoria para nuevos usuarios')
+          setModalConfig({
+            isOpen: true,
+            type: 'alert',
+            message: 'La contraseña es obligatoria para nuevos usuarios',
+            onConfirm: null
+          })
           return
         }
         await userAPI.createUser(userForm)
-        alert('Usuario creado correctamente')
+        setModalConfig({
+          isOpen: true,
+          type: 'alert',
+          message: 'Usuario creado correctamente',
+          onConfirm: null
+        })
       }
       setShowUserModal(false)
       loadUsers()
     } catch (error) {
-      alert('Error: ' + error.message)
+      setModalConfig({
+        isOpen: true,
+        type: 'alert',
+        message: 'Error: ' + error.message,
+        onConfirm: null
+      })
     }
   }
 
@@ -189,16 +250,31 @@ const AdminDashboard = () => {
       if (editingClase) {
         // Editar clase existente
         await clasesAPI.update(editingClase._id, claseForm)
-        alert('Clase actualizada correctamente')
+        setModalConfig({
+          isOpen: true,
+          type: 'alert',
+          message: 'Clase actualizada correctamente',
+          onConfirm: null
+        })
       } else {
         // Crear nueva clase
         await clasesAPI.create(claseForm)
-        alert('Clase creada correctamente')
+        setModalConfig({
+          isOpen: true,
+          type: 'alert',
+          message: 'Clase creada correctamente',
+          onConfirm: null
+        })
       }
       setShowClaseModal(false)
       loadClases()
     } catch (error) {
-      alert('Error: ' + error.message)
+      setModalConfig({
+        isOpen: true,
+        type: 'alert',
+        message: 'Error: ' + error.message,
+        onConfirm: null
+      })
     }
   }
 
@@ -517,6 +593,14 @@ const AdminDashboard = () => {
           </div>
         </div>
       )}
+
+      <CustomModal
+        type={modalConfig.type}
+        message={modalConfig.message}
+        isOpen={modalConfig.isOpen}
+        onConfirm={modalConfig.onConfirm || (() => setModalConfig({ ...modalConfig, isOpen: false }))}
+        onCancel={() => setModalConfig({ ...modalConfig, isOpen: false })}
+      />
     </div>
   )
 }

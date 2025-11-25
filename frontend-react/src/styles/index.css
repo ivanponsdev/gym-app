@@ -361,6 +361,85 @@ body {
     padding-top: 1rem;
 }
 
+/* --- Profile Section Styles --- */
+#profile-display h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    text-shadow: 0 0 10px rgba(148, 0, 211, 0.3);
+}
+
+#profile-display p {
+    margin-bottom: 0.7rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+#profile-display strong {
+    color: var(--secondary-color);
+    font-weight: 600;
+    display: inline-block;
+    min-width: 100px;
+    font-size: 0.9rem;
+}
+
+#profile-display span {
+    color: #fff;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+#profile-edit h3 {
+    color: var(--primary-color);
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+    text-shadow: 0 0 10px rgba(148, 0, 211, 0.3);
+    text-align: center;
+}
+
+#profile-edit .form-group {
+    margin-bottom: 1.5rem;
+}
+
+#profile-edit .form-group label {
+    display: block;
+    margin-bottom: 0.6rem;
+    color: var(--secondary-color);
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#profile-edit .form-group input {
+    width: 100%;
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.5);
+    border: 2px solid #444;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+#profile-edit .form-group input::placeholder {
+    color: var(--text-color-dark);
+    font-weight: 400;
+}
+
+#profile-edit .form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 15px rgba(148, 0, 211, 0.4);
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+#profile-edit .form-group input:hover {
+    border-color: var(--secondary-color);
+}
+
 /* --- Admin Styles --- */
 .search-container {
     display: flex;
@@ -625,6 +704,199 @@ body {
     .content {
         padding: 1rem;
     }
+
+    /* Landing responsive */
+    #landing-container h1 {
+        font-size: 1.8rem;
+    }
+
+    #landing-container .logo {
+        font-size: 2.5rem;
+    }
+
+    #landing-container p {
+        font-size: 1rem;
+    }
+
+    .landing-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn-neon, .btn-secondary-neon {
+        width: 100%;
+    }
+
+    /* Calendario responsive */
+    .horario-semanal {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 0.5rem;
+    }
+
+    .dia-column {
+        min-width: 100px;
+    }
+
+    .dia-header {
+        font-size: 0.75rem;
+        padding: 0.5rem;
+    }
+
+    .clase-card {
+        padding: 0.5rem;
+    }
+
+    .clase-nombre {
+        font-size: 0.8rem;
+    }
+
+    .clase-hora, .clase-profesor, .clase-plazas {
+        font-size: 0.65rem;
+    }
+
+    .btn-inscribir {
+        font-size: 0.65rem;
+        padding: 0.3rem;
+    }
+
+    /* Mis Clases responsive */
+    .mis-clases-lista {
+        grid-template-columns: 1fr;
+        gap: 0.8rem;
+    }
+
+    .mi-clase-card {
+        padding: 1rem;
+    }
+
+    /* Profile responsive */
+    #profile-display p {
+        font-size: 0.9rem;
+    }
+
+    #profile-display strong {
+        min-width: 90px;
+        font-size: 0.9rem;
+    }
+
+    #profile-edit .form-group input {
+        padding: 0.8rem;
+        font-size: 0.95rem;
+    }
+
+    /* Admin tables responsive */
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    .admin-table {
+        font-size: 0.85rem;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 0.6rem;
+    }
+
+    /* Modal responsive */
+    .custom-modal-content {
+        padding: 2rem 1.5rem;
+        max-width: 90%;
+    }
+
+    .custom-modal-icon {
+        font-size: 3rem;
+    }
+
+    .custom-modal-message {
+        font-size: 1rem;
+    }
+
+    .custom-modal-buttons button {
+        padding: 0.7rem 1.5rem;
+        font-size: 0.9rem;
+    }
+
+    .modal-content {
+        padding: 1.5rem;
+        max-width: 95%;
+    }
+
+    .modal-content h2 {
+        font-size: 1.3rem;
+    }
+
+    .modal-content .form-group input,
+    .modal-content .form-group select,
+    .modal-content .form-group textarea {
+        font-size: 0.95rem;
+        padding: 0.7rem;
+    }
+
+    /* Exit button responsive */
+    .exit-button {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+        margin-top: 1rem;
+    }
+
+    /* Info card responsive */
+    .info-card {
+        padding: 1.5rem;
+    }
+
+    .promo-text {
+        font-size: 1rem;
+    }
+
+    /* Form container responsive */
+    .form-container {
+        padding: 1.5rem;
+    }
+}
+
+/* Responsive para pantallas muy pequeñas */
+@media (max-width: 480px) {
+    #landing-container .logo {
+        font-size: 2rem;
+    }
+
+    #landing-container h1 {
+        font-size: 1.5rem;
+    }
+
+    .horario-semanal {
+        grid-template-columns: 1fr;
+    }
+
+    .dia-column {
+        min-width: auto;
+    }
+
+    .content-section h2 {
+        font-size: 1.3rem;
+    }
+
+    .card {
+        padding: 1rem;
+    }
+
+    .custom-modal-buttons {
+        flex-direction: column;
+    }
+
+    .btn-modal-cancel,
+    .btn-modal-confirm {
+        width: 100%;
+    }
+
+    .modal-buttons {
+        flex-direction: column;
+    }
+
+    .modal-buttons button {
+        width: 100%;
+    }
 }
 
 /* --- Grid de Clases --- */
@@ -752,20 +1024,19 @@ body {
 
 /* --- Botón Flotante de Salir --- */
 .exit-button {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
+    margin-top: auto;
     background-color: transparent;
     border: 2px solid var(--danger-color);
     color: var(--danger-color);
-    padding: 0.8rem 1.5rem;
-    font-size: 1rem;
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
     font-weight: 600;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
-    z-index: 1000;
     box-shadow: 0 0 10px rgba(233, 69, 96, 0.3);
+    width: 100%;
+    text-align: center;
 }
 
 .exit-button:hover {
@@ -991,7 +1262,6 @@ body {
     font-size: 1.1rem;
     margin-bottom: 0.6rem;
     font-weight: 700;
-    text-shadow: 0 0 10px currentColor;
 }
 
 .clase-detalles {
@@ -1100,4 +1370,138 @@ body {
 
 .mis-clases-lista .tipo-zumba:hover {
     box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+}
+
+/* --- Custom Modal Styles --- */
+.custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    backdrop-filter: blur(5px);
+    animation: fadeIn 0.2s ease-out;
+}
+
+.custom-modal-content {
+    background-color: #000;
+    border: 2px solid var(--secondary-color);
+    border-radius: 10px;
+    padding: 2.5rem;
+    max-width: 450px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(0, 191, 255, 0.5);
+    animation: scaleIn 0.3s ease-out;
+}
+
+.custom-modal-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 0 20px currentColor;
+}
+
+.custom-modal-icon.success {
+    color: var(--neon-green);
+}
+
+.custom-modal-icon.error {
+    color: #ff0080;
+}
+
+.custom-modal-icon.warning {
+    color: #ff0044;
+}
+
+.custom-modal-message {
+    color: var(--text-color);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    white-space: pre-line;
+}
+
+.custom-modal-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.custom-modal-buttons button {
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-modal-ok {
+    background-color: transparent;
+    border: 2px solid var(--secondary-color);
+    color: var(--secondary-color);
+    box-shadow: 0 0 10px rgba(0, 191, 255, 0.3);
+    min-width: 150px;
+}
+
+.btn-modal-ok:hover {
+    background-color: var(--secondary-color);
+    color: #000;
+    box-shadow: 0 0 25px rgba(0, 191, 255, 0.7);
+    transform: translateY(-2px);
+}
+
+.btn-modal-cancel {
+    background-color: transparent;
+    border: 2px solid var(--text-color-dark);
+    color: var(--text-color-dark);
+    flex: 1;
+}
+
+.btn-modal-cancel:hover {
+    background-color: var(--text-color-dark);
+    color: #000;
+    box-shadow: 0 0 15px rgba(160, 160, 160, 0.5);
+}
+
+.btn-modal-confirm {
+    background-color: transparent;
+    border: 2px solid var(--neon-green);
+    color: var(--neon-green);
+    box-shadow: 0 0 10px rgba(57, 255, 20, 0.3);
+    flex: 1;
+}
+
+.btn-modal-confirm:hover {
+    background-color: var(--neon-green);
+    color: #000;
+    box-shadow: 0 0 25px rgba(57, 255, 20, 0.7);
+    transform: translateY(-2px);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
