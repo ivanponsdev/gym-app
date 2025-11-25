@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
-import { AuthProvider } from './context/AuthContext'
+import { AuthProvider, useAuth } from './context/AuthContext'
 import Landing from './pages/Landing'
 import Auth from './pages/Auth'
 import Dashboard from './pages/Dashboard'
@@ -10,16 +10,22 @@ import ProtectedRoute from './components/ProtectedRoute'
 const ExitButton = () => {
   const navigate = useNavigate()
   const location = useLocation()
+  const { logout } = useAuth()
   
   // No mostrar el botón en la página principal
   if (location.pathname === '/') {
     return null
   }
   
+  const handleExit = () => {
+    logout()
+    navigate('/')
+  }
+  
   return (
     <button 
       className="exit-button"
-      onClick={() => navigate('/')}
+      onClick={handleExit}
     >
       Salir
     </button>

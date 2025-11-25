@@ -1,15 +1,21 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
 import { userAPI, clasesAPI } from '../services/api'
+import Sidebar from '../components/Sidebar'
 
 const AdminDashboard = () => {
-  const navigate = useNavigate()
-  const { logout } = useAuth()
   const [activeSection, setActiveSection] = useState('users')
-  const [users, setUsers] = useState([])
-  const [clases, setClases] = useState([])
-  const [loading, setLoading] = useState(true)
+  
+  // Inicializar desde sessionStorage si existe
+  const [users, setUsers] = useState(() => {
+    const cached = sessionStorage.getItem('adminUsers')
+    return cached ? JSON.parse(cached) : []
+  })
+  const [clases, setClases] = useState(() => {
+    const cached = sessionStorage.getItem('adminClases')
+    return cached ? JSON.parse(cached) : []
+  })
+  
+  const [loading, setLoading] = useState(false)
   
   // Estados usuarios
   const [showUserModal, setShowUserModal] = useState(false)
@@ -38,10 +44,10 @@ const AdminDashboard = () => {
   })
 
   useEffect(() => {
-    console.log('AdminDashboard - activeSection:', activeSection)
-    if (activeSection === 'users') {
+    // Carga bajo demanda con caché: solo carga si no hay datos
+    if (activeSection === 'users' && users.length === 0) {
       loadUsers()
-    } else if (activeSection === 'clases') {
+    } else if (activeSection === 'clases' && clases.length === 0) {
       loadClases()
     }
   }, [activeSection])
@@ -50,7 +56,9 @@ const AdminDashboard = () => {
     setLoading(true)
     try {
       const data = await userAPI.getAllUsers()
-      setUsers(data.usuarios || [])
+      const usersData = data.usuarios || []
+      setUsers(usersData)
+      sessionStorage.setItem('adminUsers', JSON.stringify(usersData))
     } catch (error) {
       console.error('Error al cargar usuarios:', error)
     } finally {
@@ -62,7 +70,9 @@ const AdminDashboard = () => {
     setLoading(true)
     try {
       const data = await clasesAPI.getAll()
-      setClases(data.clases || [])
+      const clasesData = data.clases || []
+      setClases(clasesData)
+      sessionStorage.setItem('adminClases', JSON.stringify(clasesData))
     } catch (error) {
       console.error('Error al cargar clases:', error)
     } finally {
@@ -192,41 +202,18 @@ const AdminDashboard = () => {
     }
   }
 
-  const handleLogout = () => {
-    logout()
-    navigate('/')
-  }
+  const menuItems = [
+    { id: 'users', label: 'Gestión Usuarios' },
+    { id: 'clases', label: 'Gestión Clases' }
+  ]
 
   return (
     <div id="admin-container">
-      <aside className="sidebar">
-        <h1 className="logo-sidebar">ULTIMATE GYM</h1>
-        <nav>
-          <a 
-            href="#" 
-            className={`admin-nav-link ${activeSection === 'users' ? 'active' : ''}`}
-            onClick={(e) => {
-              e.preventDefault()
-              setActiveSection('users')
-            }}
-          >
-            Gestión Usuarios
-          </a>
-          <a 
-            href="#" 
-            className={`admin-nav-link ${activeSection === 'clases' ? 'active' : ''}`}
-            onClick={(e) => {
-              e.preventDefault()
-              setActiveSection('clases')
-            }}
-          >
-            Gestión Clases
-          </a>
-        </nav>
-        <button onClick={handleLogout} className="btn-logout">
-          Cerrar Sesión
-        </button>
-      </aside>
+      <Sidebar 
+        activeSection={activeSection} 
+        setActiveSection={setActiveSection}
+        menuItems={menuItems}
+      />
       <main className="content">
         {activeSection === 'users' && (
           <section id="admin-users" className="content-section active">
@@ -243,8 +230,11 @@ const AdminDashboard = () => {
                 Añadir Usuario
               </button>
               <div className="table-wrapper">
-                {loading ? (
-                  <p>Cargando usuarios...</p>
+                {loading && users.length === 0 ? (
+                  <div className="spinner-container">
+                    <div className="spinner-large"></div>
+                    <p style={{ marginTop: '1rem', color: 'var(--secondary-color)' }}>Cargando usuarios...</p>
+                  </div>
                 ) : users.length === 0 ? (
                   <p>No hay usuarios registrados</p>
                 ) : (
@@ -304,8 +294,11 @@ const AdminDashboard = () => {
                 Añadir Clase
               </button>
               <div className="table-wrapper">
-                {loading ? (
-                  <p>Cargando clases...</p>
+                {loading && clases.length === 0 ? (
+                  <div className="spinner-container">
+                    <div className="spinner-large"></div>
+                    <p style={{ marginTop: '1rem', color: 'var(--secondary-color)' }}>Cargando clases...</p>
+                  </div>
                 ) : clases.length === 0 ? (
                   <p>No hay clases creadas</p>
                 ) : (
@@ -524,13 +517,6 @@ const AdminDashboard = () => {
           </div>
         </div>
       )}
-
-      <button 
-        className="btn-exit"
-        onClick={() => navigate('/')}
-      >
-        Salir
-      </button>
     </div>
   )
 }

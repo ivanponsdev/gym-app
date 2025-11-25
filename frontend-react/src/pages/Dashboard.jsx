@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { userAPI, clasesAPI } from '../services/api'
+import Sidebar from '../components/Sidebar'
 
 const Dashboard = () => {
-  const navigate = useNavigate()
-  const { user, logout, updateUser } = useAuth()
+  const { user, updateUser } = useAuth()
   const [activeSection, setActiveSection] = useState('profile')
   const [isEditingProfile, setIsEditingProfile] = useState(false)
   const [profileData, setProfileData] = useState({
@@ -13,9 +12,20 @@ const Dashboard = () => {
     edad: '',
     objetivo: ''
   })
-  const [clases, setClases] = useState([])
-  const [misClases, setMisClases] = useState([])
-  const [loading, setLoading] = useState(false)
+  
+  // Inicializar desde sessionStorage si existe
+  const [clases, setClases] = useState(() => {
+    const cached = sessionStorage.getItem('clases')
+    return cached ? JSON.parse(cached) : []
+  })
+  const [misClases, setMisClases] = useState(() => {
+    const cached = sessionStorage.getItem('misClases')
+    return cached ? JSON.parse(cached) : []
+  })
+  
+  const [loadingClases, setLoadingClases] = useState(false)
+  const [loadingMisClases, setLoadingMisClases] = useState(false)
+  const [loadingProfile, setLoadingProfile] = useState(false)
 
   useEffect(() => {
     if (user) {
@@ -28,35 +38,46 @@ const Dashboard = () => {
   }, [user])
 
   useEffect(() => {
-    if (activeSection === 'clases') {
+    // Carga bajo demanda: solo carga si no hay datos en caché
+    if (activeSection === 'clases' && clases.length === 0) {
       loadClases()
-    } else if (activeSection === 'mis-clases') {
+    } else if (activeSection === 'mis-clases' && misClases.length === 0) {
       loadMisClases()
     }
   }, [activeSection])
 
   const loadClases = async () => {
-    setLoading(true)
+    setLoadingClases(true)
     try {
       const data = await clasesAPI.getAll()
-      setClases(data.clases || [])
+      const clasesData = data.clases || []
+      setClases(clasesData)
+      sessionStorage.setItem('clases', JSON.stringify(clasesData))
     } catch (error) {
       console.error('Error al cargar clases:', error)
     } finally {
-      setLoading(false)
+      setLoadingClases(false)
     }
   }
 
   const loadMisClases = async () => {
-    setLoading(true)
+    setLoadingMisClases(true)
     try {
       const data = await clasesAPI.getMisClases()
-      setMisClases(data.clases || [])
+      const misClasesData = data.clases || []
+      setMisClases(misClasesData)
+      sessionStorage.setItem('misClases', JSON.stringify(misClasesData))
     } catch (error) {
       console.error('Error al cargar mis clases:', error)
     } finally {
-      setLoading(false)
+      setLoadingMisClases(false)
     }
+  }
+
+  // Función para refrescar datos manualmente (después de inscribirse/desinscribirse)
+  const refreshClases = () => {
+    loadClases()
+    loadMisClases()
   }
 
   const handleEditProfile = () => {
@@ -73,7 +94,7 @@ const Dashboard = () => {
   }
 
   const handleSaveProfile = async () => {
-    setLoading(true)
+    setLoadingProfile(true)
     try {
       const response = await userAPI.updateProfile(profileData)
       updateUser(response.usuario)
@@ -82,7 +103,7 @@ const Dashboard = () => {
     } catch (error) {
       alert('Error al actualizar perfil: ' + error.message)
     } finally {
-      setLoading(false)
+      setLoadingProfile(false)
     }
   }
 
@@ -90,8 +111,7 @@ const Dashboard = () => {
     try {
       await clasesAPI.inscribirse(claseId)
       alert('Te has inscrito correctamente')
-      loadClases()
-      loadMisClases()
+      refreshClases() // Refrescar ambas listas
     } catch (error) {
       alert('Error: ' + error.message)
     }
@@ -102,8 +122,7 @@ const Dashboard = () => {
     try {
       await clasesAPI.desinscribirse(claseId)
       alert('Te has desinscrito correctamente')
-      loadMisClases()
-      loadClases()
+      refreshClases() // Refrescar ambas listas
     } catch (error) {
       alert('Error: ' + error.message)
     }
@@ -114,46 +133,19 @@ const Dashboard = () => {
     navigate('/')
   }
 
+  const menuItems = [
+    { id: 'profile', label: 'Mi Perfil' },
+    { id: 'clases', label: 'Clases Disponibles' },
+    { id: 'mis-clases', label: 'Mis Clases' }
+  ]
+
   return (
     <div id="app-container">
-      <aside className="sidebar">
-        <h1 className="logo-sidebar">ULTIMATE GYM</h1>
-        <nav>
-          <a
-            href="#"
-            className={`nav-link ${activeSection === 'profile' ? 'active' : ''}`}
-            onClick={(e) => {
-              e.preventDefault()
-              setActiveSection('profile')
-            }}
-          >
-            Mi Perfil
-          </a>
-          <a
-            href="#"
-            className={`nav-link ${activeSection === 'clases' ? 'active' : ''}`}
-            onClick={(e) => {
-              e.preventDefault()
-              setActiveSection('clases')
-            }}
-          >
-            Clases Disponibles
-          </a>
-          <a
-            href="#"
-            className={`nav-link ${activeSection === 'mis-clases' ? 'active' : ''}`}
-            onClick={(e) => {
-              e.preventDefault()
-              setActiveSection('mis-clases')
-            }}
-          >
-            Mis Clases
-          </a>
-        </nav>
-        <button onClick={handleLogout} className="btn-logout">
-          Cerrar Sesión
-        </button>
-      </aside>
+      <Sidebar 
+        activeSection={activeSection} 
+        setActiveSection={setActiveSection}
+        menuItems={menuItems}
+      />
       <main className="content">
         {activeSection === 'profile' && (
           <section id="profile" className="content-section active">
@@ -214,14 +206,14 @@ const Dashboard = () => {
                     <button 
                       className="btn-neon" 
                       onClick={handleSaveProfile}
-                      disabled={loading}
+                      disabled={loadingProfile}
                     >
-                      {loading ? 'Guardando...' : 'Guardar'}
+                      {loadingProfile ? 'Guardando...' : 'Guardar'}
                     </button>
                     <button 
                       className="btn-secondary-neon" 
                       onClick={handleCancelEdit}
-                      disabled={loading}
+                      disabled={loadingProfile}
                     >
                       Cancelar
                     </button>
@@ -235,27 +227,43 @@ const Dashboard = () => {
         {activeSection === 'clases' && (
           <section id="clases" className="content-section active">
             <h2>Clases Disponibles</h2>
-            {loading ? (
-              <p>Cargando clases...</p>
+            {loadingClases && clases.length === 0 ? (
+              <div className="spinner-container">
+                <div className="spinner-large"></div>
+                <p style={{ marginTop: '1rem', color: 'var(--secondary-color)' }}>Cargando clases...</p>
+              </div>
+            ) : clases.length === 0 ? (
+              <p>No hay clases disponibles.</p>
             ) : (
-              <div className="clases-grid">
-                {clases.map((clase) => (
-                  <div key={clase._id} className="card">
-                    <h3>{clase.nombre}</h3>
-                    <p><strong>Profesor:</strong> {clase.profesor}</p>
-                    <p><strong>Día:</strong> {clase.diaSemana}</p>
-                    <p><strong>Horario:</strong> {clase.horaInicio} - {clase.horaFin}</p>
-                    <p><strong>Plazas disponibles:</strong> {clase.plazasDisponibles || clase.cupoMaximo}</p>
-                    {clase.descripcion && <p>{clase.descripcion}</p>}
-                    <button 
-                      className="btn-neon" 
-                      style={{ marginTop: '1rem' }}
-                      onClick={() => handleInscribirse(clase._id)}
-                    >
-                      Inscribirme
-                    </button>
-                  </div>
-                ))}
+              <div className="horario-semanal">
+                {['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'].map(dia => {
+                  const clasesDia = clases.filter(c => c.diaSemana === dia)
+                  return (
+                    <div key={dia} className="dia-column">
+                      <h3 className="dia-header">{dia.charAt(0).toUpperCase() + dia.slice(1)}</h3>
+                      <div className="clases-dia">
+                        {clasesDia.length === 0 ? (
+                          <p className="sin-clases">Sin clases</p>
+                        ) : (
+                          clasesDia.map(clase => (
+                            <div key={clase._id} className={`clase-card tipo-${clase.nombre.toLowerCase().replace(/\s/g, '-')}`}>
+                              <div className="clase-hora">{clase.horaInicio} - {clase.horaFin}</div>
+                              <h4 className="clase-nombre">{clase.nombre}</h4>
+                              <p className="clase-profesor">{clase.profesor}</p>
+                              <p className="clase-plazas">{clase.plazasDisponibles || clase.cupoMaximo} plazas</p>
+                              <button 
+                                className="btn-inscribir"
+                                onClick={() => handleInscribirse(clase._id)}
+                              >
+                                Inscribirme
+                              </button>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
             )}
           </section>
@@ -264,25 +272,30 @@ const Dashboard = () => {
         {activeSection === 'mis-clases' && (
           <section id="mis-clases" className="content-section active">
             <h2>Mis Clases</h2>
-            {loading ? (
-              <p>Cargando tus clases...</p>
+            {loadingMisClases && misClases.length === 0 ? (
+              <div className="spinner-container">
+                <div className="spinner-large"></div>
+                <p style={{ marginTop: '1rem', color: 'var(--secondary-color)' }}>Cargando tus clases...</p>
+              </div>
             ) : misClases.length === 0 ? (
               <p>No estás inscrito en ninguna clase todavía.</p>
             ) : (
-              <div className="clases-grid">
+              <div className="mis-clases-lista">
                 {misClases.map((clase) => (
-                  <div key={clase._id} className="card">
-                    <h3>{clase.nombre}</h3>
-                    <p><strong>Profesor:</strong> {clase.profesor}</p>
-                    <p><strong>Día:</strong> {clase.diaSemana}</p>
-                    <p><strong>Horario:</strong> {clase.horaInicio} - {clase.horaFin}</p>
-                    {clase.descripcion && <p>{clase.descripcion}</p>}
+                  <div key={clase._id} className={`mi-clase-card tipo-${clase.nombre.toLowerCase().replace(/\s/g, '-')}`}>
+                    <div className="clase-info">
+                      <h3 className="clase-nombre">{clase.nombre}</h3>
+                      <div className="clase-detalles">
+                        <span className="detalle">{clase.diaSemana.charAt(0).toUpperCase() + clase.diaSemana.slice(1)}</span>
+                        <span className="detalle">{clase.horaInicio} - {clase.horaFin}</span>
+                        <span className="detalle">{clase.profesor}</span>
+                      </div>
+                    </div>
                     <button 
-                      className="btn-danger-neon" 
-                      style={{ marginTop: '1rem' }}
+                      className="btn-desinscribir" 
                       onClick={() => handleDesinscribirse(clase._id)}
                     >
-                      Desinscribirme
+                      <span className="icon-x">✕</span> Desinscribirme
                     </button>
                   </div>
                 ))}
@@ -291,13 +304,6 @@ const Dashboard = () => {
           </section>
         )}
       </main>
-
-      <button 
-        className="btn-exit"
-        onClick={() => navigate('/')}
-      >
-        Salir
-      </button>
     </div>
   )
 }

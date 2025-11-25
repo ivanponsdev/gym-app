@@ -115,6 +115,22 @@ const mockDelay = (ms = 300) => new Promise(resolve => setTimeout(resolve, ms))
 
 // Estado global del modo demo
 let currentMockUser = null
+
+// Inicializar currentMockUser desde localStorage si existe
+const initMockUser = () => {
+  const storedUser = localStorage.getItem('user')
+  if (storedUser) {
+    try {
+      currentMockUser = JSON.parse(storedUser)
+    } catch (error) {
+      console.error('Error al parsear usuario desde localStorage:', error)
+    }
+  }
+}
+
+// Inicializar al cargar el módulo
+initMockUser()
+
 let mockUsersState = [...mockUsers]
 let mockClasesState = [...mockClases]
 

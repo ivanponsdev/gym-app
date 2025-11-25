@@ -324,23 +324,6 @@ body {
     box-shadow: 0 0 10px var(--primary-color);
 }
 
-.btn-logout {
-    background: none;
-    border: 1px solid var(--text-color-dark);
-    color: var(--text-color-dark);
-    padding: 0.7rem;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    margin-top: auto;
-}
-
-.btn-logout:hover {
-    border-color: var(--danger-color);
-    color: var(--danger-color);
-}
-
 .content {
     flex-grow: 1;
     padding: 2rem;
@@ -526,28 +509,6 @@ body {
     box-shadow: 0 0 15px var(--text-color-dark);
 }
 
-/* Global Exit Button */
-.btn-exit {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1000;
-    background-color: var(--primary-color);
-    color: #fff;
-    border: none;
-    padding: 1rem 1.5rem;
-    border-radius: 5px;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: 0 0 15px var(--primary-color);
-    transition: all 0.3s ease;
-}
-
-.btn-exit:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 25px var(--primary-color);
-}
-
 /* Notification System */
 #notification-container {
     position: fixed;
@@ -659,31 +620,6 @@ body {
     .sidebar nav a {
         font-size: 0.8rem;
         padding: 0.5rem;
-    }
-
-    .btn-logout {
-        position: fixed;
-        bottom: 20px;
-        left: 20px;
-        z-index: 1000;
-        background-color: var(--secondary-color);
-        color: #fff;
-        border: none;
-        padding: 1rem 1.5rem;
-        border-radius: 5px;
-        font-weight: 600;
-        cursor: pointer;
-        box-shadow: 0 0 15px var(--secondary-color);
-        transition: all 0.3s ease;
-        font-size: 0.9rem;
-        margin: 0;
-    }
-
-    .btn-logout:hover {
-        transform: scale(1.05);
-        box-shadow: 0 0 25px var(--secondary-color);
-        background-color: var(--secondary-color);
-        color: #fff;
     }
 
     .content {
@@ -841,4 +777,327 @@ body {
 
 .exit-button:active {
     transform: translateY(0);
+}
+
+/* --- Spinner Inline --- */
+.spinner-inline {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    margin-left: 15px;
+    border: 4px solid rgba(0, 191, 255, 0.2);
+    border-top-color: var(--secondary-color);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    vertical-align: middle;
+    box-shadow: 0 0 10px rgba(0, 191, 255, 0.4);
+}
+
+/* --- Rueda carga --- */
+.spinner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    width: 100%;
+}
+
+.spinner-large {
+    width: 80px;
+    height: 80px;
+    border: 6px solid rgba(0, 191, 255, 0.2);
+    border-top-color: var(--secondary-color);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    box-shadow: 0 0 30px rgba(0, 191, 255, 0.5);
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* --- Calendario/Horario Semanal --- */
+.horario-semanal {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+    overflow-x: auto;
+}
+
+.dia-column {
+    background-color: var(--surface-color);
+    border-radius: 8px;
+    overflow: hidden;
+    min-width: 130px;
+}
+
+.dia-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: #fff;
+    text-align: center;
+    padding: 0.6rem 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.clases-dia {
+    padding: 0.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    min-height: 50px;
+}
+
+.sin-clases {
+    text-align: center;
+    color: var(--text-color-dark);
+    font-style: italic;
+    font-size: 0.75rem;
+    padding: 1rem 0;
+}
+
+.clase-card {
+    background-color: var(--background-color);
+    border-radius: 6px;
+    padding: 0.7rem 0.6rem;
+    border-left: 3px solid;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.clase-card:hover {
+    transform: scale(1.02);
+}
+
+.clase-hora {
+    font-size: 0.7rem;
+    color: var(--secondary-color);
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+}
+
+.clase-nombre {
+    font-size: 0.85rem;
+    color: var(--text-color);
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+}
+
+.clase-profesor, .clase-plazas {
+    font-size: 0.7rem;
+    color: var(--text-color-dark);
+    margin-bottom: 0.2rem;
+}
+
+.btn-inscribir {
+    width: 100%;
+    margin-top: 0.4rem;
+    padding: 0.4rem;
+    background-color: transparent;
+    border: 1.5px solid var(--secondary-color);
+    color: var(--secondary-color);
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.7rem;
+    transition: all 0.3s ease;
+}
+
+.btn-inscribir:hover {
+    background-color: var(--secondary-color);
+    color: var(--background-color);
+    box-shadow: 0 0 15px var(--secondary-color);
+}
+
+/* --- Colores Neón por Tipo de Clase --- */
+.tipo-spinning {
+    border-left-color: #ff0080;
+    box-shadow: 0 0 10px rgba(255, 0, 128, 0.3);
+}
+
+.tipo-spinning:hover {
+    box-shadow: 0 0 20px rgba(255, 0, 128, 0.5);
+}
+
+.tipo-yoga-matinal {
+    border-left-color: #39FF14;
+    box-shadow: 0 0 10px rgba(57, 255, 20, 0.3);
+}
+
+.tipo-yoga-matinal:hover {
+    box-shadow: 0 0 20px rgba(57, 255, 20, 0.5);
+}
+
+.tipo-crossfit {
+    border-left-color: #ff6600;
+    box-shadow: 0 0 10px rgba(255, 102, 0, 0.3);
+}
+
+.tipo-crossfit:hover {
+    box-shadow: 0 0 20px rgba(255, 102, 0, 0.5);
+}
+
+.tipo-pilates {
+    border-left-color: #9400D3;
+    box-shadow: 0 0 10px rgba(148, 0, 211, 0.3);
+}
+
+.tipo-pilates:hover {
+    box-shadow: 0 0 20px rgba(148, 0, 211, 0.5);
+}
+
+.tipo-zumba {
+    border-left-color: #FFD700;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+.tipo-zumba:hover {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+/* --- Mis Clases Lista --- */
+.mis-clases-lista {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.mi-clase-card {
+    background-color: var(--surface-color);
+    border-radius: 8px;
+    padding: 1rem;
+    border: 2px solid;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mi-clase-card:hover {
+    transform: translateY(-3px);
+}
+
+.clase-info {
+    flex: 1;
+    margin-bottom: 0.8rem;
+}
+
+.clase-info .clase-nombre {
+    color: var(--text-color);
+    font-size: 1.1rem;
+    margin-bottom: 0.6rem;
+    font-weight: 700;
+    text-shadow: 0 0 10px currentColor;
+}
+
+.clase-detalles {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.detalle {
+    color: var(--text-color);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.btn-desinscribir {
+    width: 100%;
+    padding: 0.7rem;
+    background-color: var(--background-color);
+    border: 1px solid var(--text-color-dark);
+    color: var(--text-color);
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-desinscribir .icon-x {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.btn-desinscribir:hover {
+    background-color: var(--text-color);
+    color: var(--background-color);
+    border-color: var(--text-color);
+    transform: scale(1.02);
+}
+
+/* Colores neón para títulos de Mis Clases */
+.mis-clases-lista .tipo-spinning .clase-nombre {
+    color: #ff0080;
+}
+
+.mis-clases-lista .tipo-yoga-matinal .clase-nombre {
+    color: #39FF14;
+}
+
+.mis-clases-lista .tipo-crossfit .clase-nombre {
+    color: #ff6600;
+}
+
+.mis-clases-lista .tipo-pilates .clase-nombre {
+    color: #9400D3;
+}
+
+.mis-clases-lista .tipo-zumba .clase-nombre {
+    color: #FFD700;
+}
+
+/* Colores de borde para Mis Clases */
+.mis-clases-lista .tipo-spinning {
+    border-color: #ff0080;
+    box-shadow: 0 0 15px rgba(255, 0, 128, 0.2);
+}
+
+.mis-clases-lista .tipo-spinning:hover {
+    box-shadow: 0 0 30px rgba(255, 0, 128, 0.5);
+}
+
+.mis-clases-lista .tipo-yoga-matinal {
+    border-color: #39FF14;
+    box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
+}
+
+.mis-clases-lista .tipo-yoga-matinal:hover {
+    box-shadow: 0 0 30px rgba(57, 255, 20, 0.5);
+}
+
+.mis-clases-lista .tipo-crossfit {
+    border-color: #ff6600;
+    box-shadow: 0 0 15px rgba(255, 102, 0, 0.2);
+}
+
+.mis-clases-lista .tipo-crossfit:hover {
+    box-shadow: 0 0 30px rgba(255, 102, 0, 0.5);
+}
+
+.mis-clases-lista .tipo-pilates {
+    border-color: #9400D3;
+    box-shadow: 0 0 15px rgba(148, 0, 211, 0.2);
+}
+
+.mis-clases-lista .tipo-pilates:hover {
+    box-shadow: 0 0 30px rgba(148, 0, 211, 0.5);
+}
+
+.mis-clases-lista .tipo-zumba {
+    border-color: #FFD700;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+}
+
+.mis-clases-lista .tipo-zumba:hover {
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
 }
