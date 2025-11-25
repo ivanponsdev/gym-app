@@ -299,7 +299,7 @@ const AdminDashboard = () => {
             </div>
             <div id="users-list-container">
               <button 
-                className="btn-neon" 
+                className="btn-neon btn-add" 
                 style={{ marginBottom: '20px', width: 'auto', padding: '0.8rem 1.5rem' }}
                 onClick={handleAddUser}
               >
@@ -334,19 +334,22 @@ const AdminDashboard = () => {
                           <td>{user.rol}</td>
                           <td>{new Date(user.createdAt || user.fechaRegistro).toLocaleDateString()}</td>
                           <td>
-                            <button 
-                              className="btn-secondary-neon" 
-                              style={{ marginRight: '0.5rem' }}
-                              onClick={() => handleEditUser(user)}
-                            >
-                              Editar
-                            </button>
-                            <button 
-                              className="btn-danger-neon"
-                              onClick={() => handleDeleteUser(user._id)}
-                            >
-                              Eliminar
-                            </button>
+                            <div className="action-buttons">
+                              <button 
+                                className="btn-icon btn-edit" 
+                                onClick={() => handleEditUser(user)}
+                                title="Editar usuario"
+                              >
+                                ✏️
+                              </button>
+                              <button 
+                                className="btn-icon btn-delete"
+                                onClick={() => handleDeleteUser(user._id)}
+                                title="Eliminar usuario"
+                              >
+                                🗑️
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -363,7 +366,7 @@ const AdminDashboard = () => {
             <h2>Gestión de Clases</h2>
             <div id="clases-list-container">
               <button 
-                className="btn-neon" 
+                className="btn-neon btn-add" 
                 style={{ marginBottom: '20px', width: 'auto', padding: '0.8rem 1.5rem' }}
                 onClick={handleAddClase}
               >
@@ -400,21 +403,24 @@ const AdminDashboard = () => {
                           <td>{clase.horaInicio} - {clase.horaFin}</td>
                           <td>{clase.cupoMaximo}</td>
                           <td>{clase.numeroInscritos || clase.alumnosApuntados?.length || 0}</td>
-                          <td>{clase.activa ? ' Activa' : 'Inactiva'}</td>
+                          <td>{clase.activa ? '✅ Activa' : '❌ Inactiva'}</td>
                           <td>
-                            <button 
-                              className="btn-secondary-neon" 
-                              style={{ marginRight: '0.5rem' }}
-                              onClick={() => handleEditClase(clase)}
-                            >
-                              Editar
-                            </button>
-                            <button 
-                              className="btn-danger-neon"
-                              onClick={() => handleDeleteClase(clase._id)}
-                            >
-                              Eliminar
-                            </button>
+                            <div className="action-buttons">
+                              <button 
+                                className="btn-icon btn-edit" 
+                                onClick={() => handleEditClase(clase)}
+                                title="Editar clase"
+                              >
+                                ✏️
+                              </button>
+                              <button 
+                                className="btn-icon btn-delete"
+                                onClick={() => handleDeleteClase(clase._id)}
+                                title="Eliminar clase"
+                              >
+                                🗑️
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -487,10 +493,10 @@ const AdminDashboard = () => {
               </select>
             </div>
             <div className="modal-buttons">
-              <button className="btn-neon" onClick={handleSaveUser}>
+              <button className="btn-action" onClick={handleSaveUser}>
                 {editingUser ? 'Actualizar' : 'Crear'}
               </button>
-              <button className="btn-secondary-neon" onClick={() => setShowUserModal(false)}>
+              <button className="btn-action" onClick={() => setShowUserModal(false)}>
                 Cancelar
               </button>
             </div>
@@ -583,10 +589,10 @@ const AdminDashboard = () => {
               </label>
             </div>
             <div className="modal-buttons">
-              <button className="btn-neon" onClick={handleSaveClase}>
+              <button className="btn-action" onClick={handleSaveClase}>
                 {editingClase ? 'Actualizar' : 'Crear'}
               </button>
-              <button className="btn-secondary-neon" onClick={() => setShowClaseModal(false)}>
+              <button className="btn-action" onClick={() => setShowClaseModal(false)}>
                 Cancelar
               </button>
             </div>

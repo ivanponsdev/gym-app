@@ -141,6 +141,12 @@ const Auth = () => {
             </form>
           )}
         </div>
+        <button 
+          className="btn-back"
+          onClick={() => navigate('/')}
+        >
+          ← Volver
+        </button>
       </div>
 
       {notification && (

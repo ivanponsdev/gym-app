@@ -20,13 +20,13 @@ const Landing = () => {
       <p>Donde cada esfuerzo cuenta para tu mejor versión.</p>
       <div className="landing-buttons">
         <button 
-          className="btn-neon"
+          className="btn-action"
           onClick={() => navigate('/auth')}
         >
           Comenzar
         </button>
         <button 
-          className="btn-secondary-neon"
+          className="btn-action"
           onClick={() => navigate('/info')}
         >
           Información

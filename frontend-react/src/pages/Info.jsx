@@ -33,13 +33,13 @@ const Info = () => {
         <p className="promo-text">
           ¿Listo para empezar tu transformación? ¡Únete a nuestra comunidad y da el primer paso!
         </p>
-        <button 
-          className="btn-neon"
-          onClick={() => navigate('/')}
-        >
-          Volver
-        </button>
       </div>
+      <button 
+        className="btn-back"
+        onClick={() => navigate('/')}
+      >
+        ← Volver
+      </button>
     </div>
   )
 }

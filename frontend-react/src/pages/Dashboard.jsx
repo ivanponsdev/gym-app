@@ -212,8 +212,8 @@ const Dashboard = () => {
                     <strong>Objetivo:</strong> <span>{user?.objetivo || '-'}</span>
                   </p>
                   <button 
-                    className="btn-secondary-neon" 
-                    style={{ marginTop: '1rem', width: 'auto', padding: '0.8rem 1.2rem' }}
+                    className="btn-action" 
+                    style={{ marginTop: '1rem', width: 'auto' }}
                     onClick={handleEditProfile}
                   >
                     Editar Perfil
@@ -249,14 +249,14 @@ const Dashboard = () => {
                   </div>
                   <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
                     <button 
-                      className="btn-neon" 
+                      className="btn-action" 
                       onClick={handleSaveProfile}
                       disabled={loadingProfile}
                     >
                       {loadingProfile ? 'Guardando...' : 'Guardar'}
                     </button>
                     <button 
-                      className="btn-secondary-neon" 
+                      className="btn-action" 
                       onClick={handleCancelEdit}
                       disabled={loadingProfile}
                     >

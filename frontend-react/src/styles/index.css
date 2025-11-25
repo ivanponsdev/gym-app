@@ -53,17 +53,17 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     width: 100%;
-    max-width: 1000px;
+    max-width: 1200px;
     height: 100%;
     background-image: url('/Sporty Online Gym Logo featuring \'UG\' (1).png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    opacity: 0.35;
+    opacity: 0.5;
     z-index: 0;
     pointer-events: none;
-    mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 30%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,0) 100%);
-    -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 30%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,0) 100%);
+    mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 30%, rgba(0,0,0,0.85) 60%, rgba(0,0,0,0) 100%);
+    -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 30%, rgba(0,0,0,0.85) 60%, rgba(0,0,0,0) 100%);
 }
 
 #landing-container > * {
@@ -73,29 +73,38 @@ body {
 
 #landing-container h1 {
     font-size: 2.5rem;
-    color: var(--text-color);
+    color: #fff;
     margin-bottom: 0.5rem;
-    text-shadow: 0 0 5px var(--secondary-color);
+    text-shadow: 0 0 8px rgba(0, 191, 255, 0.6);
+    font-weight: 700;
+    letter-spacing: 0.05rem;
 }
 
 #landing-container .logo {
-    font-size: 3.5rem;
+    font-size: 5rem;
     font-weight: 700;
-    color: var(--primary-color);
-    text-shadow: 0 0 5px var(--primary-color);
+    color: #fff;
+    text-shadow: 0 0 10px rgba(148, 0, 211, 0.6), 0 0 20px rgba(148, 0, 211, 0.4);
     margin-bottom: 1rem;
+    letter-spacing: 0.1rem;
 }
 
 #landing-container p {
     font-size: 1.2rem;
-    color: var(--text-color-dark);
-    margin-bottom: 2rem;
+    color: #fff;
+    margin-bottom: 3rem;
+    font-weight: 300;
 }
 
 .landing-buttons {
     display: flex;
-    gap: 1rem;
+    gap: 1.5rem;
     justify-content: center;
+}
+
+.landing-buttons .btn-action {
+    padding: 1rem 2.5rem;
+    font-size: 1rem;
 }
 
 .btn-neon {
@@ -267,6 +276,30 @@ body {
     color: var(--secondary-color);
     text-decoration: none;
     font-weight: 600;
+}
+
+/* Botón de volver */
+.btn-back {
+    background-color: var(--background-color);
+    border: 1px solid var(--text-color-dark);
+    color: var(--text-color);
+    padding: 0.7rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1.5rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.btn-back:hover {
+    background-color: var(--text-color);
+    color: var(--background-color);
+    border-color: var(--text-color);
+    transform: scale(1.02);
 }
 
 /* --- Main App & Admin --- */
@@ -494,6 +527,78 @@ body {
     background-color: var(--surface-color);
 }
 
+/* Botones de acción con iconos */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    padding: 0.3rem 0.5rem;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon:hover {
+    transform: scale(1.2);
+    filter: brightness(1.3);
+}
+
+.btn-edit {
+    color: var(--secondary-color);
+}
+
+.btn-edit:hover {
+    background-color: rgba(0, 191, 255, 0.1);
+    box-shadow: 0 0 10px rgba(0, 191, 255, 0.3);
+}
+
+.btn-delete {
+    color: #ff0044;
+}
+
+.btn-delete:hover {
+    background-color: rgba(255, 0, 68, 0.1);
+    box-shadow: 0 0 10px rgba(255, 0, 68, 0.3);
+}
+
+/* Botón de añadir con texto blanco */
+.btn-add {
+    background-color: var(--background-color) !important;
+    border: 1px solid var(--text-color-dark) !important;
+    color: var(--text-color) !important;
+    padding: 0.7rem 1rem !important;
+    font-weight: 600 !important;
+    font-size: 0.85rem !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    text-transform: none !important;
+    box-shadow: none !important;
+}
+
+.btn-add:hover {
+    background-color: var(--text-color) !important;
+    color: var(--background-color) !important;
+    border-color: var(--text-color) !important;
+    transform: scale(1.02) !important;
+    box-shadow: none !important;
+}
+
+/* Ajustar ancho de columna de horario */
+.admin-table td:nth-child(4) {
+    white-space: nowrap;
+}
+
 .action-btn {
     background: none;
     border: none;
@@ -711,7 +816,7 @@ body {
     }
 
     #landing-container .logo {
-        font-size: 2.5rem;
+        font-size: 3rem;
     }
 
     #landing-container p {
@@ -723,7 +828,7 @@ body {
         width: 100%;
     }
 
-    .btn-neon, .btn-secondary-neon {
+    .landing-buttons .btn-action {
         width: 100%;
     }
 
@@ -858,7 +963,7 @@ body {
 /* Responsive para pantallas muy pequeñas */
 @media (max-width: 480px) {
     #landing-container .logo {
-        font-size: 2rem;
+        font-size: 2.5rem;
     }
 
     #landing-container h1 {
@@ -894,7 +999,7 @@ body {
         flex-direction: column;
     }
 
-    .modal-buttons button {
+    .modal-buttons .btn-action {
         width: 100%;
     }
 }
@@ -1017,9 +1122,8 @@ body {
     margin-top: 2rem;
 }
 
-.modal-buttons button {
+.modal-buttons .btn-action {
     flex: 1;
-    padding: 0.8rem;
 }
 
 /* --- Botón Flotante de Salir --- */
@@ -1167,21 +1271,22 @@ body {
 .btn-inscribir {
     width: 100%;
     margin-top: 0.4rem;
-    padding: 0.4rem;
-    background-color: transparent;
-    border: 1.5px solid var(--secondary-color);
-    color: var(--secondary-color);
-    border-radius: 4px;
+    padding: 0.5rem;
+    background-color: var(--background-color);
+    border: 1px solid var(--text-color-dark);
+    color: var(--text-color);
+    border-radius: 5px;
     cursor: pointer;
     font-weight: 600;
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     transition: all 0.3s ease;
 }
 
 .btn-inscribir:hover {
-    background-color: var(--secondary-color);
+    background-color: var(--text-color);
     color: var(--background-color);
-    box-shadow: 0 0 15px var(--secondary-color);
+    border-color: var(--text-color);
+    transform: scale(1.02);
 }
 
 /* --- Colores Neón por Tipo de Clase --- */
@@ -1303,6 +1408,41 @@ body {
     color: var(--background-color);
     border-color: var(--text-color);
     transform: scale(1.02);
+}
+
+/* Estilo unificado para botones de acción */
+.btn-action {
+    padding: 0.7rem 1rem;
+    background-color: var(--background-color);
+    border: 1px solid var(--text-color-dark);
+    color: var(--text-color);
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-action:hover {
+    background-color: var(--text-color);
+    color: var(--background-color);
+    border-color: var(--text-color);
+    transform: scale(1.02);
+}
+
+.btn-action:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-action:disabled:hover {
+    transform: none;
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 /* Colores neón para títulos de Mis Clases */
@@ -1473,16 +1613,16 @@ body {
 
 .btn-modal-confirm {
     background-color: transparent;
-    border: 2px solid var(--neon-green);
-    color: var(--neon-green);
-    box-shadow: 0 0 10px rgba(57, 255, 20, 0.3);
+    border: 2px solid #ff0044;
+    color: #ff0044;
+    box-shadow: 0 0 10px rgba(255, 0, 68, 0.3);
     flex: 1;
 }
 
 .btn-modal-confirm:hover {
-    background-color: var(--neon-green);
-    color: #000;
-    box-shadow: 0 0 25px rgba(57, 255, 20, 0.7);
+    background-color: #ff0044;
+    color: #fff;
+    box-shadow: 0 0 25px rgba(255, 0, 68, 0.7);
     transform: translateY(-2px);
 }
 
