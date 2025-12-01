@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { userAPI, clasesAPI } from '../services/api'
 import Sidebar from '../components/Sidebar'
 import CustomModal from '../components/CustomModal'
 
 const Dashboard = () => {
-  const { user, updateUser } = useAuth()
+  const navigate = useNavigate()
+  const { user, updateUser, logout } = useAuth()
   const [activeSection, setActiveSection] = useState('profile')
   const [isEditingProfile, setIsEditingProfile] = useState(false)
   const [profileData, setProfileData] = useState({
@@ -171,11 +173,6 @@ const Dashboard = () => {
         }
       }
     })
-  }
-
-  const handleLogout = () => {
-    logout()
-    navigate('/')
   }
 
   const menuItems = [

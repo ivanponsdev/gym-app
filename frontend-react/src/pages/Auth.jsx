@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { authAPI } from '../services/api'
 import Notification from '../components/Notification'
+import FloatingLogo from '../components/FloatingLogo'
 
 const Auth = () => {
   const navigate = useNavigate()
@@ -68,6 +69,7 @@ const Auth = () => {
 
   return (
     <>
+      <FloatingLogo />
       <div id="auth-container" className="container">
         <div className="form-container">
           {/* Formulario de inicio de sesión */}
