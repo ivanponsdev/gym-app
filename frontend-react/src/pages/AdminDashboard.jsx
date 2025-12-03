@@ -1,10 +1,15 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import { userAPI, clasesAPI } from '../services/api'
 import Sidebar from '../components/Sidebar'
 import CustomModal from '../components/CustomModal'
 
 const AdminDashboard = () => {
+  const navigate = useNavigate()
+  const { logout } = useAuth()
   const [activeSection, setActiveSection] = useState('users')
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
   
   // Inicializar desde sessionStorage si existe
   const [users, setUsers] = useState(() => {
@@ -283,8 +288,34 @@ const AdminDashboard = () => {
     { id: 'clases', label: 'Gestión Clases' }
   ]
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  const handleLogout = () => {
+    logout()
+    navigate('/')
+  }
+
   return (
     <div id="admin-container">
+      {/* Header móvil con botones de sesión */}
+      {isMobile && (
+        <div className="mobile-header">
+          <button className="btn-logout" onClick={handleLogout}>
+            Cerrar Sesión
+          </button>
+          <button className="btn-exit-sidebar" onClick={() => navigate('/')}>
+            Salir
+          </button>
+        </div>
+      )}
+      
       <Sidebar 
         activeSection={activeSection} 
         setActiveSection={setActiveSection}

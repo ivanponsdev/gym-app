@@ -1362,42 +1362,137 @@ body {
         height: auto;
     }
 
+    /* Sidebar móvil - Solo navegación en la parte inferior */
     .sidebar {
         width: 100%;
         height: auto;
         flex-direction: column;
-        align-items: center;
-        padding: 1rem;
+        padding: 0;
         border-right: none;
-        border-bottom: 1px solid #333;
-        position: relative;
-        min-height: 110px;
-    }
-    
-    .logo-sidebar {
-        margin: 0 0 0.5rem 0;
-        font-size: 1.5rem;
+        border-top: 2px solid;
+        border-image: linear-gradient(90deg,
+                rgba(148, 0, 211, 0.6) 0%,
+                rgba(0, 191, 255, 0.4) 50%,
+                rgba(148, 0, 211, 0.6) 100%) 1;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        z-index: 100;
+        backdrop-filter: blur(20px);
+        box-shadow: 0 -4px 20px rgba(148, 0, 211, 0.3);
     }
 
+    /* Ocultar logo en móvil para ahorrar espacio */
+    .sidebar-logo-container,
+    .logo-sidebar {
+        display: none;
+    }
+
+    /* Navegación inferior con iconos/texto */
     .sidebar nav {
         flex-direction: row;
         gap: 0;
-        justify-content: center;
+        justify-content: space-evenly;
         flex-grow: 0;
         width: 100%;
-        flex-wrap: wrap;
+        padding: 0.5rem 0;
+        flex-wrap: nowrap;
     }
 
     .sidebar nav a {
-        font-size: 0.8rem;
-        padding: 0.5rem;
+        font-size: 0.7rem;
+        padding: 0.6rem 0.4rem;
+        border-radius: 8px;
+        flex: 1;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.2rem;
+        max-width: 80px;
     }
 
+    .sidebar nav a::before {
+        display: none; /* Desactivar animación de slide en móvil */
+    }
+
+    .sidebar nav a:hover {
+        transform: translateY(-3px);
+    }
+
+    /* Ocultar botones de sesión del sidebar en móvil - Se muestran en header */
+    .sidebar .sidebar-actions {
+        display: none !important;
+    }
+
+    .sidebar .btn-logout,
+    .sidebar .btn-exit-sidebar {
+        display: none !important;
+    }
+
+    /* Header móvil con botones de sesión arriba */
+    .mobile-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 99;
+        background: linear-gradient(135deg,
+                rgba(22, 15, 31, 0.95) 0%,
+                rgba(26, 10, 46, 0.95) 100%);
+        backdrop-filter: blur(20px);
+        padding: 0.6rem 0.8rem;
+        display: flex;
+        justify-content: space-between;
+        gap: 0.6rem;
+        border-bottom: 2px solid;
+        border-image: linear-gradient(90deg,
+                rgba(148, 0, 211, 0.6) 0%,
+                rgba(0, 191, 255, 0.4) 50%,
+                rgba(148, 0, 211, 0.6) 100%) 1;
+        box-shadow: 0 4px 20px rgba(148, 0, 211, 0.3);
+    }
+
+    .mobile-header .btn-logout,
+    .mobile-header .btn-exit-sidebar {
+        flex: 0 0 auto;
+        padding: 0.6rem 1.2rem;
+        font-size: 0.75rem;
+        min-height: 40px;
+        border-radius: 8px;
+        font-weight: 600;
+        background: linear-gradient(135deg,
+                rgba(148, 0, 211, 0.9) 0%,
+                rgba(0, 191, 255, 0.7) 100%);
+        border: 2px solid rgba(148, 0, 211, 0.6);
+        color: #fff;
+        box-shadow: 0 4px 15px rgba(148, 0, 211, 0.4);
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .mobile-header .btn-logout:hover,
+    .mobile-header .btn-exit-sidebar:hover {
+        background: linear-gradient(135deg,
+                rgba(148, 0, 211, 1) 0%,
+                rgba(0, 191, 255, 0.9) 100%);
+        box-shadow: 0 6px 20px rgba(148, 0, 211, 0.6);
+        transform: translateY(-2px);
+    }
+
+    .mobile-header .btn-logout:active,
+    .mobile-header .btn-exit-sidebar:active {
+        transform: translateY(0);
+    }
+
+    /* Contenido con espacio para header superior y navegación inferior */
     .content {
         padding: 1rem;
-    }
-
-    /* Landing responsive */
+        padding-top: 70px; /* Espacio para header superior */
+        padding-bottom: 80px; /* Espacio para la navegación inferior */
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch; /* Scroll suave en iOS */
+    }    /* Landing responsive - Touch optimizado */
     #landing-container h1 {
         font-size: 1.8rem;
     }
@@ -1413,55 +1508,118 @@ body {
     .landing-buttons {
         flex-direction: column;
         width: 100%;
+        gap: 1rem;
     }
 
     .landing-buttons .btn-action {
         width: 100%;
+        min-height: 48px; /* Área táctil más grande para CTA principal */
+        font-size: 1rem;
+        touch-action: manipulation;
     }
 
-    /* Calendario responsive */
+    /* Calendario responsive - Formato compacto optimizado para móvil */
     .horario-semanal {
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 0.5rem;
+        display: flex;
+        flex-direction: row;
+        gap: 0.6rem;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        padding: 0.6rem 0.4rem;
+        margin: 0 -1rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .horario-semanal::-webkit-scrollbar {
+        height: 4px;
     }
 
     .dia-column {
-        min-width: 100px;
+        min-width: 200px;
+        max-width: 200px;
+        flex-shrink: 0;
+        scroll-snap-align: start;
+        box-shadow: 0 2px 10px rgba(148, 0, 211, 0.15);
     }
 
     .dia-header {
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         padding: 0.5rem;
+        letter-spacing: 0.3px;
+    }
+
+    .clases-dia {
+        padding: 0.4rem;
+        gap: 0.4rem;
     }
 
     .clase-card {
         padding: 0.5rem;
+        min-height: 100px;
     }
 
     .clase-nombre {
         font-size: 0.8rem;
+        font-weight: 700;
+        margin-bottom: 0.2rem;
     }
 
-    .clase-hora, .clase-profesor, .clase-plazas {
+    .clase-hora {
+        font-size: 0.7rem;
+        font-weight: 700;
+        margin-bottom: 0.2rem;
+    }
+
+    .clase-profesor, .clase-plazas {
         font-size: 0.65rem;
+        margin-bottom: 0.15rem;
     }
 
     .btn-inscribir {
-        font-size: 0.65rem;
-        padding: 0.3rem;
+        font-size: 0.7rem;
+        padding: 0.5rem 0.4rem;
+        margin-top: 0.4rem;
+        font-weight: 600;
+        /* Mejorar área táctil para móvil (mínimo 40x40px) */
+        min-height: 40px;
+        touch-action: manipulation;
     }
 
-    /* Mis Clases responsive */
+    /* Mis Clases responsive - Touch optimizado */
     .mis-clases-lista {
-        grid-template-columns: 1fr;
-        gap: 0.8rem;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.5rem;
     }
 
     .mi-clase-card {
-        padding: 1rem;
+        padding: 0.6rem;
+        min-width: 0; /* Permitir que las cards se compriman */
     }
 
-    /* Profile responsive */
+    .clase-info .clase-nombre {
+        font-size: 0.85rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .clase-detalles {
+        gap: 0.2rem;
+    }
+
+    .detalle {
+        font-size: 0.7rem;
+    }
+
+    .btn-desinscribir {
+        min-height: 40px;
+        padding: 0.6rem 0.4rem;
+        font-size: 0.75rem;
+        touch-action: manipulation;
+    }
+
+    /* Profile responsive - Touch optimizado */
     #profile-display p {
         font-size: 0.9rem;
     }
@@ -1473,24 +1631,79 @@ body {
 
     #profile-edit .form-group input {
         padding: 0.8rem;
-        font-size: 0.95rem;
+        font-size: 16px; /* Prevenir zoom en iOS */
+        min-height: 44px;
     }
 
-    /* Admin tables responsive */
+    #profile-edit .btn-action {
+        min-height: 44px;
+        touch-action: manipulation;
+    }
+
+    /* Admin tables responsive - Convertir a cards en móvil */
     .table-wrapper {
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
-    .admin-table {
-        font-size: 0.85rem;
+    /* Ocultar tabla tradicional en móvil */
+    .admin-table thead {
+        display: none;
     }
 
-    .admin-table th,
+    .admin-table,
+    .admin-table tbody,
+    .admin-table tr,
     .admin-table td {
-        padding: 0.6rem;
+        display: block;
+        width: 100%;
     }
 
-    /* Modal responsive */
+    .admin-table tr {
+        background: linear-gradient(135deg,
+                rgba(22, 15, 31, 0.9) 0%,
+                var(--background-color) 100%);
+        border: 1px solid rgba(148, 0, 211, 0.3);
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        box-shadow: 0 4px 15px rgba(148, 0, 211, 0.2);
+    }
+
+    .admin-table td {
+        padding: 0.8rem 0.5rem;
+        border: none;
+        position: relative;
+        padding-left: 40%;
+        text-align: right;
+    }
+
+    .admin-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0.5rem;
+        width: 35%;
+        font-weight: 600;
+        color: var(--secondary-color);
+        text-align: left;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+    }
+
+    .action-buttons {
+        justify-content: flex-end;
+        padding-top: 0.5rem;
+        border-top: 1px solid rgba(148, 0, 211, 0.2);
+        margin-top: 0.5rem;
+    }
+
+    .btn-icon {
+        min-width: 44px;
+        min-height: 44px;
+        touch-action: manipulation;
+    }
+
+    /* Modal responsive mejorado */
     .custom-modal-content {
         padding: 2rem 1.5rem;
         max-width: 90%;
@@ -1505,13 +1718,18 @@ body {
     }
 
     .custom-modal-buttons button {
-        padding: 0.7rem 1.5rem;
+        padding: 0.8rem 1.5rem;
         font-size: 0.9rem;
+        /* Área táctil optimizada */
+        min-height: 44px;
+        touch-action: manipulation;
     }
 
     .modal-content {
         padding: 1.5rem;
         max-width: 95%;
+        max-height: 85vh;
+        -webkit-overflow-scrolling: touch;
     }
 
     .modal-content h2 {
@@ -1521,29 +1739,53 @@ body {
     .modal-content .form-group input,
     .modal-content .form-group select,
     .modal-content .form-group textarea {
-        font-size: 0.95rem;
-        padding: 0.7rem;
+        font-size: 16px; /* Prevenir zoom automático en iOS */
+        padding: 0.8rem;
+        min-height: 44px;
+        touch-action: manipulation;
     }
 
-    /* Exit button responsive */
+    .modal-buttons {
+        gap: 0.8rem;
+    }
+
+    .modal-buttons .btn-action {
+        min-height: 44px;
+        touch-action: manipulation;
+    }
+
+    /* Exit button responsive - Optimizado para táctil */
     .exit-button {
-        padding: 0.6rem 1rem;
-        font-size: 0.85rem;
+        padding: 0.8rem 1rem;
+        font-size: 0.9rem;
         margin-top: 1rem;
+        min-height: 44px;
+        touch-action: manipulation;
     }
 
     /* Info card responsive */
     .info-card {
-        padding: 1.5rem;
+        padding: 0.8rem;
     }
 
     .promo-text {
-        font-size: 1rem;
+        font-size: 0.85rem;
     }
 
     /* Form container responsive */
     .form-container {
         padding: 1.5rem;
+    }
+
+    /* Botones generales - Touch optimizado */
+    .btn-primary,
+    .btn-secondary,
+    .btn-action {
+        min-height: 44px;
+        min-width: 44px;
+        padding: 0.8rem 1.2rem;
+        font-size: 0.9rem;
+        touch-action: manipulation;
     }
 }
 
@@ -1557,12 +1799,16 @@ body {
         font-size: 1.5rem;
     }
 
+    /* Calendario en pantallas muy pequeñas - Una columna con snap */
     .horario-semanal {
         grid-template-columns: 1fr;
+        scroll-snap-type: y mandatory;
+        gap: 1rem;
     }
 
     .dia-column {
         min-width: auto;
+        scroll-snap-align: start;
     }
 
     .content-section h2 {
@@ -1573,21 +1819,47 @@ body {
         padding: 1rem;
     }
 
+    /* Botones modales apilados verticalmente */
     .custom-modal-buttons {
         flex-direction: column;
+        gap: 0.8rem;
     }
 
     .btn-modal-cancel,
     .btn-modal-confirm {
         width: 100%;
+        min-height: 48px;
     }
 
     .modal-buttons {
         flex-direction: column;
+        gap: 0.8rem;
     }
 
     .modal-buttons .btn-action {
         width: 100%;
+        min-height: 48px;
+    }
+
+    /* Navegación inferior - Compactar más en pantallas pequeñas */
+    .sidebar nav a {
+        font-size: 0.65rem;
+        padding: 0.5rem 0.3rem;
+    }
+
+    .btn-logout,
+    .btn-exit-sidebar {
+        font-size: 0.7rem;
+        padding: 0.6rem 0.4rem;
+    }
+
+    /* Mis Clases en pantallas muy pequeñas - Una columna */
+    .mis-clases-lista {
+        grid-template-columns: 1fr;
+    }
+
+    .mi-clase-card {
+        padding: 0.5rem;
     }
 }
 

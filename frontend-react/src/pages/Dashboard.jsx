@@ -10,6 +10,7 @@ const Dashboard = () => {
   const { user, updateUser, logout } = useAuth()
   const [activeSection, setActiveSection] = useState('profile')
   const [isEditingProfile, setIsEditingProfile] = useState(false)
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
   const [profileData, setProfileData] = useState({
     nombre: '',
     edad: '',
@@ -47,6 +48,15 @@ const Dashboard = () => {
       })
     }
   }, [user])
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   useEffect(() => {
     // Carga bajo demanda: solo carga si no hay datos en caché
@@ -176,13 +186,30 @@ const Dashboard = () => {
   }
 
   const menuItems = [
-    { id: 'profile', label: 'Mi Perfil' },
-    { id: 'clases', label: 'Clases Disponibles' },
+    { id: 'profile', label: 'Perfil' },
+    { id: 'clases', label: 'Clases' },
     { id: 'mis-clases', label: 'Mis Clases' }
   ]
 
+  const handleLogout = () => {
+    logout()
+    navigate('/')
+  }
+
   return (
     <div id="app-container">
+      {/* Header móvil con botones de sesión */}
+      {isMobile && (
+        <div className="mobile-header">
+          <button className="btn-logout" onClick={handleLogout}>
+            Cerrar Sesión
+          </button>
+          <button className="btn-exit-sidebar" onClick={() => navigate('/')}>
+            Salir
+          </button>
+        </div>
+      )}
+      
       <Sidebar 
         activeSection={activeSection} 
         setActiveSection={setActiveSection}
@@ -278,35 +305,35 @@ const Dashboard = () => {
               <p>No hay clases disponibles.</p>
             ) : (
               <div className="horario-semanal">
-                {['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'].map(dia => {
-                  const clasesDia = clases.filter(c => c.diaSemana === dia)
-                  return (
-                    <div key={dia} className="dia-column">
-                      <h3 className="dia-header">{dia.charAt(0).toUpperCase() + dia.slice(1)}</h3>
-                      <div className="clases-dia">
-                        {clasesDia.length === 0 ? (
-                          <p className="sin-clases">Sin clases</p>
-                        ) : (
-                          clasesDia.map(clase => (
-                            <div key={clase._id} className={`clase-card tipo-${clase.nombre.toLowerCase().replace(/\s/g, '-')}`}>
-                              <div className="clase-hora">{clase.horaInicio} - {clase.horaFin}</div>
-                              <h4 className="clase-nombre">{clase.nombre}</h4>
-                              <p className="clase-profesor">{clase.profesor}</p>
-                              <p className="clase-plazas">{clase.plazasDisponibles || clase.cupoMaximo} plazas</p>
-                              <button 
-                                className="btn-inscribir"
-                                onClick={() => handleInscribirse(clase._id)}
-                              >
-                                Inscribirme
-                              </button>
-                            </div>
-                          ))
-                        )}
+                  {['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'].map(dia => {
+                    const clasesDia = clases.filter(c => c.diaSemana === dia)
+                    return (
+                      <div key={dia} className="dia-column">
+                        <h3 className="dia-header">{dia.charAt(0).toUpperCase() + dia.slice(1)}</h3>
+                        <div className="clases-dia">
+                          {clasesDia.length === 0 ? (
+                            <p className="sin-clases">Sin clases</p>
+                          ) : (
+                            clasesDia.map(clase => (
+                              <div key={clase._id} className={`clase-card tipo-${clase.nombre.toLowerCase().replace(/\s/g, '-')}`}>
+                                <div className="clase-hora">{clase.horaInicio} - {clase.horaFin}</div>
+                                <h4 className="clase-nombre">{clase.nombre}</h4>
+                                <p className="clase-profesor">{clase.profesor}</p>
+                                <p className="clase-plazas">{clase.plazasDisponibles || clase.cupoMaximo} plazas</p>
+                                <button 
+                                  className="btn-inscribir"
+                                  onClick={() => handleInscribirse(clase._id)}
+                                >
+                                  Inscribirme
+                                </button>
+                              </div>
+                            ))
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  )
-                })}
-              </div>
+                    )
+                  })}
+                </div>
             )}
           </section>
         )}
