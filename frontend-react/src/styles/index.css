@@ -1488,10 +1488,9 @@ body {
     /* Contenido con espacio para header superior y navegación inferior */
     .content {
         padding: 1rem;
-        padding-top: 70px; /* Espacio para header superior */
-        padding-bottom: 80px; /* Espacio para la navegación inferior */
+        padding-top: 70px;
+        padding-bottom: 80px;
         overflow-y: auto;
-        -webkit-overflow-scrolling: touch; /* Scroll suave en iOS */
     }    /* Landing responsive - Touch optimizado */
     #landing-container h1 {
         font-size: 1.8rem;
@@ -1513,24 +1512,20 @@ body {
 
     .landing-buttons .btn-action {
         width: 100%;
-        min-height: 48px; /* Área táctil más grande para CTA principal */
         font-size: 1rem;
-        touch-action: manipulation;
     }
 
-    /* Calendario responsive - Formato compacto optimizado para móvil */
+    /* Calendario responsive */
     .horario-semanal {
         display: flex;
         flex-direction: row;
         gap: 0.6rem;
         overflow-x: auto;
-        scroll-snap-type: x mandatory;
         scroll-behavior: smooth;
         padding: 0.6rem 0.4rem;
         margin: 0 -1rem;
         padding-left: 1rem;
         padding-right: 1rem;
-        -webkit-overflow-scrolling: touch;
     }
 
     .horario-semanal::-webkit-scrollbar {
@@ -1541,7 +1536,6 @@ body {
         min-width: 200px;
         max-width: 200px;
         flex-shrink: 0;
-        scroll-snap-align: start;
         box-shadow: 0 2px 10px rgba(148, 0, 211, 0.15);
     }
 
@@ -1583,9 +1577,6 @@ body {
         padding: 0.5rem 0.4rem;
         margin-top: 0.4rem;
         font-weight: 600;
-        /* Mejorar área táctil para móvil (mínimo 40x40px) */
-        min-height: 40px;
-        touch-action: manipulation;
     }
 
     /* Mis Clases responsive - Touch optimizado */
@@ -1613,10 +1604,8 @@ body {
     }
 
     .btn-desinscribir {
-        min-height: 40px;
         padding: 0.6rem 0.4rem;
         font-size: 0.75rem;
-        touch-action: manipulation;
     }
 
     /* Profile responsive - Touch optimizado */
@@ -1631,19 +1620,12 @@ body {
 
     #profile-edit .form-group input {
         padding: 0.8rem;
-        font-size: 16px; /* Prevenir zoom en iOS */
-        min-height: 44px;
-    }
-
-    #profile-edit .btn-action {
-        min-height: 44px;
-        touch-action: manipulation;
+        font-size: 0.95rem;
     }
 
     /* Admin tables responsive - Convertir a cards en móvil */
     .table-wrapper {
         overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
     }
 
     /* Ocultar tabla tradicional en móvil */
@@ -1697,12 +1679,6 @@ body {
         margin-top: 0.5rem;
     }
 
-    .btn-icon {
-        min-width: 44px;
-        min-height: 44px;
-        touch-action: manipulation;
-    }
-
     /* Modal responsive mejorado */
     .custom-modal-content {
         padding: 2rem 1.5rem;
@@ -1720,16 +1696,12 @@ body {
     .custom-modal-buttons button {
         padding: 0.8rem 1.5rem;
         font-size: 0.9rem;
-        /* Área táctil optimizada */
-        min-height: 44px;
-        touch-action: manipulation;
     }
 
     .modal-content {
         padding: 1.5rem;
         max-width: 95%;
         max-height: 85vh;
-        -webkit-overflow-scrolling: touch;
     }
 
     .modal-content h2 {
@@ -1739,28 +1711,19 @@ body {
     .modal-content .form-group input,
     .modal-content .form-group select,
     .modal-content .form-group textarea {
-        font-size: 16px; /* Prevenir zoom automático en iOS */
+        font-size: 0.95rem;
         padding: 0.8rem;
-        min-height: 44px;
-        touch-action: manipulation;
     }
 
     .modal-buttons {
         gap: 0.8rem;
     }
 
-    .modal-buttons .btn-action {
-        min-height: 44px;
-        touch-action: manipulation;
-    }
-
-    /* Exit button responsive - Optimizado para táctil */
+    /* Exit button responsive */
     .exit-button {
         padding: 0.8rem 1rem;
         font-size: 0.9rem;
         margin-top: 1rem;
-        min-height: 44px;
-        touch-action: manipulation;
     }
 
     /* Info card responsive */
@@ -1776,17 +1739,6 @@ body {
     .form-container {
         padding: 1.5rem;
     }
-
-    /* Botones generales - Touch optimizado */
-    .btn-primary,
-    .btn-secondary,
-    .btn-action {
-        min-height: 44px;
-        min-width: 44px;
-        padding: 0.8rem 1.2rem;
-        font-size: 0.9rem;
-        touch-action: manipulation;
-    }
 }
 
 /* Responsive para pantallas muy pequeñas */
@@ -1799,16 +1751,14 @@ body {
         font-size: 1.5rem;
     }
 
-    /* Calendario en pantallas muy pequeñas - Una columna con snap */
+    /* Calendario en pantallas muy pequeñas - Una columna */
     .horario-semanal {
         grid-template-columns: 1fr;
-        scroll-snap-type: y mandatory;
         gap: 1rem;
     }
 
     .dia-column {
         min-width: auto;
-        scroll-snap-align: start;
     }
 
     .content-section h2 {
@@ -1828,7 +1778,6 @@ body {
     .btn-modal-cancel,
     .btn-modal-confirm {
         width: 100%;
-        min-height: 48px;
     }
 
     .modal-buttons {
@@ -1838,7 +1787,6 @@ body {
 
     .modal-buttons .btn-action {
         width: 100%;
-        min-height: 48px;
     }
 
     /* Navegación inferior - Compactar más en pantallas pequeñas */
