@@ -191,7 +191,6 @@ const updateProfile = async (req, res) => {
         const updatedUser = await user.save();
         
         res.json({
-            mensaje: 'Perfil actualizado correctamente',
             usuario: {
                 _id: updatedUser._id,
                 nombre: updatedUser.nombre,
