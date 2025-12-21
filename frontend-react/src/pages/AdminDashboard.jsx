@@ -40,7 +40,7 @@ const AdminDashboard = () => {
     password: '',
     edad: '',
     objetivo: '',
-    rol: 'usuario'
+    role: 'user'
   })
   
   // Estados clases
@@ -170,7 +170,7 @@ const AdminDashboard = () => {
       password: '',
       edad: user.edad || '',
       objetivo: user.objetivo || '',
-      rol: user.rol
+      role: user.role
     })
     setShowUserModal(true)
   }
@@ -362,7 +362,7 @@ const AdminDashboard = () => {
                           <td>{user._id.substring(0, 8)}...</td>
                           <td>{user.nombre}</td>
                           <td>{user.email}</td>
-                          <td>{user.rol}</td>
+                          <td>{user.role}</td>
                           <td>{new Date(user.createdAt || user.fechaRegistro).toLocaleDateString()}</td>
                           <td>
                             <div className="action-buttons">
@@ -516,10 +516,10 @@ const AdminDashboard = () => {
             <div className="form-group">
               <label>Rol *</label>
               <select
-                value={userForm.rol}
-                onChange={(e) => setUserForm({ ...userForm, rol: e.target.value })}
+                value={userForm.role}
+                onChange={(e) => setUserForm({ ...userForm, role: e.target.value })}
               >
-                <option value="usuario">Usuario</option>
+                <option value="user">Usuario</option>
                 <option value="admin">Administrador</option>
               </select>
             </div>

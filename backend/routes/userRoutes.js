@@ -6,7 +6,9 @@ const {
   createUser,
   updateUser,
   deleteUser,
-  deleteMyAccount
+  deleteMyAccount,
+  getProfile,
+  updateProfile
 } = require('../controllers/userController');
 const { authenticateJWT, requireAdmin } = require('../middleware/auth');
 
@@ -14,6 +16,10 @@ const { authenticateJWT, requireAdmin } = require('../middleware/auth');
 router.post('/login', loginUser);
 //Crear un nuevo usuario (público)
 router.post('/', createUser);
+//Obtener perfil del usuario autenticado (protegido)
+router.get('/profile', authenticateJWT, getProfile);
+//Actualizar perfil del usuario autenticado (protegido)
+router.put('/profile', authenticateJWT, updateProfile);
 //Obtener todos los usuarios (protegido - solo admin)
 router.get('/', authenticateJWT, requireAdmin, getUsers);
 //Actualizar usuario por ID (protegido - usuario autenticado)

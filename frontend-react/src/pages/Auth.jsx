@@ -39,7 +39,7 @@ const Auth = () => {
       
       // Redirigir según el rol
       setTimeout(() => {
-        navigate(data.usuario.rol === 'admin' ? '/admin' : '/dashboard')
+        navigate(data.usuario.role === 'admin' ? '/admin' : '/dashboard')
       }, 1000)
     } catch (error) {
       showNotification(error.message || 'Error al iniciar sesión', 'error')

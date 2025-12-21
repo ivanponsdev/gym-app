@@ -49,7 +49,7 @@ const loginUser = async (req, res) => {
 const getUsers = async (req, res) => {
   try {
     const users = await User.find().select('-password');
-    res.json(users);
+    res.json({ usuarios: users });
   } catch (error) {
     res.status(500).json({ message: 'Error al obtener usuarios' });
   }
@@ -93,7 +93,7 @@ const createUser = async (req, res) => {
 // PUT /api/users/:id -> actualizar un usuario
 const updateUser = async (req, res) => {
     try {
-        const { nombre, email, password, edad, sexo, objetivo } = req.body;
+        const { nombre, email, password, edad, sexo, objetivo, role } = req.body;
         const user = await User.findById(req.params.id);
 
         if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
@@ -103,6 +103,7 @@ const updateUser = async (req, res) => {
         user.edad = edad || user.edad;
         user.sexo = sexo || user.sexo;
         user.objetivo = objetivo || user.objetivo;
+        if (role) user.role = role;
 
         if (password) {
             const salt = await bcrypt.genSalt(10);
@@ -156,4 +157,56 @@ const deleteMyAccount = async (req, res) => {
     }
 };
 
-module.exports = { loginUser, getUsers, createUser, updateUser, deleteUser, deleteMyAccount };
+// GET /api/users/profile -> obtener perfil del usuario autenticado
+const getProfile = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id).select('-password');
+        if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
+
+        res.json({ usuario: user });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener perfil', error: error.message });
+    }
+};
+
+// PUT /api/users/profile -> actualizar perfil del usuario autenticado
+const updateProfile = async (req, res) => {
+    try {
+        const { nombre, email, password, edad, sexo, objetivo } = req.body;
+        const user = await User.findById(req.user.id);
+
+        if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
+
+        user.nombre = nombre || user.nombre;
+        user.email = email || user.email;
+        user.edad = edad !== undefined ? edad : user.edad;
+        user.sexo = sexo || user.sexo;
+        user.objetivo = objetivo || user.objetivo;
+
+        if (password) {
+            const salt = await bcrypt.genSalt(10);
+            user.password = await bcrypt.hash(password, salt);
+        }
+
+        const updatedUser = await user.save();
+        
+        res.json({
+            mensaje: 'Perfil actualizado correctamente',
+            usuario: {
+                _id: updatedUser._id,
+                nombre: updatedUser.nombre,
+                email: updatedUser.email,
+                edad: updatedUser.edad,
+                sexo: updatedUser.sexo,
+                objetivo: updatedUser.objetivo,
+                role: updatedUser.role,
+                createdAt: updatedUser.createdAt
+            }
+        });
+
+    } catch (error) {
+        res.status(500).json({ message: 'Error al actualizar perfil', error: error.message });
+    }
+};
+
+module.exports = { loginUser, getUsers, createUser, updateUser, deleteUser, deleteMyAccount, getProfile, updateProfile };
