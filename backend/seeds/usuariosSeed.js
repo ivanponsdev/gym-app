@@ -9,8 +9,8 @@ const usuariosSeed = [
     email: "admin@gym.com",
     password: "admin123",
     edad: 30,
-    sexo: "male",
-    objetivo: "bienestar_general",
+    sexo: "masculino",
+    objetivo: "recomposicion_corporal",
     role: "admin"
   },
   {
@@ -18,8 +18,8 @@ const usuariosSeed = [
     email: "manolitogafotas@ddddd.com",
     password: "123456",
     edad: 18,
-    sexo: "male",
-    objetivo: "aumento_masa",
+    sexo: "masculino",
+    objetivo: "aumento_masa_muscular",
     role: "user"
   },
   {
@@ -27,7 +27,7 @@ const usuariosSeed = [
     email: "ana.perez@gmail.com",
     password: "123456",
     edad: 25,
-    sexo: "female",
+    sexo: "femenino",
     objetivo: "perdida_grasa",
     role: "user"
   }
@@ -35,12 +35,9 @@ const usuariosSeed = [
 
 const seedUsuarios = async () => {
   try {
-    // Verificar si ya existen usuarios
-    const count = await Usuario.countDocuments();
-    if (count > 0) {
-      console.log('Usuarios ya existen, se mantienen los actuales.');
-      return;
-    }
+    // Eliminar usuarios existentes
+    await Usuario.deleteMany({});
+    console.log('   Usuarios anteriores eliminados');
     
     // Hashear las contraseñas antes de insertar
     const usuariosConHashedPassword = await Promise.all(
@@ -52,7 +49,7 @@ const seedUsuarios = async () => {
     );
     
     await Usuario.insertMany(usuariosConHashedPassword);
-    console.log('Usuarios insertados correctamente');
+    console.log('   ✓ Usuarios insertados correctamente');
   } catch (error) {
     console.error('Error insertando usuarios:', error);
   }

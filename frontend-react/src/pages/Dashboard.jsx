@@ -14,6 +14,7 @@ const Dashboard = () => {
   const [profileData, setProfileData] = useState({
     nombre: '',
     edad: '',
+    sexo: '',
     objetivo: ''
   })
   
@@ -44,7 +45,8 @@ const Dashboard = () => {
       setProfileData({
         nombre: user.nombre || '',
         edad: user.edad || '',
-        objetivo: user.objetivo || ''
+        sexo: user.sexo || 'otro',
+        objetivo: user.objetivo || 'recomposicion_corporal'
       })
     }
   }, [user])
@@ -110,7 +112,8 @@ const Dashboard = () => {
     setProfileData({
       nombre: user.nombre || '',
       edad: user.edad || '',
-      objetivo: user.objetivo || ''
+      sexo: user.sexo || 'otro',
+      objetivo: user.objetivo || 'recomposicion_corporal'
     })
   }
 
@@ -233,7 +236,18 @@ const Dashboard = () => {
                     <strong>Edad:</strong> <span>{user?.edad || '-'}</span> años
                   </p>
                   <p>
-                    <strong>Objetivo:</strong> <span>{user?.objetivo || '-'}</span>
+                    <strong>Sexo:</strong> <span>
+                      {user?.sexo === 'masculino' ? 'Masculino' : 
+                       user?.sexo === 'femenino' ? 'Femenino' : 
+                       user?.sexo === 'otro' ? 'Otro' : '-'}
+                    </span>
+                  </p>
+                  <p>
+                    <strong>Objetivo:</strong> <span>
+                      {user?.objetivo === 'aumento_masa_muscular' ? 'Aumento de Masa Muscular' :
+                       user?.objetivo === 'recomposicion_corporal' ? 'Recomposición Corporal' :
+                       user?.objetivo === 'perdida_grasa' ? 'Pérdida de Grasa' : '-'}
+                    </span>
                   </p>
                   <button 
                     className="btn-action" 
@@ -260,16 +274,32 @@ const Dashboard = () => {
                       type="number"
                       value={profileData.edad}
                       onChange={(e) => setProfileData({ ...profileData, edad: e.target.value })}
+                      min="14"
+                      max="100"
+                      placeholder="14-100 años"
                     />
                   </div>
                   <div className="form-group">
+                    <label>Sexo</label>
+                    <select
+                      value={profileData.sexo}
+                      onChange={(e) => setProfileData({ ...profileData, sexo: e.target.value })}
+                    >
+                      <option value="masculino">Masculino</option>
+                      <option value="femenino">Femenino</option>
+                      <option value="otro">Otro</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
                     <label>Objetivo</label>
-                    <input
-                      type="text"
+                    <select
                       value={profileData.objetivo}
                       onChange={(e) => setProfileData({ ...profileData, objetivo: e.target.value })}
-                      placeholder="Ej: Perder peso, Ganar masa muscular..."
-                    />
+                    >
+                      <option value="aumento_masa_muscular">Aumento de Masa Muscular</option>
+                      <option value="recomposicion_corporal">Recomposición Corporal</option>
+                      <option value="perdida_grasa">Pérdida de Grasa</option>
+                    </select>
                   </div>
                   <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
                     <button 
@@ -314,20 +344,41 @@ const Dashboard = () => {
                           {clasesDia.length === 0 ? (
                             <p className="sin-clases">Sin clases</p>
                           ) : (
-                            clasesDia.map(clase => (
+                            clasesDia.map(clase => {
+                              const plazasDisponibles = clase.plazasDisponibles ?? (clase.cupoMaximo - (clase.alumnosApuntados?.length || 0))
+                              const porcentajeOcupacion = ((clase.cupoMaximo - plazasDisponibles) / clase.cupoMaximo) * 100
+                              let estadoCupo = 'disponible'
+                              if (porcentajeOcupacion >= 100) estadoCupo = 'completo'
+                              else if (porcentajeOcupacion >= 80) estadoCupo = 'casi-lleno'
+                              
+                              // Verificar si el usuario ya está inscrito en esta clase
+                              const estaInscrito = clase.alumnosApuntados?.includes(user?._id) || 
+                                                   misClases.some(c => c._id === clase._id)
+                              
+                              return (
                               <div key={clase._id} className={`clase-card tipo-${clase.nombre.toLowerCase().replace(/\s/g, '-')}`}>
                                 <div className="clase-hora">{clase.horaInicio} - {clase.horaFin}</div>
                                 <h4 className="clase-nombre">{clase.nombre}</h4>
                                 <p className="clase-profesor">{clase.profesor}</p>
-                                <p className="clase-plazas">{clase.plazasDisponibles || clase.cupoMaximo} plazas</p>
+                                <div className={`clase-plazas-badge ${estadoCupo}`}>
+                                  {estadoCupo === 'completo' ? '🔴' : estadoCupo === 'casi-lleno' ? '🟡' : '🟢'}
+                                  {' '}{plazasDisponibles}/{clase.cupoMaximo} plazas
+                                </div>
                                 <button 
-                                  className="btn-inscribir"
+                                  className={`btn-inscribir ${estaInscrito ? 'inscrito' : ''}`}
                                   onClick={() => handleInscribirse(clase._id)}
+                                  disabled={estadoCupo === 'completo' || estaInscrito}
                                 >
-                                  Inscribirme
+                                  {estaInscrito ? '✓ Inscrito' : 
+                                   estadoCupo === 'completo' ? 'Clase Completa' : 'Inscribirme'}
                                 </button>
+                                {estaInscrito && (
+                                  <div className="tooltip-inscrito">
+                                    Ve a "Mis Clases" para gestionar tu inscripción
+                                  </div>
+                                )}
                               </div>
-                            ))
+                            )})
                           )}
                         </div>
                       </div>

@@ -39,7 +39,8 @@ const AdminDashboard = () => {
     email: '',
     password: '',
     edad: '',
-    objetivo: '',
+    sexo: 'otro',
+    objetivo: 'recomposicion_corporal',
     role: 'user'
   })
   
@@ -156,7 +157,8 @@ const AdminDashboard = () => {
       email: '',
       password: '',
       edad: '',
-      objetivo: '',
+      sexo: 'otro',
+      objetivo: 'recomposicion_corporal',
       rol: 'usuario'
     })
     setShowUserModal(true)
@@ -169,7 +171,8 @@ const AdminDashboard = () => {
       email: user.email,
       password: '',
       edad: user.edad || '',
-      objetivo: user.objetivo || '',
+      sexo: user.sexo || 'otro',
+      objetivo: user.objetivo || 'recomposicion_corporal',
       role: user.role
     })
     setShowUserModal(true)
@@ -502,16 +505,32 @@ const AdminDashboard = () => {
                 type="number"
                 value={userForm.edad}
                 onChange={(e) => setUserForm({ ...userForm, edad: e.target.value })}
+                min="14"
+                max="100"
+                placeholder="14-100 años"
               />
             </div>
             <div className="form-group">
+              <label>Sexo</label>
+              <select
+                value={userForm.sexo}
+                onChange={(e) => setUserForm({ ...userForm, sexo: e.target.value })}
+              >
+                <option value="masculino">Masculino</option>
+                <option value="femenino">Femenino</option>
+                <option value="otro">Otro</option>
+              </select>
+            </div>
+            <div className="form-group">
               <label>Objetivo</label>
-              <input
-                type="text"
+              <select
                 value={userForm.objetivo}
                 onChange={(e) => setUserForm({ ...userForm, objetivo: e.target.value })}
-                placeholder="Ej: Perder peso, Ganar masa muscular..."
-              />
+              >
+                <option value="aumento_masa_muscular">Aumento de Masa Muscular</option>
+                <option value="recomposicion_corporal">Recomposición Corporal</option>
+                <option value="perdida_grasa">Pérdida de Grasa</option>
+              </select>
             </div>
             <div className="form-group">
               <label>Rol *</label>
