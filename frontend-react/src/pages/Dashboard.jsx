@@ -398,27 +398,73 @@ const Dashboard = () => {
                 <p style={{ marginTop: '1rem', color: 'var(--secondary-color)' }}>Cargando tus clases...</p>
               </div>
             ) : misClases.length === 0 ? (
-              <p>No estás inscrito en ninguna clase todavía.</p>
+              <div className="empty-state">
+                <div className="empty-icon">📅</div>
+                <p>No estás inscrito en ninguna clase todavía.</p>
+                <button 
+                  className="btn-action"
+                  onClick={() => setActiveSection('clases')}
+                  style={{ marginTop: '1rem' }}
+                >
+                  Explorar Clases Disponibles
+                </button>
+              </div>
             ) : (
-              <div className="mis-clases-lista">
-                {misClases.map((clase) => (
-                  <div key={clase._id} className={`mi-clase-card tipo-${clase.nombre.toLowerCase().replace(/\s/g, '-')}`}>
-                    <div className="clase-info">
-                      <h3 className="clase-nombre">{clase.nombre}</h3>
-                      <div className="clase-detalles">
-                        <span className="detalle">{clase.diaSemana.charAt(0).toUpperCase() + clase.diaSemana.slice(1)}</span>
-                        <span className="detalle">{clase.horaInicio} - {clase.horaFin}</span>
-                        <span className="detalle">{clase.profesor}</span>
+              <div className="mis-clases-semanal">
+                {['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'].map(dia => {
+                  const clasesDia = misClases
+                    .filter(c => c.diaSemana === dia)
+                    .sort((a, b) => a.horaInicio.localeCompare(b.horaInicio))
+                  
+                  // Determinar si es el día actual
+                  const diasSemana = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado']
+                  const hoy = new Date().getDay()
+                  const diaActual = diasSemana[hoy]
+                  const esHoy = dia === diaActual
+                  
+                  return (
+                    <div key={dia} className={`mis-clases-dia-column ${esHoy ? 'dia-hoy' : ''} ${clasesDia.length === 0 ? 'sin-clases' : ''}`}>
+                      <h3 className="mis-clases-dia-header">
+                        <span className="dia-nombre">{dia.charAt(0).toUpperCase() + dia.slice(1)}</span>
+                        {esHoy && <span className="badge-hoy">Hoy</span>}
+                        {clasesDia.length > 0 && <span className="badge-contador">{clasesDia.length}</span>}
+                      </h3>
+                      <div className="mis-clases-dia-contenido">
+                        {clasesDia.length === 0 ? (
+                          <div className="sin-clases-mensaje">
+                            <span className="icono-relax">😌</span>
+                            <span>Día libre</span>
+                          </div>
+                        ) : (
+                          clasesDia.map((clase) => (
+                            <div 
+                              key={clase._id} 
+                              className={`mi-clase-compacta tipo-${clase.nombre.toLowerCase().replace(/\s/g, '-')}`}
+                            >
+                              <div className="clase-hora-badge">
+                                {clase.horaInicio}
+                              </div>
+                              <div className="clase-info-compacta">
+                                <h4 className="clase-nombre-mini">{clase.nombre}</h4>
+                                <p className="clase-profesor-mini">👤 {clase.profesor}</p>
+                                <p className="clase-duracion">
+                                  ⏱ {clase.horaInicio} - {clase.horaFin}
+                                </p>
+                              </div>
+                              <button 
+                                className="btn-desinscribir-mini" 
+                                onClick={() => handleDesinscribirse(clase._id)}
+                                title="Desinscribirme"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          ))
+                        )}
                       </div>
                     </div>
-                    <button 
-                      className="btn-desinscribir" 
-                      onClick={() => handleDesinscribirse(clase._id)}
-                    >
-                      <span className="icon-x">✕</span> Desinscribirme
-                    </button>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             )}
           </section>

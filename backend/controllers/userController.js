@@ -77,12 +77,23 @@ const createUser = async (req, res) => {
     });
 
     const savedUser = await newUser.save();
+    
+    // Generar token JWT para auto-login después del registro
+    const payload = { id: savedUser._id, role: savedUser.role };
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+    
     res.status(201).json({ 
         message: 'Usuario creado correctamente',
+        token,
         usuario: {
             _id: savedUser._id,
             nombre: savedUser.nombre,
             email: savedUser.email,
+            edad: savedUser.edad,
+            sexo: savedUser.sexo,
+            objetivo: savedUser.objetivo,
+            role: savedUser.role,
+            createdAt: savedUser.createdAt
         }
     });
   } catch (error) {
