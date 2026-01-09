@@ -23,6 +23,7 @@ app.use((req, res, next) => {
 const rutasUsuarios = require('./routes/userRoutes');
 const rutasAutenticacion = require('./routes/authRoutes');
 const rutasClases = require('./routes/claseRoutes');
+const rutasEjercicios = require('./routes/ejercicioRoutes');
 
 //Configurar las rutas de la API
 // Todas las rutas de usuarios van bajo /api/users
@@ -31,6 +32,8 @@ app.use('/api/users', rutasUsuarios);
 app.use('/api/auth', rutasAutenticacion);
 // Todas las rutas de clases van bajo /api/clases
 app.use('/api/clases', rutasClases);
+// Todas las rutas de ejercicios van bajo /api/ejercicios
+app.use('/api/ejercicios', rutasEjercicios);
 
 // En desarrollo, el frontend corre en Vite (puerto 3000)
 // En producción, servir archivos estáticos

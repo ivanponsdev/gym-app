@@ -1,12 +1,6 @@
 const mongoose = require('mongoose');
 
-/**
- * Modelo de Clase para el gimnasio
- * 
- * Este modelo define las clases grupales que se ofrecen en el gimnasio.
- * Los administradores pueden crear, modificar y eliminar clases.
- * Los usuarios pueden ver las clases disponibles e inscribirse en ellas.
- */
+
 const claseSchema = new mongoose.Schema({
   // Nombre de la clase (ej: "Spinning", "Yoga", "CrossFit")
   nombre: { 
