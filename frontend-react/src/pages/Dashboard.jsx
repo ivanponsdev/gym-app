@@ -1,9 +1,149 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { userAPI, clasesAPI } from '../services/api'
+import { userAPI, clasesAPI, ejerciciosAPI } from '../services/api'
 import Sidebar from '../components/Sidebar'
 import CustomModal from '../components/CustomModal'
+
+// Componente para la sección de ejercicios
+const EjerciciosSection = () => {
+  const [ejercicios, setEjercicios] = useState([])
+  const [ejerciciosFiltrados, setEjerciciosFiltrados] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [filtroGrupo, setFiltroGrupo] = useState('')
+  const [filtroEquipamiento, setFiltroEquipamiento] = useState('')
+  const [busqueda, setBusqueda] = useState('')
+
+  const gruposMusculares = ['pecho', 'espalda', 'piernas', 'hombros', 'brazos', 'core', 'cardio']
+
+  useEffect(() => {
+    cargarEjercicios()
+  }, [])
+
+  useEffect(() => {
+    aplicarFiltros()
+  }, [ejercicios, filtroGrupo, filtroEquipamiento, busqueda])
+
+  const cargarEjercicios = async () => {
+    try {
+      setLoading(true)
+      const data = await ejerciciosAPI.obtenerTodos()
+      setEjercicios(data)
+      setError('')
+    } catch (error) {
+      console.error('Error al cargar ejercicios:', error)
+      setError('Error al cargar ejercicios: ' + error.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const aplicarFiltros = () => {
+    let filtrados = ejercicios
+    if (filtroGrupo) filtrados = filtrados.filter(ej => ej.grupoMuscular === filtroGrupo)
+    if (filtroEquipamiento) filtrados = filtrados.filter(ej => ej.equipamiento === filtroEquipamiento)
+    if (busqueda) {
+      filtrados = filtrados.filter(ej => 
+        ej.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+        ej.descripcion.toLowerCase().includes(busqueda.toLowerCase())
+      )
+    }
+    setEjerciciosFiltrados(filtrados)
+  }
+
+  const limpiarFiltros = () => {
+    setFiltroGrupo('')
+    setFiltroEquipamiento('')
+    setBusqueda('')
+  }
+
+  if (loading) {
+    return (
+      <section className="content-section active">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Cargando ejercicios...</p>
+        </div>
+      </section>
+    )
+  }
+
+  if (error) {
+    return (
+      <section className="content-section active">
+        <div className="error-container">
+          <h2>Error</h2>
+          <p>{error}</p>
+          <button onClick={cargarEjercicios} className="btn-neon">Reintentar</button>
+        </div>
+      </section>
+    )
+  }
+
+  return (
+    <section className="content-section active">
+      <h2>💪 Biblioteca de Ejercicios</h2>
+      <p style={{marginBottom: '1.5rem', color: 'var(--text-color-dark)'}}>
+        Explora ejercicios organizados por grupo muscular y equipamiento
+      </p>
+
+      {/* Filtros */}
+      <div className="filtros-ejercicios">
+        <input
+          type="text"
+          placeholder="Buscar ejercicios..."
+          value={busqueda}
+          onChange={(e) => setBusqueda(e.target.value)}
+          className="search-input"
+        />
+        <div className="filtro-selects">
+          <select value={filtroGrupo} onChange={(e) => setFiltroGrupo(e.target.value)} className="filter-select">
+            <option value="">Todos los grupos</option>
+            {gruposMusculares.map(grupo => (
+              <option key={grupo} value={grupo}>{grupo.charAt(0).toUpperCase() + grupo.slice(1)}</option>
+            ))}
+          </select>
+          <select value={filtroEquipamiento} onChange={(e) => setFiltroEquipamiento(e.target.value)} className="filter-select">
+            <option value="">Cualquier lugar</option>
+            <option value="casa">En casa</option>
+            <option value="gimnasio">Gimnasio</option>
+          </select>
+          {(filtroGrupo || filtroEquipamiento || busqueda) && (
+            <button onClick={limpiarFiltros} className="btn-clear-filters">✕ Limpiar</button>
+          )}
+        </div>
+      </div>
+
+      {/* Grid de ejercicios */}
+      <div className="ejercicios-grid">
+        {ejerciciosFiltrados.length > 0 ? (
+          ejerciciosFiltrados.map(ejercicio => (
+            <div key={ejercicio._id} className="card">
+              <h3>{ejercicio.nombre}</h3>
+              <div className="ejercicio-tags">
+                <span className="tag-grupo">{ejercicio.grupoMuscular}</span>
+                <span className={`tag-equipamiento ${ejercicio.equipamiento}`}>
+                  {ejercicio.equipamiento === 'casa' ? '🏠' : '🏋️'} {ejercicio.equipamiento}
+                </span>
+                <span className={`tag-dificultad ${ejercicio.dificultad}`}>{ejercicio.dificultad}</span>
+              </div>
+              <div className="ejercicio-descripcion">
+                <p>{ejercicio.descripcion}</p>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="sin-resultados">
+            <h3>🔍 No se encontraron ejercicios</h3>
+            <p>Intenta ajustar los filtros o la búsqueda</p>
+            <button onClick={limpiarFiltros} className="btn-neon">Ver todos</button>
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
 
 const Dashboard = () => {
   const navigate = useNavigate()
@@ -198,7 +338,8 @@ const Dashboard = () => {
   const menuItems = [
     { id: 'profile', label: 'Perfil' },
     { id: 'clases', label: 'Clases' },
-    { id: 'mis-clases', label: 'Mis Clases' }
+    { id: 'mis-clases', label: 'Mis Clases' },
+    { id: 'ejercicios', label: 'Ejercicios' }
   ]
 
   const handleLogout = () => {
@@ -525,6 +666,10 @@ const Dashboard = () => {
               </div>
             )}
           </section>
+        )}
+
+        {activeSection === 'ejercicios' && (
+          <EjerciciosSection />
         )}
       </main>
 

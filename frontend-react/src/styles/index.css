@@ -3396,3 +3396,145 @@ body {
         font-size: 1rem;
     }
 }
+
+/* EJERCICIOS */
+.filtros-ejercicios {
+    background: linear-gradient(135deg, rgba(30, 30, 30, 0.8), rgba(22, 15, 31, 0.9));
+    padding: 1.5rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(148, 0, 211, 0.3);
+    box-shadow: 0 4px 20px rgba(148, 0, 211, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.search-input {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    border: 2px solid var(--primary-color);
+    background: rgba(22, 15, 31, 0.8);
+    border-radius: 25px;
+    color: var(--text-color);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 25px rgba(0, 191, 255, 0.4);
+}
+
+.filtro-selects {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.filter-select {
+    flex: 1;
+    min-width: 200px;
+    padding: 0.8rem 1rem;
+    border: 2px solid rgba(148, 0, 211, 0.4);
+    background: rgba(22, 15, 31, 0.9);
+    border-radius: 10px;
+    color: var(--text-color);
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+}
+
+.btn-clear-filters {
+    background: transparent;
+    border: 2px solid var(--danger-color);
+    color: var(--danger-color);
+    padding: 0.8rem 1.5rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-clear-filters:hover {
+    background: var(--danger-color);
+    color: var(--background-color);
+}
+
+.ejercicios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+}
+
+.ejercicio-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.ejercicio-tags > span {
+    padding: 0.3rem 0.8rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: white;
+}
+
+.tag-grupo {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+}
+
+.tag-equipamiento {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+}
+
+.tag-equipamiento.gimnasio {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
+.tag-dificultad.principiante {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+}
+
+.tag-dificultad.intermedio {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+}
+
+.tag-dificultad.avanzado {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+.ejercicio-descripcion p {
+    color: var(--text-color-dark);
+    line-height: 1.6;
+}
+
+.sin-resultados {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, rgba(30, 30, 30, 0.8), rgba(22, 15, 31, 0.9));
+    border-radius: 15px;
+    border: 2px dashed rgba(148, 0, 211, 0.3);
+}
+
+.sin-resultados h3 {
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .filtro-selects { flex-direction: column; }
+    .filter-select { min-width: 100%; }
+    .ejercicios-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+    .ejercicio-tags > span { font-size: 0.7rem; padding: 0.2rem 0.6rem; }
+}
+
+@media (max-width: 480px) {
+    .search-input { padding: 0.8rem 1rem; }
+}

@@ -6,7 +6,6 @@ import Dashboard from './pages/Dashboard'
 import AdminDashboard from './pages/AdminDashboard'
 import Info from './pages/Info'
 import ProtectedRoute from './components/ProtectedRoute'
-
 function AppContent() {
   return (
     <Routes>
@@ -15,7 +14,7 @@ function AppContent() {
       <Route path="/info" element={<Info />} />
       <Route path="/auth" element={<Auth />} />
       
-      {/* Rutas protegidas para usuarios normales */}
+      {/* Rutas protegidas para usuarios standart */}
       <Route 
         path="/dashboard" 
         element={
@@ -25,7 +24,7 @@ function AppContent() {
         } 
       />
       
-      {/* Rutas protegidas para administradores */}
+      {/* Rutas protegidas para admin */}
       <Route 
         path="/admin" 
         element={

@@ -168,7 +168,7 @@ function Ejercicios() {
       <div className="ejercicios-grid">
         {ejerciciosFiltrados.length > 0 ? (
           ejerciciosFiltrados.map(ejercicio => (
-            <div key={ejercicio._id} className="ejercicio-card">
+            <div key={ejercicio._id} className="card">
               <div className="ejercicio-header">
                 <h3>{ejercicio.nombre}</h3>
                 <div className="ejercicio-tags">

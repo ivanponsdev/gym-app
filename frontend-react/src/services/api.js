@@ -1,5 +1,3 @@
-import { obtenerPorGrupo, obtenerTodos } from "../../../backend/controllers/ejercicioController"
-
 const API_URL = '/api'
 
 // Función auxiliar para manejar respuestas
