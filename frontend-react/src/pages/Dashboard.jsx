@@ -15,7 +15,9 @@ const Dashboard = () => {
     nombre: '',
     edad: '',
     sexo: '',
-    objetivo: ''
+    objetivo: '',
+    objetivoClasesSemana: 3
+
   })
   
   // Inicializar desde sessionStorage si existe
@@ -46,7 +48,8 @@ const Dashboard = () => {
         nombre: user.nombre || '',
         edad: user.edad || '',
         sexo: user.sexo || 'otro',
-        objetivo: user.objetivo || 'recomposicion_corporal'
+        objetivo: user.objetivo || 'recomposicion_corporal',
+        objetivoClasesSemana: user.objetivoClasesSemana || 5
       })
     }
   }, [user])
@@ -113,7 +116,8 @@ const Dashboard = () => {
       nombre: user.nombre || '',
       edad: user.edad || '',
       sexo: user.sexo || 'otro',
-      objetivo: user.objetivo || 'recomposicion_corporal'
+      objetivo: user.objetivo || 'recomposicion_corporal',
+       objetivoClasesSemana: user.objetivoClasesSemana || 5
     })
   }
 
@@ -249,6 +253,11 @@ const Dashboard = () => {
                        user?.objetivo === 'perdida_grasa' ? 'Pérdida de Grasa' : '-'}
                     </span>
                   </p>
+                  <p>
+                    <strong>Objetivo Semanal:</strong> 
+                    <span>{user?.objetivoClasesSemana || 5}</span> 
+                    clases por semana
+                  </p>
                   <button 
                     className="btn-action" 
                     style={{ marginTop: '1rem', width: 'auto' }}
@@ -300,6 +309,9 @@ const Dashboard = () => {
                       <option value="recomposicion_corporal">Recomposición Corporal</option>
                       <option value="perdida_grasa">Pérdida de Grasa</option>
                     </select>
+                    <p>
+                      <strong>Objetivo Semanal:</strong> <span>{user?.objetivoClasesSemana || 5}</span> clases por semana
+                    </p>
                   </div>
                   <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
                     <button 
@@ -432,8 +444,8 @@ const Dashboard = () => {
                       <div className="mis-clases-dia-contenido">
                         {clasesDia.length === 0 ? (
                           <div className="sin-clases-mensaje">
-                            <span className="icono-relax">😌</span>
-                            <span>Día libre</span>
+                            <span className="icono-fueguito">🔥</span>
+                            <span>Aquí hay un hueco para seguir mejorando</span>
                           </div>
                         ) : (
                           clasesDia.map((clase) => (

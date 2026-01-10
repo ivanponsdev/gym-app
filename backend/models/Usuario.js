@@ -11,6 +11,12 @@ const usuarioSchema = new mongoose.Schema({
     enum: ['aumento_masa_muscular', 'recomposicion_corporal', 'perdida_grasa'], 
     default: 'recomposicion_corporal' 
   },
+  objetivoClasesSemana: {
+  type: Number,
+  default: 4,
+  min: 1,
+  max: 10
+},
   role: { type: String, enum: ['user','admin'], default: 'user' }
 }, { timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } });
 

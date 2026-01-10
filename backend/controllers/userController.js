@@ -35,6 +35,7 @@ const loginUser = async (req, res) => {
                 edad: user.edad,
                 sexo: user.sexo,
                 objetivo: user.objetivo,
+                objetivoClasesSemana: user.objetivoClasesSemana,
                 role: user.role,
                 createdAt: user.createdAt
             }
@@ -183,7 +184,7 @@ const getProfile = async (req, res) => {
 // PUT /api/users/profile -> actualizar perfil del usuario autenticado
 const updateProfile = async (req, res) => {
     try {
-        const { nombre, email, password, edad, sexo, objetivo } = req.body;
+        const { nombre, email, password, edad, sexo, objetivo, objetivoClasesSemana } = req.body;
         const user = await User.findById(req.user.id);
 
         if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
@@ -193,6 +194,7 @@ const updateProfile = async (req, res) => {
         user.edad = edad !== undefined ? edad : user.edad;
         user.sexo = sexo || user.sexo;
         user.objetivo = objetivo || user.objetivo;
+        user.objetivoClasesSemana = objetivoClasesSemana !== undefined ? objetivoClasesSemana : user.objetivoClasesSemana;
 
         if (password) {
             const salt = await bcrypt.genSalt(10);
@@ -209,6 +211,7 @@ const updateProfile = async (req, res) => {
                 edad: updatedUser.edad,
                 sexo: updatedUser.sexo,
                 objetivo: updatedUser.objetivo,
+                objetivoClasesSemana: updatedUser.objetivoClasesSemana,
                 role: updatedUser.role,
                 createdAt: updatedUser.createdAt
             }
