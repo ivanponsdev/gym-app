@@ -12,7 +12,8 @@ connectDB();
 
 //Middleware para procesar datos JSON en las peticiones
 app.use(express.json());
-
+// Servir archivos est\u00e1ticos (im\u00e1genes de ejercicios)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Middleware para logging de peticiones (útil para debug)
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.path}`);

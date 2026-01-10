@@ -224,5 +224,71 @@ export const ejerciciosAPI = {
       headers: getHeaders()
     })
     return handleResponse(response)
+  },
+
+  //Obtener por ID
+  obtenerPorId: async (id) => {
+    const response = await fetch(`${API_URL}/ejercicios/${id}`, {
+      headers: getHeaders()
+    })
+    return handleResponse(response)
+  },
+
+  //Crear ejercicio (Admin)
+  crear: async (ejercicioData) => {
+    const formData = new FormData()
+    
+    // A\u00f1adir campos de texto
+    Object.keys(ejercicioData).forEach(key => {
+      if (key === 'imagenTecnica' && ejercicioData[key] instanceof File) {
+        formData.append('imagenTecnica', ejercicioData[key])
+      } else if (key !== 'imagenTecnica') {
+        formData.append(key, ejercicioData[key])
+      }
+    })
+    
+    // No incluir Content-Type en headers, fetch lo configurar\u00e1 autom\u00e1ticamente con boundary
+    const token = localStorage.getItem('token')
+    const response = await fetch(`${API_URL}/ejercicios`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      body: formData
+    })
+    return handleResponse(response)
+  },
+
+  //Actualizar ejercicio (Admin)
+  actualizar: async (id, ejercicioData) => {
+    const formData = new FormData()
+    
+    // A\u00f1adir campos de texto
+    Object.keys(ejercicioData).forEach(key => {
+      if (key === 'imagenTecnica' && ejercicioData[key] instanceof File) {
+        formData.append('imagenTecnica', ejercicioData[key])
+      } else if (key !== 'imagenTecnica') {
+        formData.append(key, ejercicioData[key])
+      }
+    })
+    
+    const token = localStorage.getItem('token')
+    const response = await fetch(`${API_URL}/ejercicios/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      body: formData
+    })
+    return handleResponse(response)
+  },
+
+  //Eliminar ejercicio (Admin)
+  eliminar: async (id) => {
+    const response = await fetch(`${API_URL}/ejercicios/${id}`, {
+      method: 'DELETE',
+      headers: getHeaders()
+    })
+    return handleResponse(response)
   }
 }

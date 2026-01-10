@@ -85,7 +85,8 @@ const crear = async (req, res) => {
       descripcion,
       grupoMuscular,
       dificultad,
-      equipamiento
+      equipamiento,
+      imagenTecnica: req.file ? `/uploads/ejercicios/${req.file.filename}` : ''
     });
     
     await nuevoEjercicio.save();
@@ -122,6 +123,7 @@ const actualizar = async (req, res) => {
     if (grupoMuscular) ejercicio.grupoMuscular = grupoMuscular;
     if (dificultad) ejercicio.dificultad = dificultad;
     if (equipamiento) ejercicio.equipamiento = equipamiento;
+    if (req.file) ejercicio.imagenTecnica = `/uploads/ejercicios/${req.file.filename}`;
     
     await ejercicio.save();
     res.json({ message: 'Ejercicio actualizado correctamente', ejercicio });

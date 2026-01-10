@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { userAPI, clasesAPI } from '../services/api'
+import { userAPI, clasesAPI, ejerciciosAPI } from '../services/api'
 import Sidebar from '../components/Sidebar'
 import CustomModal from '../components/CustomModal'
 
@@ -18,6 +18,10 @@ const AdminDashboard = () => {
   })
   const [clases, setClases] = useState(() => {
     const cached = sessionStorage.getItem('adminClases')
+    return cached ? JSON.parse(cached) : []
+  })
+  const [ejercicios, setEjercicios] = useState(() => {
+    const cached = sessionStorage.getItem('adminEjercicios')
     return cached ? JSON.parse(cached) : []
   })
   
@@ -58,12 +62,25 @@ const AdminDashboard = () => {
     activa: true
   })
 
+  // Estados ejercicios
+  const [showEjercicioModal, setShowEjercicioModal] = useState(false)
+  const [editingEjercicio, setEditingEjercicio] = useState(null)
+  const [ejercicioForm, setEjercicioForm] = useState({
+    nombre: '',
+    descripcion: '',
+    grupoMuscular: 'pecho',
+    dificultad: 'principiante',
+    equipamiento: 'casa'
+  })
+
   useEffect(() => {
     // Carga bajo demanda con caché: solo carga si no hay datos
     if (activeSection === 'users' && users.length === 0) {
       loadUsers()
     } else if (activeSection === 'clases' && clases.length === 0) {
       loadClases()
+    } else if (activeSection === 'ejercicios' && ejercicios.length === 0) {
+      loadEjercicios()
     }
   }, [activeSection])
 
@@ -90,6 +107,19 @@ const AdminDashboard = () => {
       sessionStorage.setItem('adminClases', JSON.stringify(clasesData))
     } catch (error) {
       console.error('Error al cargar clases:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const loadEjercicios = async () => {
+    setLoading(true)
+    try {
+      const data = await ejerciciosAPI.obtenerTodos()
+      setEjercicios(data)
+      sessionStorage.setItem('adminEjercicios', JSON.stringify(data))
+    } catch (error) {
+      console.error('Error al cargar ejercicios:', error)
     } finally {
       setLoading(false)
     }
@@ -142,6 +172,33 @@ const AdminDashboard = () => {
             isOpen: true,
             type: 'alert',
             message: 'Error al eliminar clase: ' + error.message,
+            onConfirm: null
+          })
+        }
+      }
+    })
+  }
+
+  const handleDeleteEjercicio = async (ejercicioId) => {
+    setModalConfig({
+      isOpen: true,
+      type: 'confirm',
+      message: '¿Estás seguro de eliminar este ejercicio?',
+      onConfirm: async () => {
+        try {
+          await ejerciciosAPI.eliminar(ejercicioId)
+          setModalConfig({
+            isOpen: true,
+            type: 'alert',
+            message: 'Ejercicio eliminado correctamente',
+            onConfirm: null
+          })
+          loadEjercicios()
+        } catch (error) {
+          setModalConfig({
+            isOpen: true,
+            type: 'alert',
+            message: 'Error al eliminar ejercicio: ' + error.message,
             onConfirm: null
           })
         }
@@ -286,9 +343,68 @@ const AdminDashboard = () => {
     }
   }
 
+  // Funciones para ejercicios
+  const handleAddEjercicio = () => {
+    setEditingEjercicio(null)
+    setEjercicioForm({
+      nombre: '',
+      descripcion: '',
+      grupoMuscular: 'pecho',
+      dificultad: 'principiante',
+      equipamiento: 'casa'
+    })
+    setShowEjercicioModal(true)
+  }
+
+  const handleEditEjercicio = (ejercicio) => {
+    setEditingEjercicio(ejercicio)
+    setEjercicioForm({
+      nombre: ejercicio.nombre,
+      descripcion: ejercicio.descripcion || '',
+      grupoMuscular: ejercicio.grupoMuscular,
+      dificultad: ejercicio.dificultad,
+      equipamiento: ejercicio.equipamiento
+    })
+    setShowEjercicioModal(true)
+  }
+
+  const handleSaveEjercicio = async () => {
+    try {
+      if (editingEjercicio) {
+        // Editar ejercicio existente
+        await ejerciciosAPI.actualizar(editingEjercicio._id, ejercicioForm)
+        setModalConfig({
+          isOpen: true,
+          type: 'alert',
+          message: 'Ejercicio actualizado correctamente',
+          onConfirm: null
+        })
+      } else {
+        // Crear nuevo ejercicio
+        await ejerciciosAPI.crear(ejercicioForm)
+        setModalConfig({
+          isOpen: true,
+          type: 'alert',
+          message: 'Ejercicio creado correctamente',
+          onConfirm: null
+        })
+      }
+      setShowEjercicioModal(false)
+      loadEjercicios()
+    } catch (error) {
+      setModalConfig({
+        isOpen: true,
+        type: 'alert',
+        message: 'Error: ' + error.message,
+        onConfirm: null
+      })
+    }
+  }
+
   const menuItems = [
     { id: 'users', label: 'Gestión Usuarios' },
-    { id: 'clases', label: 'Gestión Clases' }
+    { id: 'clases', label: 'Gestión Clases' },
+    { id: 'ejercicios', label: 'Gestión Ejercicios' }
   ]
 
   useEffect(() => {
@@ -451,6 +567,78 @@ const AdminDashboard = () => {
                                 className="btn-icon btn-delete"
                                 onClick={() => handleDeleteClase(clase._id)}
                                 title="Eliminar clase"
+                              >
+                                🗑️
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {activeSection === 'ejercicios' && (
+          <section id="admin-ejercicios" className="content-section active">
+            <h2>Gestión de Ejercicios</h2>
+            <div className="search-container">
+              <input type="search" placeholder="Buscar por nombre o grupo muscular..." />
+            </div>
+            <div id="ejercicios-list-container">
+              <button 
+                className="btn-neon btn-add" 
+                style={{ marginBottom: '20px', width: 'auto', padding: '0.8rem 1.5rem' }}
+                onClick={handleAddEjercicio}
+              >
+                Añadir Ejercicio
+              </button>
+              <div className="table-wrapper">
+                {loading && ejercicios.length === 0 ? (
+                  <div className="spinner-container">
+                    <div className="spinner-large"></div>
+                    <p style={{ marginTop: '1rem', color: 'var(--secondary-color)' }}>Cargando ejercicios...</p>
+                  </div>
+                ) : ejercicios.length === 0 ? (
+                  <p>No hay ejercicios registrados</p>
+                ) : (
+                  <table className="admin-table">
+                    <thead>
+                      <tr>
+                        <th>Nombre</th>
+                        <th>Grupo Muscular</th>
+                        <th>Dificultad</th>
+                        <th>Equipamiento</th>
+                        <th>Descripción</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {ejercicios.map((ejercicio) => (
+                        <tr key={ejercicio._id}>
+                          <td>{ejercicio.nombre}</td>
+                          <td style={{textTransform: 'capitalize'}}>{ejercicio.grupoMuscular}</td>
+                          <td style={{textTransform: 'capitalize'}}>{ejercicio.dificultad}</td>
+                          <td style={{textTransform: 'capitalize'}}>{ejercicio.equipamiento}</td>
+                          <td style={{maxWidth: '250px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
+                            {ejercicio.descripcion || '-'}
+                          </td>
+                          <td>
+                            <div className="action-buttons">
+                              <button 
+                                className="btn-icon btn-edit" 
+                                onClick={() => handleEditEjercicio(ejercicio)}
+                                title="Editar ejercicio"
+                              >
+                                ✏️
+                              </button>
+                              <button 
+                                className="btn-icon btn-delete"
+                                onClick={() => handleDeleteEjercicio(ejercicio._id)}
+                                title="Eliminar ejercicio"
                               >
                                 🗑️
                               </button>
@@ -643,6 +831,101 @@ const AdminDashboard = () => {
                 {editingClase ? 'Actualizar' : 'Crear'}
               </button>
               <button className="btn-action" onClick={() => setShowClaseModal(false)}>
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal para añadir/editar ejercicio */}
+      {showEjercicioModal && (
+        <div className="modal-overlay" onClick={() => setShowEjercicioModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h2>{editingEjercicio ? 'Editar Ejercicio' : 'Añadir Ejercicio'}</h2>
+            <div className="form-group">
+              <label>Nombre *</label>
+              <input
+                type="text"
+                value={ejercicioForm.nombre}
+                onChange={(e) => setEjercicioForm({ ...ejercicioForm, nombre: e.target.value })}
+                required
+                placeholder="Ej: Press de banca"
+              />
+            </div>
+            <div className="form-group">
+              <label>Grupo Muscular *</label>
+              <select
+                value={ejercicioForm.grupoMuscular}
+                onChange={(e) => setEjercicioForm({ ...ejercicioForm, grupoMuscular: e.target.value })}
+              >
+                <option value="pecho">Pecho</option>
+                <option value="espalda">Espalda</option>
+                <option value="piernas">Piernas</option>
+                <option value="hombros">Hombros</option>
+                <option value="brazos">Brazos</option>
+                <option value="core">Core</option>
+                <option value="cardio">Cardio</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Dificultad *</label>
+              <select
+                value={ejercicioForm.dificultad}
+                onChange={(e) => setEjercicioForm({ ...ejercicioForm, dificultad: e.target.value })}
+              >
+                <option value="principiante">Principiante</option>
+                <option value="intermedio">Intermedio</option>
+                <option value="avanzado">Avanzado</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Equipamiento *</label>
+              <select
+                value={ejercicioForm.equipamiento}
+                onChange={(e) => setEjercicioForm({ ...ejercicioForm, equipamiento: e.target.value })}
+              >
+                <option value="casa">En casa</option>
+                <option value="gimnasio">Gimnasio</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Descripción</label>
+              <textarea
+                value={ejercicioForm.descripcion}
+                onChange={(e) => setEjercicioForm({ ...ejercicioForm, descripcion: e.target.value })}
+                rows="4"
+                placeholder="Describe la técnica del ejercicio..."
+              />
+            </div>
+            <div className="form-group">
+              <label>Imagen de Técnica</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files[0]
+                  if (file) {
+                    setEjercicioForm({ ...ejercicioForm, imagenTecnica: file })
+                  }
+                }}
+              />
+              {ejercicioForm.imagenTecnica instanceof File && (
+                <p style={{marginTop: '0.5rem', color: 'var(--secondary-color)', fontSize: '0.9rem'}}>
+                  ✅ {ejercicioForm.imagenTecnica.name}
+                </p>
+              )}
+              {editingEjercicio && editingEjercicio.imagenTecnica && !(ejercicioForm.imagenTecnica instanceof File) && (
+                <p style={{marginTop: '0.5rem', color: 'var(--text-color-dark)', fontSize: '0.9rem'}}>
+                  Imagen actual: {editingEjercicio.imagenTecnica.split('/').pop()}
+                </p>
+              )}
+            </div>
+            <div className="modal-buttons">
+              <button className="btn-action" onClick={handleSaveEjercicio}>
+                {editingEjercicio ? 'Actualizar' : 'Crear'}
+              </button>
+              <button className="btn-action" onClick={() => setShowEjercicioModal(false)}>
                 Cancelar
               </button>
             </div>
