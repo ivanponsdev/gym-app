@@ -1,3 +1,5 @@
+import { obtenerPorGrupo, obtenerTodos } from "../../../backend/controllers/ejercicioController"
+
 const API_URL = '/api'
 
 // Función auxiliar para manejar respuestas
@@ -193,6 +195,34 @@ export const clasesAPI = {
   // Obtener alumnos de una clase (admin)
   getAlumnos: async (claseId) => {
     const response = await fetch(`${API_URL}/clases/${claseId}/alumnos`, {
+      headers: getHeaders()
+    })
+    return handleResponse(response)
+  }
+
+}
+
+//Ejercicios
+export const ejerciciosAPI = {
+  // Obtener todos los ejercicios
+  obtenerTodos: async () => {
+    const response = await fetch(`${API_URL}/ejercicios`, {
+      headers: getHeaders()
+    })
+    return handleResponse(response)
+  },
+
+  //Filtrar por grupo muscular
+  obtenerPorGrupo: async (grupoMuscular) => {
+    const response = await fetch(`${API_URL}/ejercicios/grupo/${grupoMuscular}`, {
+      headers: getHeaders()
+    })
+    return handleResponse(response)
+  },
+  
+  //Filtrar por equipamiento
+  obtenerPorEquipamiento: async (equipamiento) => {
+    const response = await fetch(`${API_URL}/ejercicios/equipamiento/${equipamiento}`, {
       headers: getHeaders()
     })
     return handleResponse(response)
