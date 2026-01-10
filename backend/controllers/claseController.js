@@ -91,11 +91,7 @@ const getMisClases = async (req, res) => {
   }
 };
 
-/**
- * POST /api/clases
- * Crear una nueva clase
- * Acceso: solo admin
- */
+//Crear una nueva clase
 const createClase = async (req, res) => {
   try {
     const { 
@@ -171,11 +167,7 @@ const createClase = async (req, res) => {
   }
 };
 
-/**
- * PUT /api/clases/:id
- * Actualizar una clase existente
- * Acceso: solo admin
- */
+//Actualizar clase por id
 const updateClase = async (req, res) => {
   try {
     const { 
@@ -244,11 +236,7 @@ const updateClase = async (req, res) => {
   }
 };
 
-/**
- * DELETE /api/clases/:id
- * Eliminar una clase
- * Acceso: solo admin
- */
+//Delete por clase
 const deleteClase = async (req, res) => {
   try {
     const clase = await Clase.findById(req.params.id);
@@ -346,11 +334,7 @@ const inscribirseEnClase = async (req, res) => {
   }
 };
 
-/**
- * DELETE /api/clases/:id/desinscribir
- * Desinscribir al usuario autenticado de una clase
- * Acceso: usuarios autenticados
- */
+//DELETE
 const desinscribirseDeClase = async (req, res) => {
   try {
     const usuarioId = req.user.id;
@@ -390,11 +374,7 @@ const desinscribirseDeClase = async (req, res) => {
   }
 };
 
-/**
- * GET /api/clases/:id/alumnos
- * Obtener lista de alumnos de una clase
- * Acceso: solo admin
- */
+//Obtener listado de inscritos
 const getAlumnosClase = async (req, res) => {
   try {
     const clase = await Clase.findById(req.params.id)
