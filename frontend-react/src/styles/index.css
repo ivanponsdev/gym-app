@@ -3298,6 +3298,86 @@ body {
         font-size: 4rem;
     }
 
+/* Texto de ayuda en formularios */
+.form-helper {
+    color: var(--text-color-dark);
+    font-size: 0.85rem;
+    display: block;
+    margin-top: 0.25rem;
+}
+
+/* Widget objetivo semanal */
+.objetivo-semanal-widget {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.objetivo-progress {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.objetivo-numeros {
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    font-weight: bold;
+}
+
+.clases-actuales {
+    font-size: 3rem;
+    color: white;
+    line-height: 1;
+}
+
+.separador {
+    font-size: 2rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.clases-objetivo {
+    font-size: 2rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.objetivo-label {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+}
+
+.objetivo-mensaje {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.objetivo-mensaje span:first-child {
+    font-size: 2rem;
+}
+
+@media (max-width: 768px) {
+    .objetivo-semanal-widget {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    .clases-actuales {
+        font-size: 2.5rem;
+    }
+}
+
     #landing-container p {
         font-size: 1.3rem;
     }

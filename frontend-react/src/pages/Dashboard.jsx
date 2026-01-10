@@ -102,6 +102,9 @@ const Dashboard = () => {
 
   // Función para refrescar datos manualmente (después de inscribirse/desinscribirse)
   const refreshClases = () => {
+    // Limpiar caché para forzar recarga desde servidor
+    sessionStorage.removeItem('clases')
+    sessionStorage.removeItem('misClases')
     loadClases()
     loadMisClases()
   }
@@ -309,9 +312,21 @@ const Dashboard = () => {
                       <option value="recomposicion_corporal">Recomposición Corporal</option>
                       <option value="perdida_grasa">Pérdida de Grasa</option>
                     </select>
-                    <p>
-                      <strong>Objetivo Semanal:</strong> <span>{user?.objetivoClasesSemana || 5}</span> clases por semana
-                    </p>
+                  </div>
+                  <div className="form-group">
+                    <label>Objetivo de Clases por Semana</label>
+                    <input
+                      type="number"
+                      value={profileData.objetivoClasesSemana}
+                      onChange={(e) => setProfileData({ 
+                        ...profileData, 
+                        objetivoClasesSemana: parseInt(e.target.value) || 3 
+                      })}
+                      min="1"
+                      max="14"
+                      placeholder="Ej: 5"
+                    />
+                    <span className="form-helper">¿Cuántas clases quieres hacer por semana?</span>
                   </div>
                   <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
                     <button 
@@ -404,6 +419,36 @@ const Dashboard = () => {
         {activeSection === 'mis-clases' && (
           <section id="mis-clases" className="content-section active">
             <h2>Mis Clases</h2>
+            {misClases.length > 0 && (
+              <div className="objetivo-semanal-widget">
+                <div className="objetivo-progress">
+                  <div className="objetivo-numeros">
+                    <span className="clases-actuales">{misClases.length}</span>
+                    <span className="separador">/</span>
+                    <span className="clases-objetivo">{user?.objetivoClasesSemana || 5}</span>
+                  </div>
+                  <div className="objetivo-label">clases esta semana</div>
+                </div>
+                <div className="objetivo-mensaje">
+                  {misClases.length >= (user?.objetivoClasesSemana || 5) ? (
+                    <>
+                      <span className="icono-completado">🎉</span>
+                      <span>¡Semana completada! Vas genial</span>
+                    </>
+                  ) : misClases.length >= (user?.objetivoClasesSemana || 5) * 0.7 ? (
+                    <>
+                      <span className="icono-cerca">💪</span>
+                      <span>¡Muy bien! Estás cerca del objetivo</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="icono-animo">🔥</span>
+                      <span>¡Vamos! Te faltan {(user?.objetivoClasesSemana || 5) - misClases.length} clases</span>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
             {loadingMisClases && misClases.length === 0 ? (
               <div className="spinner-container">
                 <div className="spinner-large"></div>
