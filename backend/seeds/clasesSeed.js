@@ -1,9 +1,7 @@
 const Clase = require('../models/Clase');
 
-/**
- * Seed de clases de ejemplo para el gimnasio
- * Solo incluye las 5 clases con colores asignados: Spinning, Yoga Matinal, CrossFit, Pilates y Zumba
- */
+ //Seed de clases de ejemplo para el gimnasio
+
 const clasesEjemplo = [
   // LUNES
   {
@@ -18,7 +16,7 @@ const clasesEjemplo = [
   },
   {
     nombre: 'Yoga Matinal',
-    descripcion: 'Sesión de yoga para comenzar el día con energía. Incluye posturas, respiración y meditación.',
+    descripcion: 'Sesión de yoga para empezar el día con energía. Incluye posturas, respiración y meditación.',
     diaSemana: 'lunes',
     horaInicio: '09:00',
     horaFin: '10:00',
@@ -72,7 +70,7 @@ const clasesEjemplo = [
   // MIÉRCOLES
   {
     nombre: 'Yoga Matinal',
-    descripcion: 'Sesión de yoga para comenzar el día con energía. Incluye posturas, respiración y meditación.',
+    descripcion: 'Sesión de yoga para empezar el día con energía. Incluye posturas, respiración y meditación.',
     diaSemana: 'miércoles',
     horaInicio: '08:00',
     horaFin: '09:00',
@@ -126,7 +124,7 @@ const clasesEjemplo = [
   // VIERNES
   {
     nombre: 'Yoga Matinal',
-    descripcion: 'Sesión de yoga para comenzar el día con energía. Incluye posturas, respiración y meditación.',
+    descripcion: 'Sesión de yoga para empezar el día con energía. Incluye posturas, respiración y meditación.',
     diaSemana: 'viernes',
     horaInicio: '10:00',
     horaFin: '11:00',
@@ -158,7 +156,7 @@ const clasesEjemplo = [
   // SÁBADO
   {
     nombre: 'Yoga Matinal',
-    descripcion: 'Sesión de yoga para comenzar el día con energía. Incluye posturas, respiración y meditación.',
+    descripcion: 'Sesión de yoga para empezar el día con energía. Incluye posturas, respiración y meditación.',
     diaSemana: 'sábado',
     horaInicio: '09:00',
     horaFin: '10:00',

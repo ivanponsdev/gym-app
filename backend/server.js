@@ -27,17 +27,16 @@ const rutasClases = require('./routes/claseRoutes');
 const rutasEjercicios = require('./routes/ejercicioRoutes');
 
 //Configurar las rutas de la API
-// Todas las rutas de usuarios van bajo /api/users
+// /api/users
 app.use('/api/users', rutasUsuarios);
-// Todas las rutas de login/registro van bajo /api/auth  
+// /api/auth  
 app.use('/api/auth', rutasAutenticacion);
-// Todas las rutas de clases van bajo /api/clases
+// /api/clases
 app.use('/api/clases', rutasClases);
-// Todas las rutas de ejercicios van bajo /api/ejercicios
+// /api/ejercicios
 app.use('/api/ejercicios', rutasEjercicios);
 
 // En desarrollo, el frontend corre en Vite (puerto 3000)
-// En producción, servir archivos estáticos
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../frontend-react/dist')));
   
@@ -72,7 +71,8 @@ servidor.on('error', (error) => {
   if (error && error.code === 'EADDRINUSE') {
     console.error(` El PORT ${PORT} ya está en uso.`);
     console.error(` Puedes cambiar el PORT o cerrar el proceso que lo usa`);
-    // Esto lo añado porque es un problema que me pasaba a mí y lo tenía que utilizar  para buscar y cerrar el proceso
+    // Esto lo añado porque es un problema que me pasaba a mí y lo tenía que utilizar
+    // Para conocer más rápido el error 
     console.error(` Buscar proceso: netstat -ano | findstr :${PORT}`);   
     process.exit(1);
   }
