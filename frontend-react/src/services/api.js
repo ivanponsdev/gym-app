@@ -247,7 +247,9 @@ export const ejerciciosAPI = {
       }
     })
     
-    // No incluir Content-Type en headers, fetch lo configurar\u00e1 autom\u00e1ticamente con boundary
+    // IMPORTANTE: No incluir Content-Type en headers.
+    // Fetch añade automáticamente 'multipart/form-data; boundary=...' 
+    // El boundary es necesario para separar correctamente los campos del formulario con archivos
     const token = localStorage.getItem('token')
     const response = await fetch(`${API_URL}/ejercicios`, {
       method: 'POST',
@@ -272,6 +274,8 @@ export const ejerciciosAPI = {
       }
     })
     
+    // IMPORTANTE: No incluir Content-Type en headers.
+    // Boundary necesario para separar campos del formulario con archivos
     const token = localStorage.getItem('token')
     const response = await fetch(`${API_URL}/ejercicios/${id}`, {
       method: 'PUT',

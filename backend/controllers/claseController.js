@@ -11,7 +11,7 @@ const getClases = async (req, res) => {
     if (diaSemana) filtro.diaSemana = diaSemana;
     if (activa !== undefined) filtro.activa = activa === 'true';
     
-    // Ordenar por día de la semana y hora de inicio
+    // Ordenar por día y hora
     const ordenDias = {
       'lunes': 1, 'martes': 2, 'miércoles': 3, 'jueves': 4,
       'viernes': 5, 'sábado': 6, 'domingo': 7
