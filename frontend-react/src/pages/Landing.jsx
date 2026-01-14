@@ -1,13 +1,9 @@
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { useEffect } from 'react'
 
 const Landing = () => {
   const navigate = useNavigate()
   const { isAuthenticated, isAdmin } = useAuth()
-
-  // useEffect eliminado para permitir que usuarios autenticados vean el landing page
-  // al hacer clic en "Salir" desde el dashboard
 
   return (
     <>

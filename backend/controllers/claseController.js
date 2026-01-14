@@ -405,14 +405,4 @@ const getAlumnosClase = async (req, res) => {
   }
 };
 
-module.exports = {
-  getClases,
-  getClaseById,
-  getMisClases,
-  createClase,
-  updateClase,
-  deleteClase,
-  inscribirseEnClase,
-  desinscribirseDeClase,
-  getAlumnosClase
-};
+module.exports = {getClases,getClaseById,getMisClases,createClase,updateClase,deleteClase,inscribirseEnClase,desinscribirseDeClase,getAlumnosClase};

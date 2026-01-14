@@ -1,4 +1,6 @@
 const Ejercicio = require('../models/Ejercicio');
+const fs = require('fs');
+const path = require('path'); 
 
 //Obtener ejercicios
 const obtenerTodos = async (req, res) => {
@@ -123,7 +125,18 @@ const actualizar = async (req, res) => {
     if (grupoMuscular) ejercicio.grupoMuscular = grupoMuscular;
     if (dificultad) ejercicio.dificultad = dificultad;
     if (equipamiento) ejercicio.equipamiento = equipamiento;
-    if (req.file) ejercicio.imagenTecnica = `/uploads/ejercicios/${req.file.filename}`;
+    
+    // Si se sube una nueva imagen
+    if (req.file) {
+      // Eliminar imagen anterior si existe
+      if (ejercicio.imagenTecnica) {
+        const rutaImagenAnterior = path.join(__dirname, '..', ejercicio.imagenTecnica);
+        if (fs.existsSync(rutaImagenAnterior)) {
+          fs.unlinkSync(rutaImagenAnterior);
+        }
+      }
+      ejercicio.imagenTecnica = `/uploads/ejercicios/${req.file.filename}`;
+    }
     
     await ejercicio.save();
     res.json({ message: 'Ejercicio actualizado correctamente', ejercicio });
@@ -138,11 +151,21 @@ const eliminar = async (req, res) => {
   try {
     const { id } = req.params;
     
-    const ejercicio = await Ejercicio.findByIdAndDelete(id);
+    const ejercicio = await Ejercicio.findById(id);
     
     if (!ejercicio) {
       return res.status(404).json({ message: 'Ejercicio no encontrado' });
     }
+    
+    // Eliminar imagen del servidor si existe
+    if (ejercicio.imagenTecnica) {
+      const rutaImagen = path.join(__dirname, '..', ejercicio.imagenTecnica);
+      if (fs.existsSync(rutaImagen)) {
+        fs.unlinkSync(rutaImagen);
+      }
+    }
+    
+    await Ejercicio.findByIdAndDelete(id);
     
     res.json({ message: 'Ejercicio eliminado correctamente', ejercicio });
   } catch (error) {
@@ -151,12 +174,4 @@ const eliminar = async (req, res) => {
   }
 };
 
-module.exports = {
-  obtenerTodos,
-  obtenerPorGrupo,
-  obtenerPorEquipamiento,
-  obtenerPorId,
-  crear,
-  actualizar,
-  eliminar
-};
+module.exports = {obtenerTodos,obtenerPorGrupo,obtenerPorEquipamiento,obtenerPorId,crear,actualizar,eliminar};

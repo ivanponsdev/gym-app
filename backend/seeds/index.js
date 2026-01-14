@@ -5,6 +5,7 @@ const connectDB = require('../config/db');
 const seedUsuarios = require('./usuariosSeed');
 const { seedClases } = require('./clasesSeed');
 const seedEjercicios = require('./ejerciciosSeed');
+const seedGuias = require('./guiasSeed');
 
 const runSeeds = async () => {
   await connectDB();
@@ -18,6 +19,9 @@ const runSeeds = async () => {
   // Poblar ejercicios
   console.log('Poblando ejercicios...');
   await seedEjercicios();
+  // Poblar guías
+  console.log('Poblando guías...');
+  await seedGuias();
   console.log('Seeding completado correctamente ');
   mongoose.connection.close();
 };

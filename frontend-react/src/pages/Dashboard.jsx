@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { userAPI, clasesAPI, ejerciciosAPI } from '../services/api'
+import { userAPI, clasesAPI, ejerciciosAPI, guiasAPI } from '../services/api'
 import Sidebar from '../components/Sidebar'
 import CustomModal from '../components/CustomModal'
 
@@ -141,6 +141,138 @@ const EjerciciosSection = () => {
           </div>
         )}
       </div>
+    </section>
+  )
+}
+
+// Componente para la sección de guías
+const GuiasSection = () => {
+  const [guias, setGuias] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const { user, isAdmin } = useAuth()
+
+  useEffect(() => {
+    cargarGuias()
+  }, [])
+
+  const cargarGuias = async () => {
+    try {
+      setLoading(true)
+      // Si es admin, obtener todas las guías, si no, solo las del usuario
+      const data = isAdmin 
+        ? await guiasAPI.obtenerTodas()
+        : await guiasAPI.obtenerMisGuias()
+      setGuias(data)
+      setError('')
+    } catch (error) {
+      console.error('Error al cargar guías:', error)
+      setError('Error al cargar guías: ' + error.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const obtenerColorObjetivo = (objetivo) => {
+    const colores = {
+      aumento_masa_muscular: '#e74c3c',
+      recomposicion_corporal: '#f39c12',
+      perdida_grasa: '#2ecc71',
+      todos: '#3498db'
+    }
+    return colores[objetivo] || '#95a5a6'
+  }
+
+  const formatearObjetivo = (objetivo) => {
+    const nombres = {
+      aumento_masa_muscular: 'Aumento de Masa Muscular',
+      recomposicion_corporal: 'Recomposición Corporal',
+      perdida_grasa: 'Pérdida de Grasa',
+      todos: 'Todos los Objetivos'
+    }
+    return nombres[objetivo] || objetivo
+  }
+
+  const descargarGuia = (guia) => {
+    // Crear un enlace para descargar el PDF
+    const link = document.createElement('a')
+    link.href = `/${guia.archivoUrl}`
+    link.download = `${guia.titulo}.pdf`
+    link.target = '_blank'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
+  if (loading) {
+    return (
+      <section className="content-section active">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Cargando guías...</p>
+        </div>
+      </section>
+    )
+  }
+
+  if (error) {
+    return (
+      <section className="content-section active">
+        <div className="error-container">
+          <h2>Error</h2>
+          <p>{error}</p>
+          <button onClick={cargarGuias} className="btn-neon">Reintentar</button>
+        </div>
+      </section>
+    )
+  }
+
+  return (
+    <section className="content-section active">
+      <h2>📚 {isAdmin ? 'Gestión de Guías' : 'Mis Guías'}</h2>
+      <p style={{marginBottom: '1.5rem', color: 'var(--text-color-dark)'}}>
+        {isAdmin 
+          ? 'Todas las guías del sistema'
+          : user?.objetivo 
+            ? `Guías personalizadas basadas en tu objetivo: ${formatearObjetivo(user.objetivo)}`
+            : 'Guías generales disponibles para ti'
+        }
+      </p>
+
+      {guias.length === 0 ? (
+        <div className="sin-resultados">
+          <h3>📖 No hay guías disponibles</h3>
+          <p>{isAdmin ? 'No hay guías en el sistema' : `Actualmente no hay guías ${user?.objetivo ? 'para tu objetivo' : 'disponibles'}`}</p>
+        </div>
+      ) : (
+        <div className="ejercicios-grid">
+          {guias.map(guia => (
+            <div key={guia._id} className="card guia-card">
+              <div className="guia-header">
+                <h3>{guia.titulo}</h3>
+                <span 
+                  className="objetivo-badge"
+                  style={{ backgroundColor: obtenerColorObjetivo(guia.objetivo) }}
+                >
+                  {formatearObjetivo(guia.objetivo)}
+                </span>
+              </div>
+              <div className="guia-descripcion">
+                <p>{guia.descripcion}</p>
+              </div>
+              <div className="guia-footer">
+                <button 
+                  className="btn-neon"
+                  onClick={() => descargarGuia(guia)}
+                  title="Descargar guía en PDF"
+                >
+                  📥 Descargar PDF
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   )
 }
@@ -339,7 +471,8 @@ const Dashboard = () => {
     { id: 'profile', label: 'Perfil' },
     { id: 'clases', label: 'Clases' },
     { id: 'mis-clases', label: 'Mis Clases' },
-    { id: 'ejercicios', label: 'Ejercicios' }
+    { id: 'ejercicios', label: 'Ejercicios' },
+    { id: 'guias', label: 'Guías' }
   ]
 
   const handleLogout = () => {
@@ -614,7 +747,7 @@ const Dashboard = () => {
                     .filter(c => c.diaSemana === dia)
                     .sort((a, b) => a.horaInicio.localeCompare(b.horaInicio))
                   
-                  // Determinar si es el día actual
+                  // Determinar día actual
                   const diasSemana = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado']
                   const hoy = new Date().getDay()
                   const diaActual = diasSemana[hoy]
@@ -670,6 +803,10 @@ const Dashboard = () => {
 
         {activeSection === 'ejercicios' && (
           <EjerciciosSection />
+        )}
+
+        {activeSection === 'guias' && (
+          <GuiasSection />
         )}
       </main>
 

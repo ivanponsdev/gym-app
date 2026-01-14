@@ -5,13 +5,10 @@
   "main": "server.js",
   "scripts": {
     "start": "node backend/server.js",
-    "dev": "node backend/server.js",
-    "dev:watch": "nodemon --signal SIGINT backend/server.js",
-    "seed": "node backend/seeds/index.js",
+    "dev:all": "concurrently \"node backend/server.js\" \"npm run dev:frontend\"",
     "dev:frontend": "vite",
     "build:frontend": "vite build",
-    "preview:frontend": "vite preview",
-    "dev:all": "concurrently \"npm run dev\" \"npm run dev:frontend\""
+    "preview:frontend": "vite preview"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

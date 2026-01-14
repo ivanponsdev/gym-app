@@ -37,7 +37,7 @@ const seedUsuarios = async () => {
   try {
     // Eliminar usuarios existentes
     await Usuario.deleteMany({});
-    console.log('   Usuarios anteriores eliminados');
+    console.log('Usuarios anteriores eliminados');
     
     // Hashear las contraseñas antes de insertar
     const usuariosConHashedPassword = await Promise.all(
@@ -49,7 +49,7 @@ const seedUsuarios = async () => {
     );
     
     await Usuario.insertMany(usuariosConHashedPassword);
-    console.log('   ✓ Usuarios insertados correctamente');
+    console.log('Usuarios insertados correctamente');
   } catch (error) {
     console.error('Error insertando usuarios:', error);
   }

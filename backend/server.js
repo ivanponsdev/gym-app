@@ -25,6 +25,7 @@ const rutasUsuarios = require('./routes/userRoutes');
 const rutasAutenticacion = require('./routes/authRoutes');
 const rutasClases = require('./routes/claseRoutes');
 const rutasEjercicios = require('./routes/ejercicioRoutes');
+const rutasGuias = require('./routes/guiaRoutes');
 
 //Configurar las rutas de la API
 // /api/users
@@ -35,6 +36,8 @@ app.use('/api/auth', rutasAutenticacion);
 app.use('/api/clases', rutasClases);
 // /api/ejercicios
 app.use('/api/ejercicios', rutasEjercicios);
+// /api/guias
+app.use('/api/guias', rutasGuias);
 
 // En desarrollo, el frontend corre en Vite (puerto 3000)
 if (process.env.NODE_ENV === 'production') {

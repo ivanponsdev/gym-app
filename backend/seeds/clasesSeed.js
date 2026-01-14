@@ -190,10 +190,9 @@ const seedClases = async () => {
   try {
     // Eliminar clases existentes
     await Clase.deleteMany({});
-    console.log('   Clases anteriores eliminadas');
-    
+    console.log('Clases anteriores eliminadas');
     await Clase.insertMany(clasesEjemplo);
-    console.log('   ✓ Clases insertadas correctamente');
+    console.log('Clases insertadas correctamente');
   } catch (error) {
     console.error('Error insertando clases:', error);
   }

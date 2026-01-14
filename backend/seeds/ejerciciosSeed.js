@@ -200,11 +200,11 @@ const seedEjercicios = async () => {
   try {
     // Limpiar colección existente
     await Ejercicio.deleteMany({});
-    console.log('  ✓ Colección de ejercicios limpiada');
+    console.log('Colección de ejercicios limpiada');
     
     // Insertar ejercicios de prueba
     const ejercicios = await Ejercicio.insertMany(ejerciciosData);
-    console.log(`  ✓ ${ejercicios.length} ejercicios creados correctamente`);
+    console.log(`${ejercicios.length} ejercicios creados correctamente`);
     
     // Mostrar resumen por grupo muscular
     const grupos = ['pecho', 'espalda', 'piernas', 'hombros', 'brazos', 'core'];
@@ -222,7 +222,7 @@ const seedEjercicios = async () => {
     console.log(`    - Gimnasio: ${gimnasio} ejercicios`);
     
   } catch (error) {
-    console.error('  ✗ Error al poblar ejercicios:', error);
+    console.error(' Error al poblar ejercicios:', error);
     throw error;
   }
 };

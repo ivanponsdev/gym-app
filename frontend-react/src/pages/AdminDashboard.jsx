@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { userAPI, clasesAPI, ejerciciosAPI } from '../services/api'
+import { userAPI, clasesAPI, ejerciciosAPI, guiasAPI } from '../services/api'
 import Sidebar from '../components/Sidebar'
 import CustomModal from '../components/CustomModal'
 
@@ -22,6 +22,10 @@ const AdminDashboard = () => {
   })
   const [ejercicios, setEjercicios] = useState(() => {
     const cached = sessionStorage.getItem('adminEjercicios')
+    return cached ? JSON.parse(cached) : []
+  })
+  const [guias, setGuias] = useState(() => {
+    const cached = sessionStorage.getItem('adminGuias')
     return cached ? JSON.parse(cached) : []
   })
   
@@ -73,6 +77,16 @@ const AdminDashboard = () => {
     equipamiento: 'casa'
   })
 
+  // Estados guías
+  const [showGuiaModal, setShowGuiaModal] = useState(false)
+  const [editingGuia, setEditingGuia] = useState(null)
+  const [guiaForm, setGuiaForm] = useState({
+    titulo: '',
+    descripcion: '',
+    objetivo: 'todos',
+    activa: true
+  })
+
   useEffect(() => {
     // Carga bajo demanda con caché: solo carga si no hay datos
     if (activeSection === 'users' && users.length === 0) {
@@ -81,6 +95,8 @@ const AdminDashboard = () => {
       loadClases()
     } else if (activeSection === 'ejercicios' && ejercicios.length === 0) {
       loadEjercicios()
+    } else if (activeSection === 'guias' && guias.length === 0) {
+      loadGuias()
     }
   }, [activeSection])
 
@@ -120,6 +136,19 @@ const AdminDashboard = () => {
       sessionStorage.setItem('adminEjercicios', JSON.stringify(data))
     } catch (error) {
       console.error('Error al cargar ejercicios:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const loadGuias = async () => {
+    setLoading(true)
+    try {
+      const data = await guiasAPI.obtenerTodas()
+      setGuias(data)
+      sessionStorage.setItem('adminGuias', JSON.stringify(data))
+    } catch (error) {
+      console.error('Error al cargar guías:', error)
     } finally {
       setLoading(false)
     }
@@ -199,6 +228,33 @@ const AdminDashboard = () => {
             isOpen: true,
             type: 'alert',
             message: 'Error al eliminar ejercicio: ' + error.message,
+            onConfirm: null
+          })
+        }
+      }
+    })
+  }
+
+  const handleDeleteGuia = async (guiaId) => {
+    setModalConfig({
+      isOpen: true,
+      type: 'confirm',
+      message: '¿Estás seguro de eliminar esta guía?',
+      onConfirm: async () => {
+        try {
+          await guiasAPI.eliminar(guiaId)
+          setModalConfig({
+            isOpen: true,
+            type: 'alert',
+            message: 'Guía eliminada correctamente',
+            onConfirm: null
+          })
+          loadGuias()
+        } catch (error) {
+          setModalConfig({
+            isOpen: true,
+            type: 'alert',
+            message: 'Error al eliminar guía: ' + error.message,
             onConfirm: null
           })
         }
@@ -401,10 +457,65 @@ const AdminDashboard = () => {
     }
   }
 
+  // Funciones para guías
+  const handleAddGuia = () => {
+    setEditingGuia(null)
+    setGuiaForm({
+      titulo: '',
+      descripcion: '',
+      objetivo: 'todos',
+      activa: true
+    })
+    setShowGuiaModal(true)
+  }
+
+  const handleEditGuia = (guia) => {
+    setEditingGuia(guia)
+    setGuiaForm({
+      titulo: guia.titulo,
+      descripcion: guia.descripcion || '',
+      objetivo: guia.objetivo,
+      activa: guia.activa
+    })
+    setShowGuiaModal(true)
+  }
+
+  const handleSaveGuia = async () => {
+    try {
+      if (editingGuia) {
+        await guiasAPI.actualizar(editingGuia._id, guiaForm)
+        setModalConfig({
+          isOpen: true,
+          type: 'alert',
+          message: 'Guía actualizada correctamente',
+          onConfirm: null
+        })
+      } else {
+        await guiasAPI.crear(guiaForm)
+        setModalConfig({
+          isOpen: true,
+          type: 'alert',
+          message: 'Guía creada correctamente',
+          onConfirm: null
+        })
+      }
+      setShowGuiaModal(false)
+      loadGuias()
+    } catch (error) {
+      setModalConfig({
+        isOpen: true,
+        type: 'alert',
+        message: 'Error: ' + error.message,
+        onConfirm: null
+      })
+    }
+  }
+
   const menuItems = [
     { id: 'users', label: 'Gestión Usuarios' },
     { id: 'clases', label: 'Gestión Clases' },
-    { id: 'ejercicios', label: 'Gestión Ejercicios' }
+    { id: 'ejercicios', label: 'Gestión Ejercicios' },
+    { id: 'guias', label: 'Gestión Guías' }
   ]
 
   useEffect(() => {
@@ -639,6 +750,86 @@ const AdminDashboard = () => {
                                 className="btn-icon btn-delete"
                                 onClick={() => handleDeleteEjercicio(ejercicio._id)}
                                 title="Eliminar ejercicio"
+                              >
+                                🗑️
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {activeSection === 'guias' && (
+          <section id="admin-guias" className="content-section active">
+            <h2>Gestión de Guías</h2>
+            <div className="search-container">
+              <input type="search" placeholder="Buscar por título u objetivo..." />
+            </div>
+            <div id="guias-list-container">
+              <button 
+                className="btn-neon btn-add" 
+                style={{ marginBottom: '20px', width: 'auto', padding: '0.8rem 1.5rem' }}
+                onClick={handleAddGuia}
+              >
+                Añadir Guía
+              </button>
+              <div className="table-wrapper">
+                {loading && guias.length === 0 ? (
+                  <div className="spinner-container">
+                    <div className="spinner-large"></div>
+                    <p style={{ marginTop: '1rem', color: 'var(--secondary-color)' }}>Cargando guías...</p>
+                  </div>
+                ) : guias.length === 0 ? (
+                  <p>No hay guías registradas</p>
+                ) : (
+                  <table className="admin-table">
+                    <thead>
+                      <tr>
+                        <th>Título</th>
+                        <th>Objetivo</th>
+                        <th>Estado</th>
+                        <th>Descripción</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {guias.map((guia) => (
+                        <tr key={guia._id}>
+                          <td>{guia.titulo}</td>
+                          <td style={{textTransform: 'capitalize'}}>{guia.objetivo.replace(/_/g, ' ')}</td>
+                          <td>
+                            <span style={{
+                              padding: '0.3rem 0.6rem',
+                              borderRadius: '12px',
+                              fontSize: '0.8rem',
+                              backgroundColor: guia.activa ? '#2ecc71' : '#e74c3c',
+                              color: 'white'
+                            }}>
+                              {guia.activa ? 'Activa' : 'Inactiva'}
+                            </span>
+                          </td>
+                          <td style={{maxWidth: '300px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
+                            {guia.descripcion || '-'}
+                          </td>
+                          <td>
+                            <div className="action-buttons">
+                              <button 
+                                className="btn-icon btn-edit" 
+                                onClick={() => handleEditGuia(guia)}
+                                title="Editar guía"
+                              >
+                                ✏️
+                              </button>
+                              <button 
+                                className="btn-icon btn-delete"
+                                onClick={() => handleDeleteGuia(guia._id)}
+                                title="Eliminar guía"
                               >
                                 🗑️
                               </button>
@@ -926,6 +1117,87 @@ const AdminDashboard = () => {
                 {editingEjercicio ? 'Actualizar' : 'Crear'}
               </button>
               <button className="btn-action" onClick={() => setShowEjercicioModal(false)}>
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal para añadir/editar guía */}
+      {showGuiaModal && (
+        <div className="modal-overlay" onClick={() => setShowGuiaModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h2>{editingGuia ? 'Editar Guía' : 'Añadir Guía'}</h2>
+            <div className="form-group">
+              <label>Título *</label>
+              <input
+                type="text"
+                value={guiaForm.titulo}
+                onChange={(e) => setGuiaForm({ ...guiaForm, titulo: e.target.value })}
+                required
+                placeholder="Ej: Hábitos de Alimentación para..."
+              />
+            </div>
+            <div className="form-group">
+              <label>Objetivo *</label>
+              <select
+                value={guiaForm.objetivo}
+                onChange={(e) => setGuiaForm({ ...guiaForm, objetivo: e.target.value })}
+              >
+                <option value="aumento_masa_muscular">Aumento de Masa Muscular</option>
+                <option value="recomposicion_corporal">Recomposición Corporal</option>
+                <option value="perdida_grasa">Pérdida de Grasa</option>
+                <option value="todos">Todos los Objetivos</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Estado</label>
+              <select
+                value={guiaForm.activa}
+                onChange={(e) => setGuiaForm({ ...guiaForm, activa: e.target.value === 'true' })}
+              >
+                <option value="true">Activa</option>
+                <option value="false">Inactiva</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Descripción</label>
+              <textarea
+                value={guiaForm.descripcion}
+                onChange={(e) => setGuiaForm({ ...guiaForm, descripcion: e.target.value })}
+                rows="4"
+                placeholder="Describe el contenido de la guía..."
+              />
+            </div>
+            <div className="form-group">
+              <label>Archivo PDF</label>
+              <input
+                type="file"
+                accept="application/pdf"
+                onChange={(e) => {
+                  const file = e.target.files[0]
+                  if (file) {
+                    setGuiaForm({ ...guiaForm, archivoPdf: file })
+                  }
+                }}
+              />
+              {guiaForm.archivoPdf instanceof File && (
+                <p style={{marginTop: '0.5rem', color: 'var(--secondary-color)', fontSize: '0.9rem'}}>
+                  ✅ {guiaForm.archivoPdf.name}
+                </p>
+              )}
+              {editingGuia && editingGuia.archivoUrl && !(guiaForm.archivoPdf instanceof File) && (
+                <p style={{marginTop: '0.5rem', color: 'var(--text-color-dark)', fontSize: '0.9rem'}}>
+                  Archivo actual: {editingGuia.archivoUrl.split('/').pop()}
+                </p>
+              )}
+            </div>
+            <div className="modal-buttons">
+              <button className="btn-action" onClick={handleSaveGuia}>
+                {editingGuia ? 'Actualizar' : 'Crear'}
+              </button>
+              <button className="btn-action" onClick={() => setShowGuiaModal(false)}>
                 Cancelar
               </button>
             </div>

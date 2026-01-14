@@ -159,7 +159,7 @@ export const clasesAPI = {
     return handleResponse(response)
   },
 
-  // --- ENDPOINTS DE ADMINISTRADOR ---
+  //  ADMINISTRADOR 
 
   // Crear una nueva clase (admin)
   create: async (claseData) => {
@@ -238,7 +238,7 @@ export const ejerciciosAPI = {
   crear: async (ejercicioData) => {
     const formData = new FormData()
     
-    // A\u00f1adir campos de texto
+    //Form data archivo y campos
     Object.keys(ejercicioData).forEach(key => {
       if (key === 'imagenTecnica' && ejercicioData[key] instanceof File) {
         formData.append('imagenTecnica', ejercicioData[key])
@@ -264,8 +264,7 @@ export const ejerciciosAPI = {
   //Actualizar ejercicio (Admin)
   actualizar: async (id, ejercicioData) => {
     const formData = new FormData()
-    
-    // A\u00f1adir campos de texto
+    //Form data archivo y campos
     Object.keys(ejercicioData).forEach(key => {
       if (key === 'imagenTecnica' && ejercicioData[key] instanceof File) {
         formData.append('imagenTecnica', ejercicioData[key])
@@ -290,6 +289,88 @@ export const ejerciciosAPI = {
   //Eliminar ejercicio (Admin)
   eliminar: async (id) => {
     const response = await fetch(`${API_URL}/ejercicios/${id}`, {
+      method: 'DELETE',
+      headers: getHeaders()
+    })
+    return handleResponse(response)
+  }
+}
+
+// Guías
+export const guiasAPI = {
+  // Obtener guías del usuario (filtradas)
+  obtenerMisGuias: async () => {
+    const response = await fetch(`${API_URL}/guias/mis-guias`, {
+      headers: getHeaders()
+    })
+    return handleResponse(response)
+  },
+
+  // Obtener guía por ID
+  obtenerPorId: async (id) => {
+    const response = await fetch(`${API_URL}/guias/${id}`, {
+      headers: getHeaders()
+    })
+    return handleResponse(response)
+  },
+
+  // ADMIN Obtener todas las guías
+  obtenerTodas: async () => {
+    const response = await fetch(`${API_URL}/guias`, {
+      headers: getHeaders()
+    })
+    return handleResponse(response)
+  },
+
+  // ADMIN Crear nueva guía
+  crear: async (guiaData) => {
+    const formData = new FormData()
+    
+    Object.keys(guiaData).forEach(key => {
+      if (key === 'archivoPdf' && guiaData[key] instanceof File) {
+        formData.append('archivoPdf', guiaData[key])
+      } else if (key !== 'archivoPdf') {
+        formData.append(key, guiaData[key])
+      }
+    })
+    
+    const token = localStorage.getItem('token')
+    const response = await fetch(`${API_URL}/guias`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      body: formData
+    })
+    return handleResponse(response)
+  },
+
+  // ADMIN Actualizar guía
+  actualizar: async (id, guiaData) => {
+    const formData = new FormData()
+    
+    Object.keys(guiaData).forEach(key => {
+      if (key === 'archivoPdf' && guiaData[key] instanceof File) {
+        formData.append('archivoPdf', guiaData[key])
+      } else if (key !== 'archivoPdf') {
+        formData.append(key, guiaData[key])
+      }
+    })
+    
+    const token = localStorage.getItem('token')
+    const response = await fetch(`${API_URL}/guias/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      body: formData
+    })
+    return handleResponse(response)
+  },
+
+  // ADMIN Eliminar guía
+  eliminar: async (id) => {
+    const response = await fetch(`${API_URL}/guias/${id}`, {
       method: 'DELETE',
       headers: getHeaders()
     })
