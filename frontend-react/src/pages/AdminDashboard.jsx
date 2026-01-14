@@ -804,15 +804,7 @@ const AdminDashboard = () => {
                           <td>{guia.titulo}</td>
                           <td style={{textTransform: 'capitalize'}}>{guia.objetivo.replace(/_/g, ' ')}</td>
                           <td>
-                            <span style={{
-                              padding: '0.3rem 0.6rem',
-                              borderRadius: '12px',
-                              fontSize: '0.8rem',
-                              backgroundColor: guia.activa ? '#2ecc71' : '#e74c3c',
-                              color: 'white'
-                            }}>
-                              {guia.activa ? 'Activa' : 'Inactiva'}
-                            </span>
+                            {guia.activa ? '✅ Activa' : '❌ Inactiva'}
                           </td>
                           <td style={{maxWidth: '300px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
                             {guia.descripcion || '-'}
