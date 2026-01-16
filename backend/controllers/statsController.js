@@ -37,8 +37,8 @@ exports.obtenerEstadisticasGlobales = async (req, res) => {
           horaInicio: 1,
           inscritos: { 
             $cond: {
-              if: { $isArray: '$inscritos' },
-              then: { $size: '$inscritos' },
+              if: { $isArray: '$alumnosApuntados' },
+              then: { $size: '$alumnosApuntados' },
               else: 0
             }
           }
@@ -54,8 +54,8 @@ exports.obtenerEstadisticasGlobales = async (req, res) => {
         $project: {
           numInscritos: { 
             $cond: {
-              if: { $isArray: '$inscritos' },
-              then: { $size: '$inscritos' },
+              if: { $isArray: '$alumnosApuntados' },
+              then: { $size: '$alumnosApuntados' },
               else: 0
             }
           }
@@ -78,8 +78,8 @@ exports.obtenerEstadisticasGlobales = async (req, res) => {
           inscritos: { 
             $sum: {
               $cond: {
-                if: { $isArray: '$inscritos' },
-                then: { $size: '$inscritos' },
+                if: { $isArray: '$alumnosApuntados' },
+                then: { $size: '$alumnosApuntados' },
                 else: 0
               }
             }
