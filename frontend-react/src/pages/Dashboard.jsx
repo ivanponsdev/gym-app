@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import { userAPI, clasesAPI, ejerciciosAPI, guiasAPI } from '../services/api'
 import Sidebar from '../components/Sidebar'
 import CustomModal from '../components/CustomModal'
+import LandBotWidget from '../components/LandBotWidget'
 
 // Componente para la sección de ejercicios
 const EjerciciosSection = () => {
@@ -472,7 +473,8 @@ const Dashboard = () => {
     { id: 'clases', label: 'Clases' },
     { id: 'mis-clases', label: 'Mis Clases' },
     { id: 'ejercicios', label: 'Ejercicios' },
-    { id: 'guias', label: 'Guías' }
+    { id: 'guias', label: 'Guías' },
+    { id: 'paco', label: '🤖 Asistente Virtual' }
   ]
 
   const handleLogout = () => {
@@ -807,6 +809,84 @@ const Dashboard = () => {
 
         {activeSection === 'guias' && (
           <GuiasSection />
+        )}
+
+        {activeSection === 'paco' && (
+          <section className="content-section active">
+            <h2>🤖 Asistente Virtual</h2>
+            <p style={{marginBottom: '1.5rem', color: 'var(--text-color-dark)'}}>
+              Tu asistente personal para resolver dudas sobre entrenamiento, nutrición y más
+            </p>
+            <div style={{ 
+              display: 'flex', 
+              gap: '2rem', 
+              height: 'calc(100vh - 250px)', 
+              minHeight: '600px',
+              alignItems: 'stretch'
+            }}>
+              {/* Imagen de Paco */}
+              <div style={{
+                flex: '0 0 300px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                position: 'relative'
+              }}>
+                <div 
+                  className="paco-image-container"
+                  style={{
+                    width: '100%',
+                    height: '500px',
+                    borderRadius: '12px',
+                    overflow: 'hidden',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                    position: 'relative',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <img 
+                    src="/PACO.png" 
+                    alt="Paco - Asistente Virtual"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover'
+                    }}
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.parentElement.innerHTML = '<div style="width:100%;height:100%;background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);display:flex;align-items:center;justify-content:center;font-size:80px;">🤖</div>';
+                    }}
+                  />
+                  {/* Overlay info que aparece en hover */}
+                  <div 
+                    className="paco-info-overlay"
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      background: 'linear-gradient(to top, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%)',
+                      color: 'white',
+                      padding: '1.5rem',
+                      transform: 'translateY(100%)',
+                      transition: 'transform 0.3s ease',
+                      textAlign: 'center'
+                    }}
+                  >
+                    <h3 style={{margin: '0 0 0.5rem 0', fontSize: '1.5rem'}}>Paco</h3>
+                    <p style={{margin: 0, fontSize: '0.9rem', opacity: 0.9}}>
+                      Tu entrenador virtual disponible 24/7
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Chat de Landbot */}
+              <div style={{ flex: '1', minWidth: '0', display: 'flex' }}>
+                <LandBotWidget height="100%" width="100%" />
+              </div>
+            </div>
+          </section>
         )}
       </main>
 

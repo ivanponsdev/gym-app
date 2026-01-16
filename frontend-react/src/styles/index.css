@@ -3217,3 +3217,8 @@ body {
         padding: 0.3rem 0.7rem;
     }
 }
+
+/* Efecto hover para la imagen de Paco */
+.paco-image-container:hover .paco-info-overlay {
+    transform: translateY(0) !important;
+}
