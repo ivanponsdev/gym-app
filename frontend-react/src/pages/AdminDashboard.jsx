@@ -1,14 +1,272 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { userAPI, clasesAPI, ejerciciosAPI, guiasAPI } from '../services/api'
+import { userAPI, clasesAPI, ejerciciosAPI, guiasAPI, statsAPI } from '../services/api'
 import Sidebar from '../components/Sidebar'
 import CustomModal from '../components/CustomModal'
+import GraficoBarras from '../components/charts/GraficoBarras'
+import GraficoCircular from '../components/charts/GraficoCircular'
+import GraficoLineal from '../components/charts/GraficoLineal'
+
+// Componente para la sección de estadísticas
+const EstadisticasSection = () => {
+  const [stats, setStats] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    cargarEstadisticas()
+  }, [])
+
+  const cargarEstadisticas = async () => {
+    try {
+      setLoading(true)
+      const data = await statsAPI.obtenerEstadisticasGlobales()
+      setStats(data)
+      setError('')
+    } catch (error) {
+      console.error('Error al cargar estadísticas:', error)
+      setError('Error al cargar estadísticas: ' + error.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <section className="content-section active">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Cargando estadísticas del negocio...</p>
+        </div>
+      </section>
+    )
+  }
+
+  if (error) {
+    return (
+      <section className="content-section active">
+        <div className="error-container">
+          <h2>Error</h2>
+          <p>{error}</p>
+          <button onClick={cargarEstadisticas} className="btn-neon">Reintentar</button>
+        </div>
+      </section>
+    )
+  }
+
+  if (!stats) {
+    return (
+      <section className="content-section active">
+        <div className="sin-resultados">
+          <h3>📊 No hay estadísticas disponibles</h3>
+          <p>No hay datos suficientes en el sistema</p>
+        </div>
+      </section>
+    )
+  }
+
+  return (
+    <section className="content-section active">
+      <h2>📊 Estadísticas del Negocio</h2>
+      <p style={{marginBottom: '1.5rem', color: 'var(--text-color-dark)'}}>
+        Dashboard de métricas clave del gimnasio
+      </p>
+
+      {/* Tarjetas de KPIs */}
+      <div className="stats-summary-grid" style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+        gap: '1rem',
+        marginBottom: '2rem'
+      }}>
+        <div className="card" style={{textAlign: 'center', padding: '1.5rem'}}>
+          <h3 style={{fontSize: '2.5rem', margin: '0', color: 'var(--neon-color)'}}>
+            {stats.totalUsuarios}
+          </h3>
+          <p style={{margin: '0.5rem 0 0 0', color: 'var(--text-color-dark)'}}>
+            👥 Total Usuarios
+          </p>
+        </div>
+        
+        <div className="card" style={{textAlign: 'center', padding: '1.5rem'}}>
+          <h3 style={{fontSize: '2.5rem', margin: '0', color: 'var(--neon-color)'}}>
+            {stats.totalClases}
+          </h3>
+          <p style={{margin: '0.5rem 0 0 0', color: 'var(--text-color-dark)'}}>
+            🏋️ Total Clases
+          </p>
+        </div>
+        
+        <div className="card" style={{textAlign: 'center', padding: '1.5rem'}}>
+          <h3 style={{fontSize: '2.5rem', margin: '0', color: 'var(--neon-color)'}}>
+            {stats.totalInscripciones || 0}
+          </h3>
+          <p style={{margin: '0.5rem 0 0 0', color: 'var(--text-color-dark)'}}>
+            ✅ Total Inscripciones
+          </p>
+        </div>
+
+        <div className="card" style={{textAlign: 'center', padding: '1.5rem'}}>
+          <h3 style={{fontSize: '2.5rem', margin: '0', color: 'var(--neon-color)'}}>
+            {stats.promedioInscritosPorClase || 0}
+          </h3>
+          <p style={{margin: '0.5rem 0 0 0', color: 'var(--text-color-dark)'}}>
+            📊 Promedio/Clase
+          </p>
+        </div>
+      </div>
+
+      {/* Gráficos principales */}
+      <div className="stats-charts-grid" style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
+        gap: '1.5rem',
+        marginBottom: '2rem'
+      }}>
+        {/* Gráfico Circular - Usuarios por objetivo */}
+        {stats.usuariosPorObjetivo && stats.usuariosPorObjetivo.length > 0 && (
+          <div className="card" style={{padding: '1.5rem', minHeight: '350px'}}>
+            <GraficoCircular
+              data={stats.usuariosPorObjetivo}
+              dataKey="value"
+              nameKey="name"
+              titulo="Distribución de Usuarios por Objetivo"
+            />
+          </div>
+        )}
+
+        {/* Gráfico de Barras - Clases más populares */}
+        {stats.clasesPopulares && stats.clasesPopulares.length > 0 && (
+          <div className="card" style={{padding: '1.5rem', minHeight: '350px'}}>
+            <GraficoBarras
+              data={stats.clasesPopulares.slice(0, 5)}
+              dataKey="inscritos"
+              xAxisKey="nombre"
+              titulo="Top 5 Clases Más Populares"
+              color="#00d4ff"
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Gráfico de distribución por día */}
+      {stats.clasesPorDia && stats.clasesPorDia.length > 0 && (
+        <div className="card" style={{padding: '1.5rem', minHeight: '350px', marginBottom: '2rem'}}>
+          <GraficoLineal
+            data={stats.clasesPorDia}
+            dataKeys={['cantidad', 'inscritos']}
+            xAxisKey="dia"
+            titulo="Distribución de Clases e Inscritos por Día"
+            colors={['#00d4ff', '#82ca9d']}
+          />
+        </div>
+      )}
+
+      {/* Tabla de clases populares */}
+      {stats.clasesPopulares && stats.clasesPopulares.length > 0 && (
+        <div className="card" style={{padding: '1.5rem', marginBottom: '1.5rem'}}>
+          <h3 style={{margin: '0 0 1rem 0'}}>🔥 Ranking de Clases</h3>
+          <div style={{overflowX: 'auto'}}>
+            <table style={{width: '100%', borderCollapse: 'collapse'}}>
+              <thead>
+                <tr style={{borderBottom: '2px solid var(--neon-color)'}}>
+                  <th style={{padding: '0.75rem', textAlign: 'left'}}>Posición</th>
+                  <th style={{padding: '0.75rem', textAlign: 'left'}}>Clase</th>
+                  <th style={{padding: '0.75rem', textAlign: 'center'}}>Día</th>
+                  <th style={{padding: '0.75rem', textAlign: 'center'}}>Hora</th>
+                  <th style={{padding: '0.75rem', textAlign: 'center'}}>Inscritos</th>
+                </tr>
+              </thead>
+              <tbody>
+                {stats.clasesPopulares.map((clase, index) => (
+                  <tr key={index} style={{borderBottom: '1px solid rgba(255,255,255,0.1)'}}>
+                    <td style={{padding: '0.75rem'}}>
+                      <span style={{
+                        display: 'inline-block',
+                        width: '30px',
+                        height: '30px',
+                        lineHeight: '30px',
+                        textAlign: 'center',
+                        borderRadius: '50%',
+                        backgroundColor: index < 3 ? 'var(--neon-color)' : 'rgba(255,255,255,0.1)',
+                        fontWeight: 'bold'
+                      }}>
+                        {index + 1}
+                      </span>
+                    </td>
+                    <td style={{padding: '0.75rem', fontWeight: 'bold'}}>{clase.nombre}</td>
+                    <td style={{padding: '0.75rem', textAlign: 'center', textTransform: 'capitalize'}}>
+                      {clase.dia}
+                    </td>
+                    <td style={{padding: '0.75rem', textAlign: 'center'}}>{clase.hora}</td>
+                    <td style={{padding: '0.75rem', textAlign: 'center'}}>
+                      <span style={{
+                        padding: '0.25rem 0.75rem',
+                        borderRadius: '12px',
+                        backgroundColor: 'rgba(0, 212, 255, 0.2)',
+                        color: 'var(--neon-color)',
+                        fontWeight: 'bold'
+                      }}>
+                        {clase.inscritos}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* Información adicional */}
+      <div className="card" style={{
+        padding: '1.5rem',
+        background: 'linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(102, 126, 234, 0.1) 100%)',
+        borderLeft: '4px solid var(--neon-color)'
+      }}>
+        <h3 style={{margin: '0 0 1rem 0'}}>📈 Insights del Negocio</h3>
+        <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem'}}>
+          <div>
+            <p style={{margin: 0, fontSize: '0.9rem', color: 'var(--text-color-dark)'}}>
+              ⭐ Clase más demandada
+            </p>
+            <p style={{margin: '0.25rem 0 0 0', fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--neon-color)'}}>
+              {stats.clasesPopulares?.[0]?.nombre || 'N/A'}
+            </p>
+          </div>
+          <div>
+            <p style={{margin: 0, fontSize: '0.9rem', color: 'var(--text-color-dark)'}}>
+              🎯 Objetivo más común
+            </p>
+            <p style={{margin: '0.25rem 0 0 0', fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--neon-color)'}}>
+              {stats.usuariosPorObjetivo?.[0]?.name || 'N/A'}
+            </p>
+          </div>
+          <div>
+            <p style={{margin: 0, fontSize: '0.9rem', color: 'var(--text-color-dark)'}}>
+              💪 Tasa de ocupación
+            </p>
+            <p style={{margin: '0.25rem 0 0 0', fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--neon-color)'}}>
+              {stats.totalInscripciones && stats.totalClases 
+                ? `${Math.round((stats.totalInscripciones / (stats.totalClases * 20)) * 100)}%`
+                : 'N/A'
+              }
+            </p>
+            <p style={{margin: '0.25rem 0 0 0', fontSize: '0.75rem', color: 'var(--text-color-dark)'}}>
+              (Capacidad estimada: 20 por clase)
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
 
 const AdminDashboard = () => {
   const navigate = useNavigate()
   const { logout } = useAuth()
-  const [activeSection, setActiveSection] = useState('users')
+  const [activeSection, setActiveSection] = useState('estadisticas')
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
   
   // Inicializar desde sessionStorage si existe
@@ -512,6 +770,7 @@ const AdminDashboard = () => {
   }
 
   const menuItems = [
+    { id: 'estadisticas', label: '📊 Estadísticas' },
     { id: 'users', label: 'Gestión Usuarios' },
     { id: 'clases', label: 'Gestión Clases' },
     { id: 'ejercicios', label: 'Gestión Ejercicios' },
@@ -552,6 +811,8 @@ const AdminDashboard = () => {
         menuItems={menuItems}
       />
       <main className="content">
+        {activeSection === 'estadisticas' && <EstadisticasSection />}
+        
         {activeSection === 'users' && (
           <section id="admin-users" className="content-section active">
             <h2>Gestión de Usuarios</h2>

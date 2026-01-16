@@ -377,3 +377,14 @@ export const guiasAPI = {
     return handleResponse(response)
   }
 }
+
+// Estadísticas
+export const statsAPI = {
+  // Obtener estadísticas globales (solo admin)
+  obtenerEstadisticasGlobales: async () => {
+    const response = await fetch(`${API_URL}/stats/global`, {
+      headers: getHeaders()
+    })
+    return handleResponse(response)
+  }
+}
