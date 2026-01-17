@@ -22,6 +22,7 @@ const EstadisticasSection = () => {
     try {
       setLoading(true)
       const data = await statsAPI.obtenerEstadisticasGlobales()
+      console.log('Datos de estadísticas recibidos:', data)
       setStats(data)
       setError('')
     } catch (error) {
@@ -124,9 +125,9 @@ const EstadisticasSection = () => {
         gap: '1.5rem',
         marginBottom: '2rem'
       }}>
-        {/* Gráfico Circular - Usuarios por objetivo */}
+        {/* Gráfico Circular*/}
         {stats.usuariosPorObjetivo && stats.usuariosPorObjetivo.length > 0 && (
-          <div className="card" style={{padding: '1.5rem', minHeight: '350px'}}>
+          <div className="card" style={{padding: '1.5rem', height: '400px'}}>
             <GraficoCircular
               data={stats.usuariosPorObjetivo}
               dataKey="value"
@@ -136,29 +137,29 @@ const EstadisticasSection = () => {
           </div>
         )}
 
-        {/* Gráfico de Barras - Clases más populares */}
-        {stats.clasesPopulares && stats.clasesPopulares.length > 0 && (
-          <div className="card" style={{padding: '1.5rem', minHeight: '350px'}}>
+        {/* Gráfico de Barras */}
+        {stats.usuariosPorSexo && stats.usuariosPorSexo.length > 0 && (
+          <div className="card" style={{padding: '1.5rem', height: '400px'}}>
             <GraficoBarras
-              data={stats.clasesPopulares.slice(0, 5)}
-              dataKey="inscritos"
-              xAxisKey="nombre"
-              titulo="Top 5 Clases Más Populares"
-              color="#00d4ff"
+              data={stats.usuariosPorSexo}
+              dataKey="cantidad"
+              xAxisKey="sexo"
+              titulo="Usuarios Activos por Sexo"
+              colors={['#00BFFF', '#FF1493', '#FFFF00']}
             />
           </div>
         )}
       </div>
 
-      {/* Gráfico de distribución por día */}
-      {stats.clasesPorDia && stats.clasesPorDia.length > 0 && (
-        <div className="card" style={{padding: '1.5rem', minHeight: '350px', marginBottom: '2rem'}}>
+      {/* Gráfico de Líneal*/}
+      {stats.evolucionPorGrupoEdad && stats.evolucionPorGrupoEdad.length > 0 && (
+        <div className="card" style={{padding: '1.5rem', height: '450px', marginBottom: '2rem'}}>
           <GraficoLineal
-            data={stats.clasesPorDia}
-            dataKeys={['cantidad', 'inscritos']}
-            xAxisKey="dia"
-            titulo="Distribución de Clases e Inscritos por Día"
-            colors={['#00d4ff', '#82ca9d']}
+            data={stats.evolucionPorGrupoEdad}
+            dataKeys={['18-29', '30-44', '45+']}
+            xAxisKey="mes"
+            titulo="Evolución de Inscritos por Grupo de Edad"
+            colors={['#00BFFF', '#FFFF00', '#FF1493']}
           />
         </div>
       )}
@@ -166,95 +167,200 @@ const EstadisticasSection = () => {
       {/* Tabla de clases populares */}
       {stats.clasesPopulares && stats.clasesPopulares.length > 0 && (
         <div className="card" style={{padding: '1.5rem', marginBottom: '1.5rem'}}>
-          <h3 style={{margin: '0 0 1rem 0'}}>🔥 Ranking de Clases</h3>
-          <div style={{overflowX: 'auto'}}>
-            <table style={{width: '100%', borderCollapse: 'collapse'}}>
-              <thead>
-                <tr style={{borderBottom: '2px solid var(--neon-color)'}}>
-                  <th style={{padding: '0.75rem', textAlign: 'left'}}>Posición</th>
-                  <th style={{padding: '0.75rem', textAlign: 'left'}}>Clase</th>
-                  <th style={{padding: '0.75rem', textAlign: 'center'}}>Día</th>
-                  <th style={{padding: '0.75rem', textAlign: 'center'}}>Hora</th>
-                  <th style={{padding: '0.75rem', textAlign: 'center'}}>Inscritos</th>
-                </tr>
-              </thead>
-              <tbody>
-                {stats.clasesPopulares.map((clase, index) => (
-                  <tr key={index} style={{borderBottom: '1px solid rgba(255,255,255,0.1)'}}>
-                    <td style={{padding: '0.75rem'}}>
-                      <span style={{
-                        display: 'inline-block',
-                        width: '30px',
-                        height: '30px',
-                        lineHeight: '30px',
-                        textAlign: 'center',
-                        borderRadius: '50%',
-                        backgroundColor: index < 3 ? 'var(--neon-color)' : 'rgba(255,255,255,0.1)',
-                        fontWeight: 'bold'
-                      }}>
-                        {index + 1}
-                      </span>
-                    </td>
-                    <td style={{padding: '0.75rem', fontWeight: 'bold'}}>{clase.nombre}</td>
-                    <td style={{padding: '0.75rem', textAlign: 'center', textTransform: 'capitalize'}}>
-                      {clase.dia}
-                    </td>
-                    <td style={{padding: '0.75rem', textAlign: 'center'}}>{clase.hora}</td>
-                    <td style={{padding: '0.75rem', textAlign: 'center'}}>
-                      <span style={{
-                        padding: '0.25rem 0.75rem',
-                        borderRadius: '12px',
-                        backgroundColor: 'rgba(0, 212, 255, 0.2)',
-                        color: 'var(--neon-color)',
-                        fontWeight: 'bold'
-                      }}>
-                        {clase.inscritos}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <h3 style={{margin: '0 0 1.5rem 0', textAlign: 'center', fontSize: '1.5rem'}}>🏆 Rankings y Estadísticas Destacadas</h3>
+          
+          <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem'}}>
+            {/* Clase TOP */}
+            <div style={{
+              padding: '1.5rem',
+              background: 'linear-gradient(135deg, rgba(0, 191, 255, 0.1) 0%, rgba(148, 0, 211, 0.1) 100%)',
+              borderRadius: '12px',
+              border: '2px solid rgba(0, 191, 255, 0.3)',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              <div style={{
+                position: 'absolute',
+                top: '-10px',
+                right: '-10px',
+                fontSize: '4rem',
+                opacity: '0.1'
+              }}>🏋️</div>
+              <h4 style={{margin: '0 0 0.5rem 0', fontSize: '0.9rem', color: 'var(--text-color-dark)', textTransform: 'uppercase', letterSpacing: '1px'}}>
+                Clase TOP
+              </h4>
+              <p style={{margin: '0.5rem 0', fontSize: '1.8rem', fontWeight: 'bold', color: '#00BFFF'}}>
+                {stats.clasesPopulares[0]?.nombre || 'N/A'}
+              </p>
+              <p style={{margin: '0.5rem 0 0 0', fontSize: '0.85rem', color: 'var(--text-color-dark)'}}>
+                {stats.clasesPopulares[0]?.inscritos || 0} inscritos • {stats.clasesPopulares[0]?.dia} {stats.clasesPopulares[0]?.hora}
+              </p>
+            </div>
+
+            {/* Hora de entrenamiento TOP */}
+            <div style={{
+              padding: '1.5rem',
+              background: 'linear-gradient(135deg, rgba(255, 20, 147, 0.1) 0%, rgba(255, 255, 0, 0.1) 100%)',
+              borderRadius: '12px',
+              border: '2px solid rgba(255, 20, 147, 0.3)',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              <div style={{
+                position: 'absolute',
+                top: '-10px',
+                right: '-10px',
+                fontSize: '4rem',
+                opacity: '0.1'
+              }}>⏰</div>
+              <h4 style={{margin: '0 0 0.5rem 0', fontSize: '0.9rem', color: 'var(--text-color-dark)', textTransform: 'uppercase', letterSpacing: '1px'}}>
+                Hora TOP
+              </h4>
+              <p style={{margin: '0.5rem 0', fontSize: '1.8rem', fontWeight: 'bold', color: '#FF1493'}}>
+                {(() => {
+                  // Encontrar la hora más popular contando clases por hora
+                  const horasCounts = {}
+                  stats.clasesPopulares.forEach(clase => {
+                    const hora = clase.hora
+                    horasCounts[hora] = (horasCounts[hora] || 0) + clase.inscritos
+                  })
+                  const horaTop = Object.entries(horasCounts).sort((a, b) => b[1] - a[1])[0]
+                  return horaTop ? horaTop[0] : 'N/A'
+                })()}
+              </p>
+              <p style={{margin: '0.5rem 0 0 0', fontSize: '0.85rem', color: 'var(--text-color-dark)'}}>
+                Horario con más demanda
+              </p>
+            </div>
+
+            {/* Asistente Paco (LandBot) */}
+            <div style={{
+              padding: '1.5rem',
+              background: 'linear-gradient(135deg, rgba(255, 255, 0, 0.1) 0%, rgba(0, 255, 0, 0.1) 100%)',
+              borderRadius: '12px',
+              border: '2px solid rgba(255, 255, 0, 0.3)',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              <div style={{
+                position: 'absolute',
+                top: '-10px',
+                right: '-10px',
+                fontSize: '4rem',
+                opacity: '0.1'
+              }}>🤖</div>
+              <h4 style={{margin: '0 0 0.5rem 0', fontSize: '0.9rem', color: 'var(--text-color-dark)', textTransform: 'uppercase', letterSpacing: '1px'}}>
+                Asistente Paco
+              </h4>
+              <p style={{margin: '0.5rem 0', fontSize: '1.8rem', fontWeight: 'bold', color: '#FFFF00'}}>
+                {stats.interaccionesLandBot || '---'}
+              </p>
+              <p style={{margin: '0.5rem 0 0 0', fontSize: '0.85rem', color: 'var(--text-color-dark)'}}>
+                Conversaciones iniciadas
+              </p>
+            </div>
           </div>
         </div>
       )}
 
       {/* Información adicional */}
-      <div className="card" style={{
-        padding: '1.5rem',
-        background: 'linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(102, 126, 234, 0.1) 100%)',
-        borderLeft: '4px solid var(--neon-color)'
-      }}>
-        <h3 style={{margin: '0 0 1rem 0'}}>📈 Insights del Negocio</h3>
-        <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem'}}>
-          <div>
-            <p style={{margin: 0, fontSize: '0.9rem', color: 'var(--text-color-dark)'}}>
-              ⭐ Clase más demandada
-            </p>
-            <p style={{margin: '0.25rem 0 0 0', fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--neon-color)'}}>
+      <div className="card" style={{padding: '1.5rem', marginBottom: '1.5rem'}}>
+        <h3 style={{margin: '0 0 1.5rem 0', textAlign: 'center', fontSize: '1.5rem'}}>💡 Insights del Negocio</h3>
+        <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem'}}>
+          <div style={{
+            padding: '1.5rem',
+            background: 'linear-gradient(135deg, rgba(148, 0, 211, 0.1) 0%, rgba(0, 191, 255, 0.1) 100%)',
+            borderRadius: '12px',
+            border: '2px solid rgba(148, 0, 211, 0.3)',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            <div style={{
+              position: 'absolute',
+              top: '-10px',
+              right: '-10px',
+              fontSize: '4rem',
+              opacity: '0.1'
+            }}>⭐</div>
+            <h4 style={{margin: '0 0 0.5rem 0', fontSize: '0.9rem', color: 'var(--text-color-dark)', textTransform: 'uppercase', letterSpacing: '1px'}}>
+              Clase más demandada
+            </h4>
+            <p style={{margin: '0.5rem 0', fontSize: '1.8rem', fontWeight: 'bold', color: '#9400D3'}}>
               {stats.clasesPopulares?.[0]?.nombre || 'N/A'}
             </p>
-          </div>
-          <div>
-            <p style={{margin: 0, fontSize: '0.9rem', color: 'var(--text-color-dark)'}}>
-              🎯 Objetivo más común
-            </p>
-            <p style={{margin: '0.25rem 0 0 0', fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--neon-color)'}}>
-              {stats.usuariosPorObjetivo?.[0]?.name || 'N/A'}
+            <p style={{margin: '0.5rem 0 0 0', fontSize: '0.85rem', color: 'var(--text-color-dark)'}}>
+              La clase favorita del mes
             </p>
           </div>
-          <div>
-            <p style={{margin: 0, fontSize: '0.9rem', color: 'var(--text-color-dark)'}}>
-              💪 Tasa de ocupación
-            </p>
-            <p style={{margin: '0.25rem 0 0 0', fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--neon-color)'}}>
-              {stats.totalInscripciones && stats.totalClases 
-                ? `${Math.round((stats.totalInscripciones / (stats.totalClases * 20)) * 100)}%`
+          
+          <div style={{
+            padding: '1.5rem',
+            background: 'linear-gradient(135deg, rgba(0, 191, 255, 0.1) 0%, rgba(255, 20, 147, 0.1) 100%)',
+            borderRadius: '12px',
+            border: '2px solid rgba(0, 191, 255, 0.3)',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            <div style={{
+              position: 'absolute',
+              top: '-10px',
+              right: '-10px',
+              fontSize: '4rem',
+              opacity: '0.1'
+            }}>👥</div>
+            <h4 style={{margin: '0 0 0.5rem 0', fontSize: '0.9rem', color: 'var(--text-color-dark)', textTransform: 'uppercase', letterSpacing: '1px'}}>
+              Grupo de edad predominante
+            </h4>
+            <p style={{margin: '0.5rem 0', fontSize: '1.8rem', fontWeight: 'bold', color: '#00BFFF'}}>
+              {stats.evolucionPorGrupoEdad && stats.evolucionPorGrupoEdad.length > 0
+                ? (() => {
+                    const ultimo = stats.evolucionPorGrupoEdad[stats.evolucionPorGrupoEdad.length - 1]
+                    const max = Math.max(ultimo['18-29'], ultimo['30-44'], ultimo['45+'])
+                    if (max === ultimo['18-29']) return '18-29 años'
+                    if (max === ultimo['30-44']) return '30-44 años'
+                    return '45+ años'
+                  })()
                 : 'N/A'
               }
             </p>
-            <p style={{margin: '0.25rem 0 0 0', fontSize: '0.75rem', color: 'var(--text-color-dark)'}}>
-              (Capacidad estimada: 20 por clase)
+            <p style={{margin: '0.5rem 0 0 0', fontSize: '0.85rem', color: 'var(--text-color-dark)'}}>
+              Segmento con más usuarios
+            </p>
+          </div>
+          
+          <div style={{
+            padding: '1.5rem',
+            background: 'linear-gradient(135deg, rgba(255, 20, 147, 0.1) 0%, rgba(148, 0, 211, 0.1) 100%)',
+            borderRadius: '12px',
+            border: '2px solid rgba(255, 20, 147, 0.3)',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            <div style={{
+              position: 'absolute',
+              top: '-10px',
+              right: '-10px',
+              fontSize: '4rem',
+              opacity: '0.1'
+            }}>📈</div>
+            <h4 style={{margin: '0 0 0.5rem 0', fontSize: '0.9rem', color: 'var(--text-color-dark)', textTransform: 'uppercase', letterSpacing: '1px'}}>
+              Crecimiento último mes
+            </h4>
+            <p style={{margin: '0.5rem 0', fontSize: '1.8rem', fontWeight: 'bold', color: '#FF1493'}}>
+              {stats.evolucionPorGrupoEdad && stats.evolucionPorGrupoEdad.length > 1
+                ? (() => {
+                    const ultimo = stats.evolucionPorGrupoEdad[stats.evolucionPorGrupoEdad.length - 1]
+                    const penultimo = stats.evolucionPorGrupoEdad[stats.evolucionPorGrupoEdad.length - 2]
+                    const totalUltimo = ultimo['18-29'] + ultimo['30-44'] + ultimo['45+']
+                    const totalPenultimo = penultimo['18-29'] + penultimo['30-44'] + penultimo['45+']
+                    const diferencia = totalUltimo - totalPenultimo
+                    return `${diferencia >= 0 ? '+' : ''}${diferencia}`
+                  })()
+                : 'N/A'
+              }
+            </p>
+            <p style={{margin: '0.5rem 0 0 0', fontSize: '0.85rem', color: 'var(--text-color-dark)'}}>
+              Usuarios vs mes anterior
             </p>
           </div>
         </div>

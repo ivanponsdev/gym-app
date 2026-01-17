@@ -17,7 +17,8 @@ const usuarioSchema = new mongoose.Schema({
   min: 1,
   max: 10
 },
-  role: { type: String, enum: ['user','admin'], default: 'user' }
+  role: { type: String, enum: ['user','admin'], default: 'user' },
+  fechaBaja: { type: Date, default: null } // null = usuario activo
 }, { timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } });
 
 module.exports = mongoose.model('Usuario', usuarioSchema);

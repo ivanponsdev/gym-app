@@ -95,9 +95,95 @@ exports.obtenerEstadisticasGlobales = async (req, res) => {
       return {
         dia: dia.charAt(0).toUpperCase() + dia.slice(1),
         cantidad: found ? found.cantidad : 0,
-        inscritos: found ? found.inscritos : 0
+        inscritos: found ? found.inscritos : 0,
+        mediaInscritos: found && found.cantidad > 0 ? Math.round((found.inscritos / found.cantidad) * 10) / 10 : 0
       }
     })
+
+    // Usuarios por sexo (activos solamente)
+    const usuariosPorSexo = await Usuario.aggregate([
+      {
+        $match: { fechaBaja: null } // Solo usuarios activos
+      },
+      {
+        $group: {
+          _id: '$sexo',
+          count: { $sum: 1 }
+        }
+      }
+    ])
+
+    // Asegurar que siempre aparezcan los 3 géneros
+    const sexos = ['masculino', 'femenino', 'otro']
+    const sexoFormateado = sexos.map(sexo => {
+      const found = usuariosPorSexo.find(item => item._id === sexo)
+      return {
+        sexo: sexo === 'masculino' ? 'Hombres' : sexo === 'femenino' ? 'Mujeres' : 'Otros',
+        cantidad: found ? found.count : 0
+      }
+    })
+
+    // Evolución temporal de usuarios por grupo de edad
+    // Primero obtenemos todos los usuarios con su grupo de edad y fecha
+    const usuariosConGrupoEdad = await Usuario.aggregate([
+      {
+        $project: {
+          createdAt: 1,
+          fechaBaja: 1,
+          grupoEdad: {
+            $cond: [
+              { $lt: ['$edad', 30] },
+              '18-29',
+              {
+                $cond: [
+                  { $lt: ['$edad', 45] },
+                  '30-44',
+                  '45+'
+                ]
+              }
+            ]
+          }
+        }
+      }
+    ])
+
+    // Crear estructura de meses desde el primer usuario hasta ahora
+    const primeraFecha = new Date(Math.min(...usuariosConGrupoEdad.map(u => u.createdAt)))
+    const fechaActual = new Date()
+    const mesesEvolucion = []
+    
+    for (let d = new Date(primeraFecha.getFullYear(), primeraFecha.getMonth(), 1); 
+         d <= fechaActual; 
+         d.setMonth(d.getMonth() + 1)) {
+      const year = d.getFullYear()
+      const month = d.getMonth() + 1
+      const key = `${year}-${String(month).padStart(2, '0')}`
+      
+      // Contar usuarios activos de cada grupo en este mes
+      const gruposCounts = { '18-29': 0, '30-44': 0, '45+': 0 }
+      
+      usuariosConGrupoEdad.forEach(usuario => {
+        const altaFecha = new Date(usuario.createdAt)
+        const bajaFecha = usuario.fechaBaja ? new Date(usuario.fechaBaja) : null
+        
+        // Usuario está activo en este mes si:
+        // - Se dio de alta antes o durante este mes
+        // - Y no se ha dado de baja, o se dio de baja después de este mes
+        if (altaFecha <= new Date(year, month, 0) && 
+            (!bajaFecha || bajaFecha > new Date(year, month - 1, 1))) {
+          gruposCounts[usuario.grupoEdad]++
+        }
+      })
+      
+      const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+      mesesEvolucion.push({
+        mes: `${meses[month - 1]} ${year}`,
+        '18-29': gruposCounts['18-29'],
+        '30-44': gruposCounts['30-44'],
+        '45+': gruposCounts['45+']
+      })
+    }
+
 
     res.json({
       totalUsuarios,
@@ -118,7 +204,9 @@ exports.obtenerEstadisticasGlobales = async (req, res) => {
         dia: clase.diaSemana,
         hora: clase.horaInicio
       })),
-      clasesPorDia: clasesPorDiaOrdenado
+      clasesPorDia: clasesPorDiaOrdenado,
+      usuariosPorSexo: sexoFormateado,
+      evolucionPorGrupoEdad: mesesEvolucion
     })
   } catch (error) {
     console.error('Error al obtener estadísticas globales:', error)
