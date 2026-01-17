@@ -105,11 +105,24 @@ const EjerciciosSection = () => {
               <option key={grupo} value={grupo}>{grupo.charAt(0).toUpperCase() + grupo.slice(1)}</option>
             ))}
           </select>
-          <select value={filtroEquipamiento} onChange={(e) => setFiltroEquipamiento(e.target.value)} className="filter-select">
-            <option value="">Cualquier lugar</option>
-            <option value="casa">En casa</option>
-            <option value="gimnasio">Gimnasio</option>
-          </select>
+          
+          <div className="filtro-equipamiento-buttons">
+            <button 
+              className={`btn-equipamiento ${filtroEquipamiento === 'casa' ? 'active' : ''}`}
+              onClick={() => setFiltroEquipamiento(filtroEquipamiento === 'casa' ? '' : 'casa')}
+              title="Ejercicios en casa"
+            >
+              🏠
+            </button>
+            <button 
+              className={`btn-equipamiento ${filtroEquipamiento === 'gimnasio' ? 'active' : ''}`}
+              onClick={() => setFiltroEquipamiento(filtroEquipamiento === 'gimnasio' ? '' : 'gimnasio')}
+              title="Ejercicios de gimnasio"
+            >
+              🏋️
+            </button>
+          </div>
+          
           {(filtroGrupo || filtroEquipamiento || busqueda) && (
             <button onClick={limpiarFiltros} className="btn-clear-filters">✕ Limpiar</button>
           )}
@@ -120,13 +133,13 @@ const EjerciciosSection = () => {
       <div className="ejercicios-grid">
         {ejerciciosFiltrados.length > 0 ? (
           ejerciciosFiltrados.map(ejercicio => (
-            <div key={ejercicio._id} className="card">
+            <div key={ejercicio._id} className="card ejercicio-card">
+              <div className="equipamiento-icon">
+                {ejercicio.equipamiento === 'casa' ? '🏠' : '🏋️'}
+              </div>
               <h3>{ejercicio.nombre}</h3>
               <div className="ejercicio-tags">
                 <span className="tag-grupo">{ejercicio.grupoMuscular}</span>
-                <span className={`tag-equipamiento ${ejercicio.equipamiento}`}>
-                  {ejercicio.equipamiento === 'casa' ? '🏠' : '🏋️'} {ejercicio.equipamiento}
-                </span>
                 <span className={`tag-dificultad ${ejercicio.dificultad}`}>{ejercicio.dificultad}</span>
               </div>
               <div className="ejercicio-descripcion">
