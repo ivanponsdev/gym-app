@@ -653,8 +653,9 @@ const Dashboard = () => {
               <div className="horario-semanal">
                   {['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'].map(dia => {
                     const clasesDia = clases.filter(c => c.diaSemana === dia)
+                    const esDomingo = dia === 'domingo'
                     return (
-                      <div key={dia} className="dia-column">
+                      <div key={dia} className={`dia-column ${esDomingo ? 'dia-domingo' : ''}`}>
                         <h3 className="dia-header">{dia.charAt(0).toUpperCase() + dia.slice(1)}</h3>
                         <div className="clases-dia">
                           {clasesDia.length === 0 ? (
@@ -767,9 +768,10 @@ const Dashboard = () => {
                   const hoy = new Date().getDay()
                   const diaActual = diasSemana[hoy]
                   const esHoy = dia === diaActual
+                  const esDomingo = dia === 'domingo'
                   
                   return (
-                    <div key={dia} className={`mis-clases-dia-column ${esHoy ? 'dia-hoy' : ''} ${clasesDia.length === 0 ? 'sin-clases' : ''}`}>
+                    <div key={dia} className={`mis-clases-dia-column ${esHoy ? 'dia-hoy' : ''} ${clasesDia.length === 0 ? 'sin-clases' : ''} ${esDomingo ? 'dia-domingo' : ''}`}>
                       <h3 className="mis-clases-dia-header">
                         <span className="dia-nombre">{dia.charAt(0).toUpperCase() + dia.slice(1)}</span>
                         {esHoy && <span className="badge-hoy">Hoy</span>}
@@ -778,8 +780,17 @@ const Dashboard = () => {
                       <div className="mis-clases-dia-contenido">
                         {clasesDia.length === 0 ? (
                           <div className="sin-clases-mensaje">
-                            <span className="icono-fueguito">🔥</span>
-                            <span>Aquí hay un hueco para seguir mejorando</span>
+                            {dia === 'domingo' ? (
+                              <>
+                                <span className="icono-fueguito">🏞️</span>
+                                <span>Día de descanso. ¡Disfruta al aire libre!</span>
+                              </>
+                            ) : (
+                              <>
+                                <span className="icono-fueguito">🔥</span>
+                                <span>Aquí hay un hueco para seguir mejorando</span>
+                              </>
+                            )}
                           </div>
                         ) : (
                           clasesDia.map((clase) => (

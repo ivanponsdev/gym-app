@@ -542,6 +542,7 @@ body {
 
 .sidebar {
     width: 240px;
+    flex-shrink: 0;
     background: linear-gradient(180deg,
             rgba(26, 26, 26, 0.95) 0%,
             rgba(30, 30, 30, 0.9) 50%,
@@ -700,7 +701,8 @@ body {
 }
 
 .content {
-    flex-grow: 1;
+    width: calc(100vw - 240px);
+    flex-shrink: 0;
     padding: 2rem;
     overflow-y: auto;
     overflow-x: hidden;
@@ -1914,10 +1916,11 @@ body {
 /* --- Calendario/Horario Semanal --- */
 .horario-semanal {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(6, 1fr) 0.65fr;
     gap: 0.8rem;
     margin-top: 1.5rem;
     overflow-x: auto;
+    padding-right: 2rem;
 }
 
 .dia-column {
@@ -1925,6 +1928,22 @@ body {
     border-radius: 8px;
     overflow: hidden;
     min-width: 130px;
+}
+
+.dia-column.dia-domingo {
+    background: linear-gradient(135deg, 
+        rgba(46, 204, 113, 0.2) 0%, 
+        rgba(39, 174, 96, 0.15) 50%,
+        rgba(22, 15, 31, 0.95) 100%
+    );
+    border: 2px solid rgba(46, 204, 113, 0.5);
+    min-width: 100px;
+}
+
+.dia-column.dia-domingo .dia-header {
+    background: linear-gradient(135deg,
+            rgba(46, 204, 113, 0.8) 0%,
+            rgba(39, 174, 96, 0.8) 100%);
 }
 
 .dia-header {
@@ -2280,11 +2299,12 @@ body {
 /* --- Vista Semanal de Mis Clases --- */
 .mis-clases-semanal {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(6, 1fr) 0.65fr;
     gap: 1rem;
     margin-top: 1.5rem;
     overflow-x: auto;
     padding-bottom: 1rem;
+    padding-right: 2rem;
 }
 
 .mis-clases-dia-column {
@@ -2304,6 +2324,21 @@ body {
 
 .mis-clases-dia-column.sin-clases {
     opacity: 0.6;
+}
+
+.mis-clases-dia-column.dia-domingo {
+    background: linear-gradient(135deg, 
+        rgba(46, 204, 113, 0.2) 0%, 
+        rgba(39, 174, 96, 0.15) 50%,
+        rgba(22, 15, 31, 0.95) 100%
+    );
+    border-color: rgba(46, 204, 113, 0.5);
+}
+
+.mis-clases-dia-column.dia-domingo .mis-clases-dia-header {
+    background: linear-gradient(135deg,
+            rgba(46, 204, 113, 0.8) 0%,
+            rgba(39, 174, 96, 0.8) 100%);
 }
 
 .mis-clases-dia-header {
@@ -2419,17 +2454,15 @@ body {
 }
 
 .clase-hora-badge {
-    background: linear-gradient(135deg,
-            var(--primary-color) 0%,
-            var(--secondary-color) 100%);
+    background: #000;
     color: #fff;
-    padding: 0.3rem 0.6rem;
-    border-radius: 5px;
-    font-size: 0.75rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
     font-weight: 700;
     text-align: center;
     align-self: flex-start;
-    box-shadow: 0 2px 8px rgba(148, 0, 211, 0.3);
+    border: 2px solid #fff;
 }
 
 .clase-info-compacta {
@@ -2438,7 +2471,7 @@ body {
 
 .clase-nombre-mini {
     color: var(--text-color);
-    font-size: 0.95rem;
+    font-size: 1.05rem;
     font-weight: 700;
     margin-bottom: 0.4rem;
     line-height: 1.2;
@@ -2447,7 +2480,7 @@ body {
 .clase-profesor-mini,
 .clase-duracion {
     color: var(--text-color-dark);
-    font-size: 0.75rem;
+    font-size: 0.9rem;
     margin-bottom: 0.2rem;
     display: flex;
     align-items: center;
@@ -2486,40 +2519,38 @@ body {
     border-left-color: #ff0080;
 }
 
-.mi-clase-compacta.tipo-spinning .clase-nombre-mini {
-    color: #ff0080;
+.mi-clase-compacta.tipo-spinning {
+    --clase-color: #ff0080;
 }
 
 .mi-clase-compacta.tipo-yoga-matinal {
-    border-left-color: #39FF14;
-}
-
-.mi-clase-compacta.tipo-yoga-matinal .clase-nombre-mini {
-    color: #39FF14;
+    --clase-color: #39FF14;
 }
 
 .mi-clase-compacta.tipo-crossfit {
-    border-left-color: #ff6600;
-}
-
-.mi-clase-compacta.tipo-crossfit .clase-nombre-mini {
-    color: #ff6600;
+    --clase-color: #ff6600;
 }
 
 .mi-clase-compacta.tipo-pilates {
-    border-left-color: #9400D3;
-}
-
-.mi-clase-compacta.tipo-pilates .clase-nombre-mini {
-    color: #9400D3;
+    --clase-color: #9400D3;
 }
 
 .mi-clase-compacta.tipo-zumba {
-    border-left-color: #FFD700;
+    --clase-color: #FFD700;
 }
 
-.mi-clase-compacta.tipo-zumba .clase-nombre-mini {
-    color: #FFD700;
+/* Aplicar el color de la clase a los elementos */
+.mi-clase-compacta {
+    border-left-color: var(--clase-color);
+}
+
+.mi-clase-compacta .clase-nombre-mini {
+    color: var(--clase-color);
+}
+
+.mi-clase-compacta .clase-hora-badge {
+    color: var(--clase-color);
+    border-color: var(--clase-color);
 }
 
 /* Estado vacío mejorado */
@@ -3138,6 +3169,10 @@ body {
 
 .ejercicio-card {
     position: relative;
+}
+
+.ejercicio-card h3 {
+    padding-right: 70px;
 }
 
 .equipamiento-icon {
