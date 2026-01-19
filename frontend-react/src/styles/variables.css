@@ -1,0 +1,19 @@
+/* Variables CSS  CSS globales*/
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+:root {
+    /* Colores principales */
+    --primary-color: #9400D3;
+    /* Morado Neón */
+    --secondary-color: #00BFFF;
+    /* Azul Neón */
+    --background-color: #160F1F;
+    --surface-color: #1e1e1e;
+    /* Colores de texto */
+    --text-color: #ffffff;
+    --text-color-dark: #cccccc;
+    /* Colores de estado */
+    --danger-color: #e94560;
+    --neon-orange: #ff6600;
+    --neon-green: #39FF14;
+    /* Verde Neón */
+}

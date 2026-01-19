@@ -1,0 +1,247 @@
+/*ANIMACIONES  */
+
+/*Landing  */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+@keyframes gradientShift {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+@keyframes pulse-glow {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.1);
+        opacity: 0.8;
+    }
+}
+@keyframes fadeInRotate {
+    from {
+        opacity: 0;
+        transform: rotate(-180deg) scale(0);
+    }
+    to {
+        opacity: 1;
+        transform: rotate(0deg) scale(1);
+    }
+}
+@keyframes floatAnimation {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    25% {
+        transform: translateY(-15px) rotate(3deg);
+    }
+    50% {
+        transform: translateY(0) rotate(0deg);
+    }
+    75% {
+        transform: translateY(-10px) rotate(-3deg);
+    }
+}
+
+/* Animaciones sidebar*/
+@keyframes sidebarGlow {
+    0%, 100% {
+        box-shadow: 2px 0 25px rgba(148, 0, 211, 0.3),
+            inset -1px 0 20px rgba(148, 0, 211, 0.1);
+    }
+    50% {
+        box-shadow: 2px 0 35px rgba(148, 0, 211, 0.5),
+            inset -1px 0 25px rgba(148, 0, 211, 0.15);
+    }
+}
+@keyframes gentlePulse {
+    0%, 100% {
+        filter: drop-shadow(0 0 10px rgba(148, 0, 211, 0.5)) drop-shadow(0 0 20px rgba(0, 191, 255, 0.3));
+    }
+    50% {
+        filter: drop-shadow(0 0 15px rgba(148, 0, 211, 0.7)) drop-shadow(0 0 25px rgba(0, 191, 255, 0.5));
+    }
+}
+@keyframes activePulse {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(148, 0, 211, 0.6),
+            inset 0 0 20px rgba(255, 255, 255, 0.1);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(148, 0, 211, 0.8),
+            inset 0 0 25px rgba(255, 255, 255, 0.15);
+    }
+}
+
+/* Animaciones contenido */
+@keyframes contentGlow {
+    0%, 100% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+@keyframes headerGlow {
+    0%, 100% {
+        text-shadow: 0 0 20px rgba(0, 191, 255, 0.6),
+            0 0 40px rgba(0, 191, 255, 0.3);
+    }
+    50% {
+        text-shadow: 0 0 30px rgba(0, 191, 255, 0.8),
+            0 0 60px rgba(0, 191, 255, 0.5);
+    }
+}
+@keyframes lineExpand {
+    0%, 100% {
+        width: 30%;
+    }
+    50% {
+        width: 40%;
+    }
+}
+
+/* Animaciones tarjetas */
+@keyframes borderFlow {
+    0% {
+        background-position: 100% 0;
+    }
+    100% {
+        background-position: -100% 0;
+    }
+}
+
+/* Animaciones modal */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Spinner de carga */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Animaciones calendario */
+@keyframes headerShine {
+    0% {
+        left: -100%;
+    }
+    50%, 100% {
+        left: 100%;
+    }
+}
+@keyframes pulse-warning {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(255, 193, 7, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 15px rgba(255, 193, 7, 0.6);
+    }
+}
+@keyframes tooltip-show-hide {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) scale(0.8);
+    }
+    10% {
+        opacity: 1;
+        transform: translateX(-50%) scale(1);
+    }
+    90% {
+        opacity: 1;
+        transform: translateX(-50%) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) scale(0.8);
+    }
+}
+
+/* Mis clases animaciones */
+@keyframes pulseGlow {
+    0%, 100% {
+        box-shadow: 0 4px 15px rgba(148, 0, 211, 0.6);
+    }
+    50% {
+        box-shadow: 0 4px 25px rgba(148, 0, 211, 0.9);
+    }
+}
+@keyframes badgePulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
