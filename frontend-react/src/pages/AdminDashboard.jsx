@@ -548,7 +548,7 @@ const AdminDashboard = () => {
     setModalConfig({
       isOpen: true,
       type: 'confirm',
-      message: '¿Estás seguro de eliminar este usuario?',
+      message: '¿Seguro que quieres eliminar este usuario? Esta acción no se puede deshacer.',
       onConfirm: async () => {
         try {
           await userAPI.deleteUser(userId)
@@ -575,7 +575,7 @@ const AdminDashboard = () => {
     setModalConfig({
       isOpen: true,
       type: 'confirm',
-      message: '¿Estás seguro de eliminar esta clase?',
+      message: '¿Seguro que quieres eliminar esta clase? Esta acción no se puede deshacer.',
       onConfirm: async () => {
         try {
           await clasesAPI.delete(claseId)
@@ -602,7 +602,7 @@ const AdminDashboard = () => {
     setModalConfig({
       isOpen: true,
       type: 'confirm',
-      message: '¿Estás seguro de eliminar este ejercicio?',
+      message: '¿Seguro que quieres eliminar este ejercicio? Esta acción no se puede deshacer.',
       onConfirm: async () => {
         try {
           await ejerciciosAPI.eliminar(ejercicioId)
@@ -629,7 +629,7 @@ const AdminDashboard = () => {
     setModalConfig({
       isOpen: true,
       type: 'confirm',
-      message: '¿Estás seguro de eliminar esta guía?',
+      message: '¿Seguro que quieres eliminar esta guía? Esta acción no se puede deshacer.',
       onConfirm: async () => {
         try {
           await guiasAPI.eliminar(guiaId)
