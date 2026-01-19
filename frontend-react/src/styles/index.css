@@ -1272,7 +1272,7 @@ body {
     }
 }
 
-/* --- Responsive Design --- */
+/*  Responsive  */
 @media (max-width: 768px) {
 
     html,
@@ -1424,7 +1424,7 @@ body {
         overflow-y: auto;
     }
 
-    /* Landing responsive - Touch optimizado */
+    /* Landing responsive */
     #landing-container h1 {
         font-size: 1.8rem;
     }
@@ -1514,7 +1514,7 @@ body {
         font-weight: 600;
     }
 
-    /* Profile responsive - Touch optimizado */
+    /* Profile responsive */
     #profile-display p {
         font-size: 0.9rem;
     }
@@ -4166,20 +4166,8 @@ body {
         overflow-y: auto !important;
     }
 
-    /* 7. BOTONES MÁS GRANDES PARA TOUCH */
-    .btn-neon,
-    .btn-action,
-    .btn-inscribir {
-        padding: 0.75rem 1rem !important;
-        font-size: 0.9rem !important;
-    }
+    /* 7. FORMULARIOS Y BUSCADOR */
 
-    /* 8. FORMULARIOS Y BUSCADOR */
-    input,
-    select,
-    textarea {
-        font-size: 16px !important; /* Evita zoom en iOS */
-    }
 
     /* Buscador visible y funcional */
     .search-container {
