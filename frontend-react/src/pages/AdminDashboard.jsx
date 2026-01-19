@@ -609,7 +609,7 @@ const AdminDashboard = () => {
           setModalConfig({
             isOpen: true,
             type: 'alert',
-            message: 'Ejercicio eliminado correctamente',
+            message: 'Ejercicio eliminado correctamentee',
             onConfirm: null
           })
           loadEjercicios()
