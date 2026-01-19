@@ -38,18 +38,8 @@ const LandBotWidget = ({ height = '600px', width = '100%' }) => {
       if (checkInterval) {
         clearInterval(checkInterval);
       }
-      
-      if (landbotInstance.current) {
-        try {
-          // Solo intentar destruir si tiene el método
-          if (typeof landbotInstance.current.destroy === 'function') {
-            landbotInstance.current.destroy();
-          }
-        } catch (error) {
-          console.warn('Error al destruir Landbot:', error);
-        }
-        landbotInstance.current = null;
-      }
+      // NO destruir Landbot - causa errores. Simplemente limpiar la referencia
+      landbotInstance.current = null;
     };
   }, []);
 

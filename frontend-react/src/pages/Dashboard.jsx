@@ -5,6 +5,7 @@ import { userAPI, clasesAPI, ejerciciosAPI, guiasAPI } from '../services/api'
 import Sidebar from '../components/Sidebar'
 import CustomModal from '../components/CustomModal'
 import LandBotWidget from '../components/LandBotWidget'
+import { EjercicioCard, GuiaCard, ClaseCard } from '../components/CardComponents'
 
 // Componente para la sección de ejercicios
 const EjerciciosSection = () => {
@@ -133,19 +134,7 @@ const EjerciciosSection = () => {
       <div className="ejercicios-grid">
         {ejerciciosFiltrados.length > 0 ? (
           ejerciciosFiltrados.map(ejercicio => (
-            <div key={ejercicio._id} className="card ejercicio-card">
-              <div className="equipamiento-icon">
-                {ejercicio.equipamiento === 'casa' ? '🏠' : '🏋️'}
-              </div>
-              <h3>{ejercicio.nombre}</h3>
-              <div className="ejercicio-tags">
-                <span className="tag-grupo">{ejercicio.grupoMuscular}</span>
-                <span className={`tag-dificultad ${ejercicio.dificultad}`}>{ejercicio.dificultad}</span>
-              </div>
-              <div className="ejercicio-descripcion">
-                <p>{ejercicio.descripcion}</p>
-              </div>
-            </div>
+            <EjercicioCard key={ejercicio._id} ejercicio={ejercicio} />
           ))
         ) : (
           <div className="sin-resultados">
@@ -261,29 +250,13 @@ const GuiasSection = () => {
       ) : (
         <div className="ejercicios-grid">
           {guias.map(guia => (
-            <div key={guia._id} className="card guia-card">
-              <div className="guia-header">
-                <h3>{guia.titulo}</h3>
-                <span 
-                  className="objetivo-badge"
-                  style={{ backgroundColor: obtenerColorObjetivo(guia.objetivo) }}
-                >
-                  {formatearObjetivo(guia.objetivo)}
-                </span>
-              </div>
-              <div className="guia-descripcion">
-                <p>{guia.descripcion}</p>
-              </div>
-              <div className="guia-footer">
-                <button 
-                  className="btn-neon"
-                  onClick={() => descargarGuia(guia)}
-                  title="Descargar guía en PDF"
-                >
-                  📥 Descargar PDF
-                </button>
-              </div>
-            </div>
+            <GuiaCard
+              key={guia._id}
+              guia={guia}
+              descargarGuia={descargarGuia}
+              formatearObjetivo={formatearObjetivo}
+              obtenerColorObjetivo={obtenerColorObjetivo}
+            />
           ))}
         </div>
       )}
@@ -664,38 +637,16 @@ const Dashboard = () => {
                             clasesDia.map(clase => {
                               const plazasDisponibles = clase.plazasDisponibles ?? (clase.cupoMaximo - (clase.alumnosApuntados?.length || 0))
                               const porcentajeOcupacion = ((clase.cupoMaximo - plazasDisponibles) / clase.cupoMaximo) * 100
-                              let estadoCupo = 'disponible'
-                              if (porcentajeOcupacion >= 100) estadoCupo = 'completo'
-                              else if (porcentajeOcupacion >= 80) estadoCupo = 'casi-lleno'
-                              
-                              // Verificar si el usuario ya está inscrito en esta clase
-                              const estaInscrito = clase.alumnosApuntados?.includes(user?._id) || 
-                                                   misClases.some(c => c._id === clase._id)
-                              
                               return (
-                              <div key={clase._id} className={`clase-card tipo-${clase.nombre.toLowerCase().replace(/\s/g, '-')}`}>
-                                <div className="clase-hora">{clase.horaInicio} - {clase.horaFin}</div>
-                                <h4 className="clase-nombre">{clase.nombre}</h4>
-                                <p className="clase-profesor">{clase.profesor}</p>
-                                <div className={`clase-plazas-badge ${estadoCupo}`}>
-                                  {estadoCupo === 'completo' ? '🔴' : estadoCupo === 'casi-lleno' ? '🟡' : '🟢'}
-                                  {' '}{plazasDisponibles}/{clase.cupoMaximo} plazas
-                                </div>
-                                <button 
-                                  className={`btn-inscribir ${estaInscrito ? 'inscrito' : ''}`}
-                                  onClick={() => handleInscribirse(clase._id)}
-                                  disabled={estadoCupo === 'completo' || estaInscrito}
-                                >
-                                  {estaInscrito ? '✓ Inscrito' : 
-                                   estadoCupo === 'completo' ? 'Clase Completa' : 'Inscribirme'}
-                                </button>
-                                {estaInscrito && (
-                                  <div className="tooltip-inscrito">
-                                    Ve a "Mis Clases" para gestionar tu inscripción
-                                  </div>
-                                )}
-                              </div>
-                            )})
+                                <ClaseCard
+                                  key={clase._id}
+                                  clase={clase}
+                                  user={user}
+                                  misClases={misClases}
+                                  handleInscribirse={handleInscribirse}
+                                />
+                              )
+                            })
                           )}
                         </div>
                       </div>

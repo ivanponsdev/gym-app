@@ -118,6 +118,31 @@ const EstadisticasSection = () => {
         </div>
       </div>
 
+      {/* Mobile-only insights (replaces graphs on small screens) */}
+      <div className="mobile-graph-insights" style={{display: 'none'}}>
+        {/* Objetivos de usuarios */}
+        <div className="card" style={{gridColumn: '1 / -1', background: 'rgba(148, 0, 211, 0.1)', border: '1px solid rgba(148, 0, 211, 0.3)'}}>
+          <p style={{margin: 0, fontWeight: 'bold', fontSize: '0.85rem', color: 'var(--neon-color)'}}>🎯 OBJETIVOS DE USUARIOS</p>
+        </div>
+        {stats.usuariosPorObjetivo && stats.usuariosPorObjetivo.map((item, index) => (
+          <div key={`objetivo-${index}`} className="card">
+            <h3>{item.value}</h3>
+            <p>{item.name}</p>
+          </div>
+        ))}
+        
+        {/* Distribución por sexo */}
+        <div className="card" style={{gridColumn: '1 / -1', background: 'rgba(148, 0, 211, 0.1)', border: '1px solid rgba(148, 0, 211, 0.3)'}}>
+          <p style={{margin: 0, fontWeight: 'bold', fontSize: '0.85rem', color: 'var(--neon-color)'}}>👥 USUARIOS POR SEXO</p>
+        </div>
+        {stats.usuariosPorSexo && stats.usuariosPorSexo.map((item, index) => (
+          <div key={`sexo-${index}`} className="card">
+            <h3>{item.cantidad}</h3>
+            <p>{item.sexo}</p>
+          </div>
+        ))}
+      </div>
+
       {/* Gráficos principales */}
       <div className="stats-charts-grid" style={{
         display: 'grid',
@@ -149,20 +174,20 @@ const EstadisticasSection = () => {
             />
           </div>
         )}
-      </div>
 
-      {/* Gráfico de Líneal*/}
-      {stats.evolucionPorGrupoEdad && stats.evolucionPorGrupoEdad.length > 0 && (
-        <div className="card" style={{padding: '1.5rem', height: '450px', marginBottom: '2rem'}}>
-          <GraficoLineal
-            data={stats.evolucionPorGrupoEdad}
-            dataKeys={['18-29', '30-44', '45+']}
-            xAxisKey="mes"
-            titulo="Evolución de Inscritos por Grupo de Edad"
-            colors={['#00BFFF', '#FFFF00', '#FF1493']}
-          />
-        </div>
-      )}
+        {/* Gráfico de Líneal*/}
+        {stats.evolucionPorGrupoEdad && stats.evolucionPorGrupoEdad.length > 0 && (
+          <div className="card" style={{padding: '1.5rem', height: '450px'}}>
+            <GraficoLineal
+              data={stats.evolucionPorGrupoEdad}
+              dataKeys={['18-29', '30-44', '45+']}
+              xAxisKey="mes"
+              titulo="Evolución de Inscritos por Grupo de Edad"
+              colors={['#00BFFF', '#FFFF00', '#FF1493']}
+            />
+          </div>
+        )}
+      </div>
 
       {/* Tabla de clases populares */}
       {stats.clasesPopulares && stats.clasesPopulares.length > 0 && (
@@ -419,6 +444,7 @@ const AdminDashboard = () => {
   // Estados clases
   const [showClaseModal, setShowClaseModal] = useState(false)
   const [editingClase, setEditingClase] = useState(null)
+  const [filtroDiaClase, setFiltroDiaClase] = useState('')
   const [claseForm, setClaseForm] = useState({
     nombre: '',
     descripcion: '',
@@ -942,7 +968,35 @@ const AdminDashboard = () => {
                 ) : users.length === 0 ? (
                   <p>No hay usuarios registrados</p>
                 ) : (
-                  <table className="admin-table">
+                  <>
+                    {/* Vista móvil */}
+                    <div className="mobile-admin-list">
+                      {users.map((user) => (
+                        <div key={user._id} className="mobile-admin-item">
+                          <div className="mobile-admin-item-text">
+                            {user.nombre} ({user.email})
+                          </div>
+                          <div className="mobile-admin-item-actions">
+                            <button 
+                              className="btn-icon btn-edit" 
+                              onClick={() => handleEditUser(user)}
+                              title="Editar usuario"
+                            >
+                              ✏️
+                            </button>
+                            <button 
+                              className="btn-icon btn-delete"
+                              onClick={() => handleDeleteUser(user._id)}
+                              title="Eliminar usuario"
+                            >
+                              🗑️
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    {/* Vista desktop */}
+                    <table className="admin-table">
                     <thead>
                       <tr>
                         <th>ID</th>
@@ -983,6 +1037,7 @@ const AdminDashboard = () => {
                       ))}
                     </tbody>
                   </table>
+                  </>
                 )}
               </div>
             </div>
@@ -993,6 +1048,24 @@ const AdminDashboard = () => {
           <section id="admin-clases" className="content-section active">
             <h2>Gestión de Clases</h2>
             <div id="clases-list-container">
+              {/* Filtro por día en móvil */}
+              <div className="filtro-dia-mobile" style={{marginBottom: '1rem'}}>
+                <select 
+                  className="filter-select"
+                  value={filtroDiaClase}
+                  onChange={(e) => setFiltroDiaClase(e.target.value)}
+                  style={{width: '100%', padding: '0.75rem', fontSize: '0.9rem'}}
+                >
+                  <option value="">Todos los días</option>
+                  <option value="lunes">Lunes</option>
+                  <option value="martes">Martes</option>
+                  <option value="miércoles">Miércoles</option>
+                  <option value="jueves">Jueves</option>
+                  <option value="viernes">Viernes</option>
+                  <option value="sábado">Sábado</option>
+                  <option value="domingo">Domingo</option>
+                </select>
+              </div>
               <button 
                 className="btn-neon btn-add" 
                 style={{ marginBottom: '20px', width: 'auto', padding: '0.8rem 1.5rem' }}
@@ -1009,7 +1082,37 @@ const AdminDashboard = () => {
                 ) : clases.length === 0 ? (
                   <p>No hay clases creadas</p>
                 ) : (
-                  <table className="admin-table">
+                  <>
+                    {/* Vista móvil */}
+                    <div className="mobile-admin-list">
+                      {clases
+                        .filter(clase => !filtroDiaClase || clase.diaSemana.toLowerCase() === filtroDiaClase.toLowerCase())
+                        .map((clase) => (
+                        <div key={clase._id} className="mobile-admin-item">
+                          <div className="mobile-admin-item-text">
+                            {clase.nombre} - {clase.horaInicio} a {clase.horaFin}
+                          </div>
+                          <div className="mobile-admin-item-actions">
+                            <button 
+                              className="btn-icon btn-edit" 
+                              onClick={() => handleEditClase(clase)}
+                              title="Editar clase"
+                            >
+                              ✏️
+                            </button>
+                            <button 
+                              className="btn-icon btn-delete"
+                              onClick={() => handleDeleteClase(clase._id)}
+                              title="Eliminar clase"
+                            >
+                              🗑️
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    {/* Vista desktop */}
+                    <table className="admin-table">
                     <thead>
                       <tr>
                         <th>Nombre</th>
@@ -1023,7 +1126,9 @@ const AdminDashboard = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {clases.map((clase) => (
+                      {clases
+                        .filter(clase => !filtroDiaClase || clase.diaSemana.toLowerCase() === filtroDiaClase.toLowerCase())
+                        .map((clase) => (
                         <tr key={clase._id}>
                           <td>{clase.nombre}</td>
                           <td>{clase.profesor}</td>
@@ -1054,6 +1159,7 @@ const AdminDashboard = () => {
                       ))}
                     </tbody>
                   </table>
+                  </>
                 )}
               </div>
             </div>
@@ -1083,7 +1189,35 @@ const AdminDashboard = () => {
                 ) : ejercicios.length === 0 ? (
                   <p>No hay ejercicios registrados</p>
                 ) : (
-                  <table className="admin-table">
+                  <>
+                    {/* Vista móvil */}
+                    <div className="mobile-admin-list">
+                      {ejercicios.map((ejercicio) => (
+                        <div key={ejercicio._id} className="mobile-admin-item">
+                          <div className="mobile-admin-item-text">
+                            {ejercicio.nombre}
+                          </div>
+                          <div className="mobile-admin-item-actions">
+                            <button 
+                              className="btn-icon btn-edit" 
+                              onClick={() => handleEditEjercicio(ejercicio)}
+                              title="Editar ejercicio"
+                            >
+                              ✏️
+                            </button>
+                            <button 
+                              className="btn-icon btn-delete"
+                              onClick={() => handleDeleteEjercicio(ejercicio._id)}
+                              title="Eliminar ejercicio"
+                            >
+                              🗑️
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    {/* Vista desktop */}
+                    <table className="admin-table">
                     <thead>
                       <tr>
                         <th>Nombre</th>
@@ -1126,6 +1260,7 @@ const AdminDashboard = () => {
                       ))}
                     </tbody>
                   </table>
+                  </>
                 )}
               </div>
             </div>
@@ -1155,7 +1290,35 @@ const AdminDashboard = () => {
                 ) : guias.length === 0 ? (
                   <p>No hay guías registradas</p>
                 ) : (
-                  <table className="admin-table">
+                  <>
+                    {/* Vista móvil */}
+                    <div className="mobile-admin-list">
+                      {guias.map((guia) => (
+                        <div key={guia._id} className="mobile-admin-item">
+                          <div className="mobile-admin-item-text">
+                            {guia.titulo}
+                          </div>
+                          <div className="mobile-admin-item-actions">
+                            <button 
+                              className="btn-icon btn-edit" 
+                              onClick={() => handleEditGuia(guia)}
+                              title="Editar guía"
+                            >
+                              ✏️
+                            </button>
+                            <button 
+                              className="btn-icon btn-delete"
+                              onClick={() => handleDeleteGuia(guia._id)}
+                              title="Eliminar guía"
+                            >
+                              🗑️
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    {/* Vista desktop */}
+                    <table className="admin-table">
                     <thead>
                       <tr>
                         <th>Título</th>
@@ -1198,6 +1361,7 @@ const AdminDashboard = () => {
                       ))}
                     </tbody>
                   </table>
+                  </>
                 )}
               </div>
             </div>

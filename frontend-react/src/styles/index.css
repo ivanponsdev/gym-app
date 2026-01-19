@@ -95,7 +95,7 @@ body {
     pointer-events: none;
 }
 
-#landing-container > * {
+#landing-container>* {
     position: relative;
     z-index: 1;
 }
@@ -1063,7 +1063,7 @@ body {
     text-overflow: ellipsis;
 }
 
-.admin-table th, 
+.admin-table th,
 .admin-table td {
     padding: 1rem;
     text-align: left;
@@ -1253,6 +1253,7 @@ body {
         opacity: 0;
         transform: translateY(-30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1264,6 +1265,7 @@ body {
         opacity: 1;
         transform: translateY(0);
     }
+
     to {
         opacity: 0;
         transform: translateY(-30px);
@@ -1272,15 +1274,19 @@ body {
 
 /* --- Responsive Design --- */
 @media (max-width: 768px) {
-    html, body {
+
+    html,
+    body {
         overflow-x: hidden;
     }
+
     body {
         overflow-y: auto;
         height: auto;
     }
-    
-    #app-container, #admin-container {
+
+    #app-container,
+    #admin-container {
         flex-direction: column;
         height: auto;
     }
@@ -1336,7 +1342,8 @@ body {
     }
 
     .sidebar nav a::before {
-        display: none; /* Desactivar animación de slide en móvil */
+        display: none;
+        /* Desactivar animación de slide en móvil */
     }
 
     .sidebar nav a:hover {
@@ -1366,8 +1373,8 @@ body {
         backdrop-filter: blur(20px);
         padding: 0.6rem 0.8rem;
         display: flex;
-        justify-content: space-between;
-        gap: 0.6rem;
+        justify-content: flex-end;
+        gap: 0.5rem;
         border-bottom: 2px solid;
         border-image: linear-gradient(90deg,
                 rgba(148, 0, 211, 0.6) 0%,
@@ -1379,9 +1386,9 @@ body {
     .mobile-header .btn-logout,
     .mobile-header .btn-exit-sidebar {
         flex: 0 0 auto;
-        padding: 0.6rem 1.2rem;
-        font-size: 0.75rem;
-        min-height: 40px;
+        padding: 0.5rem 0.9rem;
+        font-size: 0.7rem;
+        min-height: 36px;
         border-radius: 8px;
         font-weight: 600;
         background: linear-gradient(135deg,
@@ -1392,6 +1399,7 @@ body {
         box-shadow: 0 4px 15px rgba(148, 0, 211, 0.4);
         transition: all 0.3s ease;
         cursor: pointer;
+        white-space: nowrap;
     }
 
     .mobile-header .btn-logout:hover,
@@ -1414,7 +1422,9 @@ body {
         padding-top: 70px;
         padding-bottom: 80px;
         overflow-y: auto;
-    }    /* Landing responsive - Touch optimizado */
+    }
+
+    /* Landing responsive - Touch optimizado */
     #landing-container h1 {
         font-size: 1.8rem;
     }
@@ -1440,14 +1450,15 @@ body {
 
     /* Calendario responsive */
     .horario-semanal {
-        display: flex;
-        flex-direction: row;
+        display: grid !important;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 200px)) !important;
         gap: 0.6rem;
-        overflow-x: auto;
+        justify-content: center !important;
+        overflow-x: visible;
         scroll-behavior: smooth;
         padding: 0.6rem 0.4rem;
-        margin: 0 -1rem;
-        padding-left: 1rem;
+        margin: 0;
+        padding-left: 0;
         padding-right: 1rem;
     }
 
@@ -1490,7 +1501,8 @@ body {
         margin-bottom: 0.2rem;
     }
 
-    .clase-profesor, .clase-plazas {
+    .clase-profesor,
+    .clase-plazas {
         font-size: 0.65rem;
         margin-bottom: 0.15rem;
     }
@@ -1638,10 +1650,11 @@ body {
         font-size: 1.5rem;
     }
 
-    /* Calendario en pantallas muy pequeñas - Una columna */
+    /* Calendario en pantallas muy pequeñas - Grid adaptable */
     .horario-semanal {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 200px)) !important;
         gap: 1rem;
+        justify-content: center !important;
     }
 
     .dia-column {
@@ -1910,17 +1923,30 @@ body {
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* --- Calendario/Horario Semanal --- */
 .horario-semanal {
     display: grid;
-    grid-template-columns: repeat(6, 1fr) 0.65fr;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 0.8rem;
     margin-top: 1.5rem;
     overflow-x: auto;
     padding-right: 2rem;
+    justify-content: center;
+}
+
+/* Filtro por día de clases - oculto por defecto en desktop */
+.filtro-dia-mobile {
+    display: none;
+}
+
+/* Vista móvil de admin - oculta por defecto en desktop */
+.mobile-admin-list {
+    display: none;
 }
 
 .dia-column {
@@ -1931,11 +1957,10 @@ body {
 }
 
 .dia-column.dia-domingo {
-    background: linear-gradient(135deg, 
-        rgba(46, 204, 113, 0.2) 0%, 
-        rgba(39, 174, 96, 0.15) 50%,
-        rgba(22, 15, 31, 0.95) 100%
-    );
+    background: linear-gradient(135deg,
+            rgba(46, 204, 113, 0.2) 0%,
+            rgba(39, 174, 96, 0.15) 50%,
+            rgba(22, 15, 31, 0.95) 100%);
     border: 2px solid rgba(46, 204, 113, 0.5);
     min-width: 100px;
 }
@@ -2011,7 +2036,7 @@ body {
     padding: 0.7rem 0.6rem;
     border-left: 3px solid;
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-                box-shadow 0.3s ease;
+        box-shadow 0.3s ease;
     cursor: pointer;
     position: relative;
     backdrop-filter: blur(5px);
@@ -2021,7 +2046,8 @@ body {
 /* Cuando tiene botón inscrito con hover, subir toda la card */
 .clase-card:has(.btn-inscribir.inscrito:hover) {
     z-index: 10000;
-    transform: scale(1); /* Sin movimiento brusco */
+    transform: scale(1);
+    /* Sin movimiento brusco */
 }
 
 .clase-card::after {
@@ -2062,7 +2088,8 @@ body {
     font-weight: 600;
 }
 
-.clase-profesor, .clase-plazas {
+.clase-profesor,
+.clase-plazas {
     font-size: 0.7rem;
     color: var(--text-color-dark);
     margin-bottom: 0.2rem;
@@ -2102,9 +2129,12 @@ body {
 }
 
 @keyframes pulse-warning {
-    0%, 100% {
+
+    0%,
+    100% {
         box-shadow: 0 0 5px rgba(255, 193, 7, 0.3);
     }
+
     50% {
         box-shadow: 0 0 15px rgba(255, 193, 7, 0.6);
     }
@@ -2158,30 +2188,34 @@ body {
 /* Tooltip personalizado para inscrito */
 .tooltip-inscrito {
     position: absolute;
-    bottom: -48px; /* Debajo del botón */
+    bottom: -48px;
+    /* Debajo del botón */
     left: 50%;
     transform: translateX(-50%) scale(0.8);
-    background: linear-gradient(135deg, 
-        rgba(30, 30, 30, 0.98) 0%, 
-        rgba(22, 15, 31, 0.98) 100%);
+    background: linear-gradient(135deg,
+            rgba(30, 30, 30, 0.98) 0%,
+            rgba(22, 15, 31, 0.98) 100%);
     color: var(--text-color-dark);
     padding: 0.5rem 0.8rem;
     border-radius: 6px;
-    font-size: 0.75rem; /* Aumentado de 0.65rem */
+    font-size: 0.75rem;
+    /* Aumentado de 0.65rem */
     white-space: nowrap;
     opacity: 0;
     pointer-events: none;
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    z-index: 9999; /* Muy alto para estar siempre encima */
+    z-index: 9999;
+    /* Muy alto para estar siempre encima */
     border: 1px solid rgba(148, 0, 211, 0.4);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5),
-                0 0 15px rgba(148, 0, 211, 0.3);
+        0 0 15px rgba(148, 0, 211, 0.3);
 }
 
 .tooltip-inscrito::before {
     content: '';
     position: absolute;
-    top: -5px; /* Flecha apuntando hacia arriba al botón */
+    top: -5px;
+    /* Flecha apuntando hacia arriba al botón */
     left: 50%;
     transform: translateX(-50%);
     border-left: 5px solid transparent;
@@ -2189,7 +2223,7 @@ body {
     border-bottom: 5px solid rgba(30, 30, 30, 0.98);
 }
 
-.btn-inscribir.inscrito:hover + .tooltip-inscrito {
+.btn-inscribir.inscrito:hover+.tooltip-inscrito {
     opacity: 1;
     transform: translateX(-50%) scale(1);
     bottom: -53px;
@@ -2201,14 +2235,17 @@ body {
         opacity: 0;
         transform: translateX(-50%) scale(0.8);
     }
+
     10% {
         opacity: 1;
         transform: translateX(-50%) scale(1);
     }
+
     90% {
         opacity: 1;
         transform: translateX(-50%) scale(1);
     }
+
     100% {
         opacity: 0;
         transform: translateX(-50%) scale(0.8);
@@ -2327,11 +2364,10 @@ body {
 }
 
 .mis-clases-dia-column.dia-domingo {
-    background: linear-gradient(135deg, 
-        rgba(46, 204, 113, 0.2) 0%, 
-        rgba(39, 174, 96, 0.15) 50%,
-        rgba(22, 15, 31, 0.95) 100%
-    );
+    background: linear-gradient(135deg,
+            rgba(46, 204, 113, 0.2) 0%,
+            rgba(39, 174, 96, 0.15) 50%,
+            rgba(22, 15, 31, 0.95) 100%);
     border-color: rgba(46, 204, 113, 0.5);
 }
 
@@ -2369,9 +2405,12 @@ body {
 }
 
 @keyframes pulseGlow {
-    0%, 100% {
+
+    0%,
+    100% {
         box-shadow: 0 4px 15px rgba(148, 0, 211, 0.6);
     }
+
     50% {
         box-shadow: 0 4px 25px rgba(148, 0, 211, 0.9);
     }
@@ -2391,9 +2430,12 @@ body {
 }
 
 @keyframes badgePulse {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: scale(1);
     }
+
     50% {
         transform: scale(1.1);
     }
@@ -2575,36 +2617,331 @@ body {
     margin-bottom: 0.5rem;
 }
 
-/* Responsive para tablets */
+/* Responsive para tablets y pantallas medianas */
 @media (max-width: 1024px) {
     .mis-clases-semanal {
         grid-template-columns: repeat(4, 1fr);
+    }
+
+    /* Sidebar actions más compactos en tablets */
+    .sidebar-actions {
+        gap: 0.35rem !important;
+        padding: 0.75rem 0.5rem !important;
+    }
+
+    .btn-logout,
+    .btn-exit-sidebar {
+        padding: 0.5rem 0.6rem !important;
+        font-size: 0.75rem !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+}
+
+/* Responsive entre tablets y móvil - asegurar visibilidad de botones */
+@media (max-width: 900px) {
+    .sidebar {
+        width: 200px !important;
+    }
+
+    .sidebar-actions {
+        padding: 0.5rem 0.35rem !important;
+    }
+
+    .btn-logout,
+    .btn-exit-sidebar {
+        padding: 0.45rem 0.5rem !important;
+        font-size: 0.7rem !important;
     }
 }
 
 /* Responsive para móviles */
 @media (max-width: 768px) {
+
+    /* Reducir padding general del contenido */
+    .content {
+        padding: 0.8rem;
+    }
+
+    /* OCULTAR TEXTOS DESCRIPTIVOS EN MÓVIL */
+    .content-section>p {
+        display: none !important;
+    }
+
+    /* CENTRAR Y COMPACTAR HEADERS */
+    .content-section h2 {
+        font-size: 1.2rem;
+        margin-bottom: 0.8rem;
+        text-align: center;
+        padding-bottom: 0.4rem;
+    }
+
+    /* Optimizar horario semanal */
+    .horario-semanal {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 200px)) !important;
+        gap: 0.6rem !important;
+        justify-content: center !important;
+        padding: 0 !important;
+    }
+
+    .dia-column {
+        min-width: 150px !important;
+        max-width: 200px !important;
+        width: 100% !important;
+    }
+
+    .dia-header {
+        font-size: 0.85rem;
+        padding: 0.5rem;
+    }
+
+    .clases-dia {
+        padding: 0.4rem;
+        gap: 0.5rem;
+    }
+
+    /* Tarjetas de clase más compactas */
+    .clase-card {
+        padding: 0.6rem;
+        border-left-width: 2px;
+    }
+
+    .clase-hora {
+        font-size: 0.65rem;
+        margin-bottom: 0.2rem;
+    }
+
+    .clase-nombre {
+        font-size: 0.8rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .clase-profesor,
+    .clase-plazas {
+        font-size: 0.65rem;
+        margin-bottom: 0.15rem;
+    }
+
+    .clase-plazas-badge {
+        font-size: 0.65rem;
+        padding: 0.25rem 0.4rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .btn-inscribir {
+        font-size: 0.7rem;
+        padding: 0.45rem;
+        margin-top: 0.3rem;
+    }
+
+    /* Mis clases - vista semanal más compacta */
     .mis-clases-semanal {
         grid-template-columns: repeat(2, 1fr);
-        gap: 0.8rem;
+        gap: 0.5rem;
+        padding-right: 0;
     }
-    
+
     .mis-clases-dia-column {
         min-width: 100%;
     }
-    
-    .mi-clase-compacta {
-        padding: 0.6rem;
+
+    .mis-clases-dia-header {
+        padding: 0.5rem 0.3rem;
+        font-size: 0.75rem;
     }
-    
+
+    .mis-clases-dia-contenido {
+        padding: 0.5rem;
+        gap: 0.5rem;
+        min-height: 60px;
+    }
+
+    .mi-clase-compacta {
+        padding: 0.5rem;
+        gap: 0.4rem;
+    }
+
+    .clase-hora-badge {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
     .clase-nombre-mini {
+        font-size: 0.8rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .clase-profesor-mini,
+    .clase-duracion {
+        font-size: 0.75rem;
+    }
+
+    .btn-desinscribir-mini {
+        width: 20px;
+        height: 20px;
+        font-size: 0.8rem;
+    }
+
+    /* Cards generales más compactas */
+    .card {
+        padding: 1.2rem;
+        font-size: 0.9rem;
+    }
+
+    .card h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .card p {
+        font-size: 0.9rem;
+        margin-bottom: 0.6rem;
+    }
+
+    /* Objetivo semanal widget */
+    .objetivo-semanal-widget {
+        padding: 1rem;
+        gap: 0.8rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .clases-actuales {
+        font-size: 2rem;
+    }
+
+    .separador {
+        font-size: 1.5rem;
+    }
+
+    .clases-objetivo {
+        font-size: 1.5rem;
+    }
+
+    .objetivo-label {
+        font-size: 0.8rem;
+    }
+
+    .objetivo-mensaje {
+        font-size: 0.9rem;
+    }
+
+    .objetivo-mensaje span:first-child {
+        font-size: 1.5rem;
+    }
+
+    /* Headers de sección */
+    .content-section h2 {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Formularios */
+    .form-group {
+        margin-bottom: 0.8rem;
+    }
+
+    .form-group label {
         font-size: 0.85rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .form-group input,
+    .form-group select {
+        font-size: 0.9rem;
+        padding: 0.7rem;
+    }
+
+    /* Botones */
+    .btn-action {
+        font-size: 0.85rem;
+        padding: 0.6rem 1rem;
+    }
+
+    .btn-neon {
+        font-size: 0.85rem;
+        padding: 0.7rem 1.2rem;
+    }
+
+    /* Empty state */
+    .empty-state {
+        padding: 2rem 1rem;
+    }
+
+    .empty-icon {
+        font-size: 3rem;
+    }
+
+    .empty-state p {
+        font-size: 0.95rem;
+    }
+
+    /* Sin clases mensaje */
+    .sin-clases {
+        font-size: 0.8rem;
+        padding: 0.8rem;
+    }
+
+    .sin-clases-mensaje {
+        padding: 1rem 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    .icono-fueguito {
+        font-size: 2rem;
     }
 }
 
 @media (max-width: 480px) {
+
+    /* Vista adaptable - mostrar tantas columnas como quepan */
     .mis-clases-semanal {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 200px)) !important;
+        gap: 0.5rem !important;
+        justify-content: center !important;
+    }
+
+    .horario-semanal {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 200px)) !important;
+        gap: 0.5rem !important;
+        justify-content: center !important;
+    }
+
+    /* Reducir aún más el padding */
+    .content {
+        padding: 0.8rem;
+    }
+
+    .card {
+        padding: 1rem;
+    }
+
+    /* Headers más pequeños */
+    .content-section h2 {
+        font-size: 1.2rem;
+    }
+
+    /* Objetivo semanal */
+    .objetivo-semanal-widget {
+        padding: 0.8rem;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .clases-actuales {
+        font-size: 1.8rem;
+    }
+
+    .separador,
+    .clases-objetivo {
+        font-size: 1.3rem;
+    }
+
+    /* Botones más compactos */
+    .btn-action,
+    .btn-neon {
+        font-size: 0.8rem;
+        padding: 0.6rem 1rem;
     }
 }
 
@@ -2726,6 +3063,7 @@ body {
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
@@ -2736,16 +3074,16 @@ body {
         opacity: 0;
         transform: scale(0.8);
     }
+
     to {
         opacity: 1;
         transform: scale(1);
     }
 }
 
-/* ============================================
-   MEDIA QUERY: DESKTOP (Pantallas grandes)
-   ============================================ */
+/* MEDIA QUERY: DESKTOP (Pantallas grandes)*/
 @media (min-width: 769px) {
+
     /* Textos generales más grandes */
     body {
         font-size: 16px;
@@ -2908,12 +3246,13 @@ body {
 
     /* Tooltip */
     .tooltip-inscrito {
-        font-size: 0.85rem; /* Aumentado */
+        font-size: 0.85rem;
+        /* Aumentado */
         padding: 0.6rem 0.9rem;
         bottom: -53px;
     }
 
-    .btn-inscribir.inscrito:hover + .tooltip-inscrito {
+    .btn-inscribir.inscrito:hover+.tooltip-inscrito {
         bottom: -58px;
     }
 
@@ -2934,85 +3273,86 @@ body {
         font-size: 4rem;
     }
 
-/* Texto de ayuda en formularios */
-.form-helper {
-    color: var(--text-color-dark);
-    font-size: 0.85rem;
-    display: block;
-    margin-top: 0.25rem;
-}
+    /* Texto de ayuda en formularios */
+    .form-helper {
+        color: var(--text-color-dark);
+        font-size: 0.85rem;
+        display: block;
+        margin-top: 0.25rem;
+    }
 
-/* Widget objetivo semanal */
-.objetivo-semanal-widget {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.objetivo-progress {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.objetivo-numeros {
-    display: flex;
-    align-items: baseline;
-    gap: 0.3rem;
-    font-weight: bold;
-}
-
-.clases-actuales {
-    font-size: 3rem;
-    color: white;
-    line-height: 1;
-}
-
-.separador {
-    font-size: 2rem;
-    color: rgba(255, 255, 255, 0.6);
-}
-
-.clases-objetivo {
-    font-size: 2rem;
-    color: rgba(255, 255, 255, 0.8);
-}
-
-.objetivo-label {
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 0.9rem;
-    margin-top: 0.3rem;
-}
-
-.objetivo-mensaje {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    color: white;
-    font-size: 1.1rem;
-    font-weight: 500;
-}
-
-.objetivo-mensaje span:first-child {
-    font-size: 2rem;
-}
-
-@media (max-width: 768px) {
+    /* Widget objetivo semanal */
     .objetivo-semanal-widget {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .objetivo-progress {
+        display: flex;
         flex-direction: column;
-        text-align: center;
-        gap: 1rem;
+        align-items: center;
     }
+
+    .objetivo-numeros {
+        display: flex;
+        align-items: baseline;
+        gap: 0.3rem;
+        font-weight: bold;
+    }
+
     .clases-actuales {
-        font-size: 2.5rem;
+        font-size: 3rem;
+        color: white;
+        line-height: 1;
     }
-}
+
+    .separador {
+        font-size: 2rem;
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    .clases-objetivo {
+        font-size: 2rem;
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .objetivo-label {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.9rem;
+        margin-top: 0.3rem;
+    }
+
+    .objetivo-mensaje {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+
+    .objetivo-mensaje span:first-child {
+        font-size: 2rem;
+    }
+
+    @media (max-width: 768px) {
+        .objetivo-semanal-widget {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+
+        .clases-actuales {
+            font-size: 2.5rem;
+        }
+    }
 
     #landing-container p {
         font-size: 1.3rem;
@@ -3206,7 +3546,7 @@ body {
     margin-bottom: 1rem;
 }
 
-.ejercicio-tags > span {
+.ejercicio-tags>span {
     padding: 0.3rem 0.8rem;
     border-radius: 12px;
     font-size: 0.8rem;
@@ -3257,30 +3597,162 @@ body {
 }
 
 @media (max-width: 768px) {
-    .filtro-selects { flex-direction: column; }
-    .filter-select { min-width: 100%; }
-    .filtro-equipamiento-buttons {
-        flex-direction: row;
-        justify-content: center;
-    }
-    .ejercicios-grid { grid-template-columns: 1fr; gap: 1.5rem; }
-    .ejercicio-tags > span { font-size: 0.7rem; padding: 0.2rem 0.6rem; }
-    .equipamiento-icon {
-        font-size: 1.8rem;
-        width: 45px;
-        height: 45px;
-        top: 10px;
-        right: 10px;
+
+    /* FILTROS OPTIMIZADOS PARA MÓVIL */
+    .filtros-ejercicios {
+        padding: 0.6rem;
+        margin-bottom: 0.8rem;
         border-radius: 10px;
+    }
+
+    .search-input {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.85rem;
+        margin-bottom: 0.6rem;
+        border-radius: 20px;
+    }
+
+    /* FILTROS EN LÍNEA HORIZONTAL */
+    .filtro-selects {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.4rem;
+        flex-wrap: nowrap;
+    }
+
+    .filter-select {
+        flex: 1;
+        min-width: 0;
+        padding: 0.5rem 0.4rem;
+        font-size: 0.75rem;
+        border-radius: 8px;
+    }
+
+    /* ICONOS DE FILTRO MÁS COMPACTOS EN LÍNEA */
+    .filtro-equipamiento-buttons {
+        display: flex;
+        flex-direction: row;
+        gap: 0.4rem;
+        flex-shrink: 0;
+    }
+
+    .btn-equipamiento {
+        width: 38px;
+        height: 38px;
+        font-size: 1.4rem;
+        border-radius: 8px;
+    }
+
+    .btn-clear-filters {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.75rem;
+        border-radius: 8px;
+        white-space: nowrap;
+    }
+
+    /* Grid de ejercicios - MÁS COMPACTO */
+    .ejercicios-grid {
+        grid-template-columns: 1fr;
+        gap: 0.7rem;
+    }
+
+    /* TARJETAS DE EJERCICIO MUY COMPACTAS */
+    .ejercicio-card {
+        padding: 0.7rem !important;
+        min-height: auto;
+    }
+
+    .ejercicio-card h3 {
+        font-size: 0.95rem;
+        padding-right: 48px;
+        margin-bottom: 0.4rem;
+    }
+
+    .ejercicio-tags {
+        margin-bottom: 0.4rem;
+        gap: 0.3rem;
+    }
+
+    .ejercicio-tags>span {
+        font-size: 0.65rem;
+        padding: 0.2rem 0.5rem;
+    }
+
+    .equipamiento-icon {
+        font-size: 1.4rem;
+        width: 35px;
+        height: 35px;
+        top: 8px;
+        right: 8px;
+        border-radius: 6px;
+        padding: 4px;
+    }
+
+    .ejercicio-descripcion {
+        margin-top: 0.2rem;
+    }
+
+    .ejercicio-descripcion p {
+        font-size: 0.8rem;
+        line-height: 1.4;
+        margin: 0;
+    }
+
+    /* Sin resultados */
+    .sin-resultados {
+        padding: 1.5rem 1rem;
+    }
+
+    .sin-resultados h3 {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .sin-resultados p {
+        font-size: 0.85rem;
     }
 }
 
 @media (max-width: 480px) {
-    .search-input { padding: 0.8rem 1rem; }
+    .search-input {
+        padding: 0.7rem 0.9rem;
+        font-size: 0.9rem;
+    }
+
+    .filtros-ejercicios {
+        padding: 0.8rem;
+    }
+
+    .filter-select {
+        font-size: 0.9rem;
+        padding: 0.6rem;
+    }
+
+    .btn-equipamiento {
+        width: 45px;
+        height: 40px;
+        font-size: 1.6rem;
+    }
+
+    .ejercicio-card {
+        padding: 0.8rem;
+    }
+
+    .ejercicio-card h3 {
+        font-size: 1rem;
+    }
+
+    .equipamiento-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 1.4rem;
+    }
 }
 
 
-  /* GUÍAS */
+/* GUÍAS */
 
 
 .guia-card {
@@ -3343,17 +3815,462 @@ body {
 }
 
 @media (max-width: 768px) {
-    .guia-header h3 {
-        font-size: 1.1rem;
+
+    /* TARJETAS DE GUÍA MUY COMPACTAS */
+    .guia-card {
+        padding: 0.7rem !important;
     }
-    
+
+    .guia-header {
+        gap: 0.4rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .guia-header h3 {
+        font-size: 0.95rem;
+        margin: 0;
+    }
+
     .objetivo-badge {
-        font-size: 0.7rem;
-        padding: 0.3rem 0.7rem;
+        font-size: 0.65rem;
+        padding: 0.25rem 0.6rem;
+    }
+
+    .guia-descripcion {
+        margin-bottom: 0.4rem;
+    }
+
+    .guia-descripcion p {
+        font-size: 0.8rem;
+        line-height: 1.4;
+        margin: 0;
+    }
+
+    .guia-footer {
+        padding-top: 0.6rem;
+        margin-top: 0.4rem;
+    }
+
+    .guia-footer .btn-neon {
+        font-size: 0.8rem;
+        padding: 0.6rem 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+
+    /* GUÍAS AÚN MÁS COMPACTAS */
+    .guia-card {
+        padding: 0.6rem !important;
+    }
+
+    .guia-header h3 {
+        font-size: 0.9rem;
+    }
+
+    .objetivo-badge {
+        font-size: 0.6rem;
+        padding: 0.2rem 0.5rem;
+    }
+
+    .guia-descripcion p {
+        font-size: 0.75rem;
+    }
+
+    .guia-footer .btn-neon {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.8rem;
     }
 }
 
 /* Efecto hover para la imagen de Paco */
 .paco-image-container:hover .paco-info-overlay {
     transform: translateY(0) !important;
+}
+
+/* RESPONSIVE MÓVIL - SOLUCIÓN SIMPLE */
+
+@media (max-width: 768px) {
+    /* 1. LAYOUT GENERAL */
+    #app-container,
+    #admin-container {
+        flex-direction: column !important;
+        overflow-x: hidden !important;
+    }
+
+    .content {
+        width: 100% !important;
+        max-width: 100vw !important;
+        padding: 1rem !important;
+        padding-bottom: 80px !important; /* Espacio para nav inferior */
+        overflow-x: hidden !important;
+        box-sizing: border-box !important;
+    }
+
+    .content-section {
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+    }
+
+    /* 2. SIDEBAR COMO NAVEGACIÓN INFERIOR */
+    .sidebar {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        border-right: none !important;
+        border-top: 2px solid rgba(148, 0, 211, 0.5) !important;
+        z-index: 1000 !important;
+        background: rgba(22, 15, 31, 0.98) !important;
+        backdrop-filter: blur(10px);
+    }
+
+    .sidebar-logo-container,
+    .logo-sidebar {
+        display: none !important;
+    }
+
+    /* Sidebar actions visible en header móvil - separados en esquinas */
+    .sidebar-actions {
+        position: fixed !important;
+        top: 10px !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        z-index: 1001 !important;
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        gap: 0 !important;
+        padding: 0 10px !important;
+        border: none !important;
+        margin: 0 !important;
+    }
+
+    .btn-logout {
+        padding: 0.45rem 0.7rem !important;
+        font-size: 0.7rem !important;
+        white-space: nowrap !important;
+        margin: 0 !important;
+    }
+
+    .btn-exit-sidebar {
+        padding: 0.45rem 0.7rem !important;
+        font-size: 0.7rem !important;
+        white-space: nowrap !important;
+        margin: 0 !important;
+    }
+
+    .sidebar nav {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-around !important;
+        padding: 0.5rem 0 !important;
+        gap: 0 !important;
+    }
+
+    .sidebar nav a {
+        flex: 1 !important;
+        text-align: center !important;
+        font-size: 0.65rem !important;
+        padding: 0.5rem 0.25rem !important;
+        max-width: none !important;
+    }
+
+    /* 3. GRIDS Y CONTENEDORES RESPONSIVE /Stats - 2 columnas en móvil */
+    .stats-summary-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.75rem !important;
+    }
+
+    .stats-summary-grid .card {
+        display: block !important;
+        padding: 1rem !important;
+    }
+
+    .stats-summary-grid h3 {
+        font-size: 1.8rem !important;
+    }
+
+    .stats-summary-grid p {
+        font-size: 0.75rem !important;
+    }
+
+    /* Hide graphs in mobile */
+    .stats-charts-grid {
+        display: none !important;
+    }
+
+    /* Show mobile-only insights for graph data */
+    .mobile-graph-insights {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.75rem !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .mobile-graph-insights .card {
+        display: block !important;
+        padding: 1rem !important;
+        text-align: center !important;
+    }
+
+    .mobile-graph-insights .card h3 {
+        font-size: 1.8rem !important;
+        margin: 0 0 0.25rem 0 !important;
+        color: var(--neon-color) !important;
+    }
+
+    .mobile-graph-insights .card p {
+        font-size: 0.75rem !important;
+        margin: 0 !important;
+        color: var(--text-color-dark) !important;
+    }
+
+    /* Ejercicios y Guías en grid */
+    .ejercicios-grid,
+    .guias-grid {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    
+    /* Cards de ejercicios y guías visibles */
+    .ejercicio-card,
+    .guia-card {
+        display: block !important;
+    }
+
+    /* 4. CARDS MÁS COMPACTAS - ASEGURAR VISIBILIDAD */
+    .card {
+        display: block !important;
+        padding: 1rem !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* Gráficas dentro de cards */
+    .card > div {
+        display: block !important;
+    }
+
+    /* 5. TABLAS ADMIN EN MÓVIL - SISTEMA LIMPIO DESDE CERO */
+    
+    /* Ocultar tablas tradicionales completamente */
+    .admin-table {
+        display: none !important;
+    }
+
+    /* Crear sistema de cards para mostrar datos en móvil */
+    .mobile-admin-list {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.75rem !important;
+        width: 100% !important;
+    }
+
+    .mobile-admin-item {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 1rem !important;
+        background: linear-gradient(135deg, rgba(22, 15, 31, 0.9) 0%, rgba(30, 30, 30, 0.9) 100%) !important;
+        border: 1px solid rgba(148, 0, 211, 0.4) !important;
+        border-radius: 10px !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .mobile-admin-item:hover {
+        background: linear-gradient(135deg, rgba(148, 0, 211, 0.2) 0%, rgba(30, 30, 30, 0.9) 100%) !important;
+        border-color: rgba(148, 0, 211, 0.6) !important;
+        transform: translateX(3px) !important;
+    }
+
+    .mobile-admin-item-text {
+        flex: 1 !important;
+        color: #FFFFFF !important;
+        font-size: 0.95rem !important;
+        font-weight: 600 !important;
+        padding-right: 0.75rem !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+    }
+
+    .mobile-admin-item-actions {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.35rem !important;
+        flex-shrink: 0 !important;
+    }
+
+    .mobile-admin-item-actions .btn-icon {
+        font-size: 1.3rem !important;
+        padding: 0.5rem !important;
+        min-width: 42px !important;
+        min-height: 42px !important;
+        border-radius: 8px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background: rgba(148, 0, 211, 0.2) !important;
+        border: 1px solid rgba(148, 0, 211, 0.4) !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .mobile-admin-item-actions .btn-icon:hover {
+        background: rgba(148, 0, 211, 0.4) !important;
+        transform: scale(1.05) !important;
+    }
+    
+    /* 6. CLASES EN MÓVIL - Grid adaptable */
+    .horario-semanal {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 200px)) !important;
+        justify-content: center !important;
+    }
+    
+    .dia-column {
+        margin-bottom: 1rem !important;
+    }
+    
+    .dia-header {
+        font-size: 0.9rem !important;
+        padding: 0.5rem !important;
+    }
+    
+    .clase-card {
+        margin-bottom: 0.5rem !important;
+        padding: 0.75rem !important;
+    }
+    
+    .clase-nombre {
+        font-size: 0.85rem !important;
+    }
+    
+    .clase-hora {
+        font-size: 0.75rem !important;
+    }
+
+    /* 6. MODALES */
+    .modal-content,
+    .custom-modal-content {
+        width: 95% !important;
+        max-width: 95% !important;
+        padding: 1.5rem !important;
+        max-height: 80vh !important;
+        overflow-y: auto !important;
+    }
+
+    /* 7. BOTONES MÁS GRANDES PARA TOUCH */
+    .btn-neon,
+    .btn-action,
+    .btn-inscribir {
+        padding: 0.75rem 1rem !important;
+        font-size: 0.9rem !important;
+    }
+
+    /* 8. FORMULARIOS Y BUSCADOR */
+    input,
+    select,
+    textarea {
+        font-size: 16px !important; /* Evita zoom en iOS */
+    }
+
+    /* Buscador visible y funcional */
+    .search-container {
+        margin-bottom: 1rem !important;
+        width: 100% !important;
+    }
+
+    .search-container input[type="search"] {
+        width: 100% !important;
+        padding: 0.75rem !important;
+        font-size: 0.9rem !important;
+        border-radius: 8px !important;
+        border: 1px solid rgba(148, 0, 211, 0.3) !important;
+        background: rgba(22, 15, 31, 0.5) !important;
+        color: var(--text-color) !important;
+    }
+
+    /* Filtro por día de clases visible solo en móvil */
+    .filtro-dia-mobile {
+        display: block !important;
+    }
+
+    .filter-select {
+        width: 100% !important;
+        padding: 0.75rem !important;
+        font-size: 0.9rem !important;
+        border-radius: 8px !important;
+        border: 1px solid rgba(148, 0, 211, 0.3) !important;
+        background: rgba(22, 15, 31, 0.5) !important;
+        color: var(--text-color) !important;
+    }
+
+    /* 9. OCULTAR SCROLL HORIZONTAL Y LIMITAR ANCHOS */
+    body,
+    html {
+        overflow-x: hidden !important;
+        max-width: 100vw !important;
+    }
+
+    /* Contenedores de gráficas */
+    .card {
+        max-width: 100% !important;
+        overflow: hidden !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Canvas de las gráficas (Recharts) - mantener aspect ratio */
+    .recharts-wrapper {
+        width: 100% !important;
+    }
+
+    .recharts-surface {
+        width: 100% !important;
+    }
+
+    /* 10. CHATBOT PACO */
+    .paco-image-container {
+        display: none !important;
+    }
+
+    /* 11. LANDING PAGE */
+    #landing-container h1 {
+        font-size: 1.5rem !important;
+    }
+
+    .landing-buttons {
+        flex-direction: column !important;
+        gap: 1rem !important;
+    }
+}
+
+/* EXTRA PEQUEÑO (móviles < 480px) */
+@media (max-width: 480px) {
+    .content {
+        padding: 0.75rem !important;
+    }
+
+    .card {
+        padding: 0.75rem !important;
+    }
+
+    .content-section h2 {
+        font-size: 1.2rem !important;
+    }
+
+    /* Stats más compactos en pantallas muy pequeñas */
+    .stats-summary-grid h3 {
+        font-size: 1.5rem !important;
+    }
+
+    .stats-summary-grid .card {
+        padding: 0.75rem !important;
+    }
 }
