@@ -275,7 +275,8 @@ const Dashboard = () => {
     edad: '',
     sexo: '',
     objetivo: '',
-    objetivoClasesSemana: 3
+    objetivoClasesSemana: 3,
+    password: ''
 
   })
   
@@ -379,11 +380,38 @@ const Dashboard = () => {
       edad: user.edad || '',
       sexo: user.sexo || 'otro',
       objetivo: user.objetivo || 'recomposicion_corporal',
-       objetivoClasesSemana: user.objetivoClasesSemana || 5
+       objetivoClasesSemana: user.objetivoClasesSemana || 5,
+       password: ''
     })
   }
 
-  const handleSaveProfile = async () => {
+  const handleSaveProfile = async () => {    // Validar nombre si se proporciona
+    if (profileData.nombre && profileData.nombre.trim() !== '') {
+      const nombreRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ]+\s+[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/
+      if (!nombreRegex.test(profileData.nombre.trim())) {
+        setModalConfig({
+          isOpen: true,
+          type: 'alert',
+          message: 'El nombre debe contener al menos nombre y apellido (mínimo 2 palabras)',
+          onConfirm: null
+        })
+        return
+      }
+    }
+        // Validar contraseña
+    if (profileData.password && profileData.password.trim() !== '') {
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/
+      if (!passwordRegex.test(profileData.password)) {
+        setModalConfig({
+          isOpen: true,
+          type: 'alert',
+          message: 'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número',
+          onConfirm: null
+        })
+        return
+      }
+    }
+    
     setLoadingProfile(true)
     try {
       const response = await userAPI.updateProfile(profileData)
@@ -589,6 +617,16 @@ const Dashboard = () => {
                       placeholder="Ej: 5"
                     />
                     <span className="form-helper">¿Cuántas clases quieres hacer por semana?</span>
+                  </div>
+                  <div className="form-group">
+                    <label>Nueva Contraseña (opcional)</label>
+                    <input
+                      type="password"
+                      value={profileData.password}
+                      onChange={(e) => setProfileData({ ...profileData, password: e.target.value })}
+                      placeholder="Dejar vacío para no cambiar"
+                    />
+                    <span className="form-helper">Mínimo 8 caracteres, una mayúscula, una minúscula y un número</span>
                   </div>
                   <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
                     <button 

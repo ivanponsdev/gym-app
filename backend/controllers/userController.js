@@ -65,6 +65,30 @@ const createUser = async (req, res) => {
         return res.status(400).json({ message: 'Nombre, email y contraseña son requeridos' });
     }
 
+    // Validar nombre (mínimo 2 palabras)
+    const nombreRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ]+\s+[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+    if (!nombreRegex.test(nombre.trim())) {
+        return res.status(400).json({ 
+            message: 'El nombre debe contener al menos nombre y apellido (mínimo 2 palabras)' 
+        });
+    }
+
+    // Validar email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({ 
+            message: 'El formato del email no es válido' 
+        });
+    }
+
+    // Validar contraseña robusta: mínimo 8 caracteres, al menos una mayúscula, una minúscula y un número
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    if (!passwordRegex.test(password)) {
+        return res.status(400).json({ 
+            message: 'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número' 
+        });
+    }
+
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).json({ message: 'El correo electrónico ya está en uso' });
 
@@ -110,6 +134,26 @@ const updateUser = async (req, res) => {
 
         if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
 
+        // Validar nombre si se proporciona
+        if (nombre) {
+            const nombreRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ]+\s+[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+            if (!nombreRegex.test(nombre.trim())) {
+                return res.status(400).json({ 
+                    message: 'El nombre debe contener al menos nombre y apellido (mínimo 2 palabras)' 
+                });
+            }
+        }
+
+        // Validar email si se proporciona
+        if (email && email !== user.email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                return res.status(400).json({ 
+                    message: 'El formato del email no es válido' 
+                });
+            }
+        }
+
         user.nombre = nombre || user.nombre;
         user.email = email || user.email;
         user.edad = edad || user.edad;
@@ -118,6 +162,13 @@ const updateUser = async (req, res) => {
         if (role) user.role = role;
 
         if (password) {
+            // Validar contraseña robusta si se proporciona
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+            if (!passwordRegex.test(password)) {
+                return res.status(400).json({ 
+                    message: 'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número' 
+                });
+            }
             const salt = await bcrypt.genSalt(10);
             user.password = await bcrypt.hash(password, salt);
         }
@@ -189,6 +240,26 @@ const updateProfile = async (req, res) => {
 
         if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
 
+        // Validar nombre si se proporciona
+        if (nombre) {
+            const nombreRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ]+\s+[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+            if (!nombreRegex.test(nombre.trim())) {
+                return res.status(400).json({ 
+                    message: 'El nombre debe contener al menos nombre y apellido (mínimo 2 palabras)' 
+                });
+            }
+        }
+
+        // Validar email si se proporciona
+        if (email && email !== user.email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                return res.status(400).json({ 
+                    message: 'El formato del email no es válido' 
+                });
+            }
+        }
+
         user.nombre = nombre || user.nombre;
         user.email = email || user.email;
         user.edad = edad !== undefined ? edad : user.edad;
@@ -197,6 +268,13 @@ const updateProfile = async (req, res) => {
         user.objetivoClasesSemana = objetivoClasesSemana !== undefined ? objetivoClasesSemana : user.objetivoClasesSemana;
 
         if (password) {
+            // Validar contraseña robusta si se proporciona
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+            if (!passwordRegex.test(password)) {
+                return res.status(400).json({ 
+                    message: 'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número' 
+                });
+            }
             const salt = await bcrypt.genSalt(10);
             user.password = await bcrypt.hash(password, salt);
         }

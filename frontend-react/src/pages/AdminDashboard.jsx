@@ -609,7 +609,7 @@ const AdminDashboard = () => {
           setModalConfig({
             isOpen: true,
             type: 'alert',
-            message: 'Ejercicio eliminado correctamentee',
+            message: 'Ejercicio eliminado correctamente',
             onConfirm: null
           })
           loadEjercicios()
@@ -683,6 +683,44 @@ const AdminDashboard = () => {
 
   const handleSaveUser = async () => {
     try {
+      // Validar nombre
+      const nombreRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ]+\s+[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/
+      if (!nombreRegex.test(userForm.nombre.trim())) {
+        setModalConfig({
+          isOpen: true,
+          type: 'alert',
+          message: 'El nombre debe contener al menos nombre y apellido (mínimo 2 palabras)',
+          onConfirm: null
+        })
+        return
+      }
+
+      // Validar email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!emailRegex.test(userForm.email)) {
+        setModalConfig({
+          isOpen: true,
+          type: 'alert',
+          message: 'El formato del email no es válido',
+          onConfirm: null
+        })
+        return
+      }
+      
+      // Validar contraseña si se proporciona (para crear o editar)
+      if (userForm.password && userForm.password.trim() !== '') {
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/
+        if (!passwordRegex.test(userForm.password)) {
+          setModalConfig({
+            isOpen: true,
+            type: 'alert',
+            message: 'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número',
+            onConfirm: null
+          })
+          return
+        }
+      }
+      
       if (editingUser) {
         // Editar usuario existente
         const updateData = { ...userForm }

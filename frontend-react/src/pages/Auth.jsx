@@ -49,6 +49,27 @@ const Auth = () => {
   const handleRegister = async (e) => {
     e.preventDefault()
     
+    // Validar nombre (mínimo 2 palabras)
+    const nombreRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ]+\s+[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/
+    if (!nombreRegex.test(registerData.name.trim())) {
+      showNotification('El nombre debe contener al menos nombre y apellido (mínimo 2 palabras)', 'error')
+      return
+    }
+
+    // Validar email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(registerData.email)) {
+      showNotification('El formato del email no es válido', 'error')
+      return
+    }
+    
+    // Validar contraseña robusta en frontend
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/
+    if (!passwordRegex.test(registerData.password)) {
+      showNotification('La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número', 'error')
+      return
+    }
+    
     try {
       const data = await authAPI.register(
         registerData.name,
