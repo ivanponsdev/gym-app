@@ -16,7 +16,6 @@ app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Middleware para logging de peticiones (útil para debug)
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.path}`);
   next();
 });
 

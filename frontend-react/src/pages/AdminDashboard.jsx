@@ -22,7 +22,6 @@ const EstadisticasSection = () => {
     try {
       setLoading(true)
       const data = await statsAPI.obtenerEstadisticasGlobales()
-      console.log('Datos de estadísticas recibidos:', data)
       setStats(data)
       setError('')
     } catch (error) {
@@ -388,6 +387,38 @@ const EstadisticasSection = () => {
               Usuarios vs mes anterior
             </p>
           </div>
+
+          <div style={{
+            padding: '1.5rem',
+            background: 'linear-gradient(135deg, rgba(148, 0, 211, 0.1) 0%, rgba(0, 191, 255, 0.1) 100%)',
+            borderRadius: '12px',
+            border: '2px solid rgba(148, 0, 211, 0.3)',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            <div style={{
+              position: 'absolute',
+              top: '-10px',
+              right: '-10px',
+              fontSize: '4rem',
+              opacity: '0.1'
+            }}>⏰</div>
+            <h4 style={{margin: '0 0 0.5rem 0', fontSize: '0.9rem', color: 'var(--text-color-dark)', textTransform: 'uppercase', letterSpacing: '1px'}}>
+              Hora más popular
+            </h4>
+            <p style={{margin: '0.5rem 0', fontSize: '1.8rem', fontWeight: 'bold', color: '#9400D3'}}>
+              {stats.horasPopulares && stats.horasPopulares.length > 0
+                ? stats.horasPopulares[0].hora
+                : 'N/A'
+              }
+            </p>
+            <p style={{margin: '0.5rem 0 0 0', fontSize: '0.85rem', color: 'var(--text-color-dark)'}}>
+              {stats.horasPopulares && stats.horasPopulares.length > 0
+                ? `${stats.horasPopulares[0].inscritos} inscritos en ${stats.horasPopulares[0].clases} clase${stats.horasPopulares[0].clases > 1 ? 's' : ''}`
+                : 'Horario con más demanda'
+              }
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -440,6 +471,11 @@ const AdminDashboard = () => {
     objetivo: 'recomposicion_corporal',
     role: 'user'
   })
+  
+  // Estados búsqueda
+  const [searchUsers, setSearchUsers] = useState('')
+  const [searchEjercicios, setSearchEjercicios] = useState('')
+  const [searchGuias, setSearchGuias] = useState('')
   
   // Estados clases
   const [showClaseModal, setShowClaseModal] = useState(false)
@@ -542,6 +578,38 @@ const AdminDashboard = () => {
     } finally {
       setLoading(false)
     }
+  }
+
+  // Función para verificar si una clase ha pasado considerando día y hora
+  const esClasePasada = (diaSemana, horaInicio) => {
+    const ahora = new Date()
+    const diaActual = ahora.getDay() // 0 = domingo, 1 = lunes, ..., 6 = sábado
+    const horaActual = `${String(ahora.getHours()).padStart(2, '0')}:${String(ahora.getMinutes()).padStart(2, '0')}`
+    
+    // Convertir nombre del día a número
+    const diasMap = {
+      'domingo': 0,
+      'lunes': 1,
+      'martes': 2,
+      'miércoles': 3,
+      'jueves': 4,
+      'viernes': 5,
+      'sábado': 6
+    }
+    
+    const diaClase = diasMap[diaSemana.toLowerCase()] ?? -1
+    
+    // Si el día de la clase ya pasó esta semana, está pasada
+    if (diaClase < diaActual) {
+      return true
+    }
+    
+    // Si es el mismo día, comparar horas
+    if (diaClase === diaActual && horaInicio <= horaActual) {
+      return true
+    }
+    
+    return false
   }
 
   const handleDeleteUser = async (userId) => {
@@ -987,7 +1055,12 @@ const AdminDashboard = () => {
           <section id="admin-users" className="content-section active">
             <h2>Gestión de Usuarios</h2>
             <div className="search-container">
-              <input type="search" placeholder="Buscar por nombre o email..." />
+              <input 
+                type="search" 
+                placeholder="Buscar por nombre o email..." 
+                value={searchUsers}
+                onChange={(e) => setSearchUsers(e.target.value)}
+              />
             </div>
             <div id="users-list-container">
               <button 
@@ -1009,7 +1082,14 @@ const AdminDashboard = () => {
                   <>
                     {/* Vista móvil */}
                     <div className="mobile-admin-list">
-                      {users.map((user) => (
+                      {users
+                        .filter(user => {
+                          if (!searchUsers) return true
+                          const searchLower = searchUsers.toLowerCase()
+                          return user.nombre.toLowerCase().includes(searchLower) || 
+                                 user.email.toLowerCase().includes(searchLower)
+                        })
+                        .map((user) => (
                         <div key={user._id} className="mobile-admin-item">
                           <div className="mobile-admin-item-text">
                             {user.nombre} ({user.email})
@@ -1046,7 +1126,14 @@ const AdminDashboard = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {users.map((user) => (
+                      {users
+                        .filter(user => {
+                          if (!searchUsers) return true
+                          const searchLower = searchUsers.toLowerCase()
+                          return user.nombre.toLowerCase().includes(searchLower) || 
+                                 user.email.toLowerCase().includes(searchLower)
+                        })
+                        .map((user) => (
                         <tr key={user._id}>
                           <td>{user._id.substring(0, 8)}...</td>
                           <td>{user.nombre}</td>
@@ -1129,6 +1216,13 @@ const AdminDashboard = () => {
                         <div key={clase._id} className="mobile-admin-item">
                           <div className="mobile-admin-item-text">
                             {clase.nombre} - {clase.horaInicio} a {clase.horaFin}
+                            <span style={{
+                              marginLeft: '0.5rem',
+                              fontSize: '0.85rem',
+                              color: esClasePasada(clase.diaSemana, clase.horaInicio) ? '#ff6b6b' : clase.activa ? '#39FF14' : '#ff6b6b'
+                            }}>
+                              {esClasePasada(clase.diaSemana, clase.horaInicio) ? '(Pasada)' : clase.activa ? '(Activa)' : '(Inactiva)'}
+                            </span>
                           </div>
                           <div className="mobile-admin-item-actions">
                             <button 
@@ -1174,7 +1268,9 @@ const AdminDashboard = () => {
                           <td>{clase.horaInicio} - {clase.horaFin}</td>
                           <td>{clase.cupoMaximo}</td>
                           <td>{clase.numeroInscritos || clase.alumnosApuntados?.length || 0}</td>
-                          <td>{clase.activa ? '✅ Activa' : '❌ Inactiva'}</td>
+                          <td title={esClasePasada(clase.diaSemana, clase.horaInicio) ? 'Clase pasada' : clase.activa ? 'Clase activa' : 'Clase inactiva'}>
+                            {esClasePasada(clase.diaSemana, clase.horaInicio) ? '❌ Pasada' : clase.activa ? '✅ Activa' : '❌ Inactiva'}
+                          </td>
                           <td>
                             <div className="action-buttons">
                               <button 
@@ -1208,7 +1304,12 @@ const AdminDashboard = () => {
           <section id="admin-ejercicios" className="content-section active">
             <h2>Gestión de Ejercicios</h2>
             <div className="search-container">
-              <input type="search" placeholder="Buscar por nombre o grupo muscular..." />
+              <input 
+                type="search" 
+                placeholder="Buscar por nombre o grupo muscular..." 
+                value={searchEjercicios}
+                onChange={(e) => setSearchEjercicios(e.target.value)}
+              />
             </div>
             <div id="ejercicios-list-container">
               <button 
@@ -1230,7 +1331,14 @@ const AdminDashboard = () => {
                   <>
                     {/* Vista móvil */}
                     <div className="mobile-admin-list">
-                      {ejercicios.map((ejercicio) => (
+                      {ejercicios
+                        .filter(ejercicio => {
+                          if (!searchEjercicios) return true
+                          const searchLower = searchEjercicios.toLowerCase()
+                          return ejercicio.nombre.toLowerCase().includes(searchLower) || 
+                                 ejercicio.grupoMuscular.toLowerCase().includes(searchLower)
+                        })
+                        .map((ejercicio) => (
                         <div key={ejercicio._id} className="mobile-admin-item">
                           <div className="mobile-admin-item-text">
                             {ejercicio.nombre}
@@ -1267,7 +1375,14 @@ const AdminDashboard = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {ejercicios.map((ejercicio) => (
+                      {ejercicios
+                        .filter(ejercicio => {
+                          if (!searchEjercicios) return true
+                          const searchLower = searchEjercicios.toLowerCase()
+                          return ejercicio.nombre.toLowerCase().includes(searchLower) || 
+                                 ejercicio.grupoMuscular.toLowerCase().includes(searchLower)
+                        })
+                        .map((ejercicio) => (
                         <tr key={ejercicio._id}>
                           <td>{ejercicio.nombre}</td>
                           <td style={{textTransform: 'capitalize'}}>{ejercicio.grupoMuscular}</td>
@@ -1309,7 +1424,12 @@ const AdminDashboard = () => {
           <section id="admin-guias" className="content-section active">
             <h2>Gestión de Guías</h2>
             <div className="search-container">
-              <input type="search" placeholder="Buscar por título u objetivo..." />
+              <input 
+                type="search" 
+                placeholder="Buscar por título u objetivo..." 
+                value={searchGuias}
+                onChange={(e) => setSearchGuias(e.target.value)}
+              />
             </div>
             <div id="guias-list-container">
               <button 
@@ -1331,7 +1451,14 @@ const AdminDashboard = () => {
                   <>
                     {/* Vista móvil */}
                     <div className="mobile-admin-list">
-                      {guias.map((guia) => (
+                      {guias
+                        .filter(guia => {
+                          if (!searchGuias) return true
+                          const searchLower = searchGuias.toLowerCase()
+                          return guia.titulo.toLowerCase().includes(searchLower) || 
+                                 guia.objetivo.toLowerCase().includes(searchLower)
+                        })
+                        .map((guia) => (
                         <div key={guia._id} className="mobile-admin-item">
                           <div className="mobile-admin-item-text">
                             {guia.titulo}
@@ -1367,7 +1494,14 @@ const AdminDashboard = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {guias.map((guia) => (
+                      {guias
+                        .filter(guia => {
+                          if (!searchGuias) return true
+                          const searchLower = searchGuias.toLowerCase()
+                          return guia.titulo.toLowerCase().includes(searchLower) || 
+                                 guia.objetivo.toLowerCase().includes(searchLower)
+                        })
+                        .map((guia) => (
                         <tr key={guia._id}>
                           <td>{guia.titulo}</td>
                           <td style={{textTransform: 'capitalize'}}>{guia.objetivo.replace(/_/g, ' ')}</td>

@@ -247,9 +247,7 @@ const deleteClase = async (req, res) => {
     
     // Informar si hay alumnos apuntados antes de eliminar
     const alumnosAfectados = clase.alumnosApuntados.length;
-    if (alumnosAfectados > 0) {
-      console.log(`Advertencia: Se eliminará la clase "${clase.nombre}" con ${alumnosAfectados} alumno(s) inscrito(s)`);
-    }
+
     
     await Clase.findByIdAndDelete(req.params.id);
     

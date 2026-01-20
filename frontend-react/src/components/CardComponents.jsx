@@ -47,6 +47,38 @@ export const GuiaCard = ({ guia, descargarGuia, formatearObjetivo, obtenerColorO
 }
 
 export const ClaseCard = ({ clase, user, misClases, handleInscribirse }) => {
+  // Función para verificar si la clase ya pasó considerando día y hora
+  const esClasePasada = () => {
+    const ahora = new Date()
+    const diaActual = ahora.getDay() // 0 = domingo, 1 = lunes, ..., 6 = sábado
+    const horaActual = `${String(ahora.getHours()).padStart(2, '0')}:${String(ahora.getMinutes()).padStart(2, '0')}`
+    
+    // Convertir nombre del día a número
+    const diasMap = {
+      'domingo': 0,
+      'lunes': 1,
+      'martes': 2,
+      'miércoles': 3,
+      'jueves': 4,
+      'viernes': 5,
+      'sábado': 6
+    }
+    
+    const diaClase = diasMap[clase.diaSemana.toLowerCase()] ?? -1
+    
+    // Si el día de la clase ya pasó esta semana, está pasada
+    if (diaClase < diaActual) {
+      return true
+    }
+    
+    // Si es el mismo día, comparar horas
+    if (diaClase === diaActual && clase.horaInicio <= horaActual) {
+      return true
+    }
+    
+    return false
+  }
+
   // Lógica de cálculo de plazas y estado
   const plazasDisponibles = clase.plazasDisponibles ?? (clase.cupoMaximo - (clase.alumnosApuntados?.length || 0))
   const porcentajeOcupacion = ((clase.cupoMaximo - plazasDisponibles) / clase.cupoMaximo) * 100
@@ -58,8 +90,10 @@ export const ClaseCard = ({ clase, user, misClases, handleInscribirse }) => {
   const estaInscrito = clase.alumnosApuntados?.includes(user?._id) || 
     misClases.some(c => c._id === clase._id)
 
+  const clasePasada = esClasePasada()
+
   return (
-    <div className={`clase-card tipo-${clase.nombre.toLowerCase().replace(/\s/g, '-')}`}> 
+    <div className={`clase-card tipo-${clase.nombre.toLowerCase().replace(/\s/g, '-')} ${clasePasada ? 'clase-pasada' : ''}`}> 
       <div className="clase-hora">{clase.horaInicio} - {clase.horaFin}</div>
       <h4 className="clase-nombre">{clase.nombre}</h4>
       <p className="clase-profesor">{clase.profesor}</p>
@@ -70,9 +104,11 @@ export const ClaseCard = ({ clase, user, misClases, handleInscribirse }) => {
       <button 
         className={`btn-inscribir ${estaInscrito ? 'inscrito' : ''}`}
         onClick={() => handleInscribirse(clase._id)}
-        disabled={estadoCupo === 'completo' || estaInscrito}
+        disabled={estadoCupo === 'completo' || estaInscrito || clasePasada}
+        title={clasePasada ? 'Esta clase ya ha pasado' : ''}
       >
-        {estaInscrito ? '✓ Inscrito' : 
+        {clasePasada ? '⏰ Clase Pasada' :
+          estaInscrito ? '✓ Inscrito' : 
           estadoCupo === 'completo' ? 'Clase Completa' : 'Inscribirme'}
       </button>
       {estaInscrito && (
