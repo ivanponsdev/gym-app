@@ -24,7 +24,7 @@ const loginUser = async (req, res) => {
         }
 
         // Firmar un token y devolverlo junto al usuario (sin contraseña)
-        const payload = { id: user._id, role: user.role };
+        const payload = { id: user._id, role: user.role, objetivo: user.objetivo };
         const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
         res.json({
             token,
@@ -73,11 +73,11 @@ const createUser = async (req, res) => {
         });
     }
 
-    // Validar email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    // Validar email con formato más estricto
+    const emailRegex = /^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email) || email.endsWith('.') || email.includes('..')) {
         return res.status(400).json({ 
-            message: 'El formato del email no es válido' 
+            message: 'El formato del email no es válido. Asegúrate de que tenga el formato: usuario@dominio.com' 
         });
     }
 
@@ -104,7 +104,7 @@ const createUser = async (req, res) => {
     const savedUser = await newUser.save();
     
     // Generar token JWT para auto-login después del registro
-    const payload = { id: savedUser._id, role: savedUser.role };
+    const payload = { id: savedUser._id, role: savedUser.role, objetivo: savedUser.objetivo };
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
     
     res.status(201).json({ 
@@ -122,6 +122,22 @@ const createUser = async (req, res) => {
         }
     });
   } catch (error) {
+    // Manejar errores de validación de Mongoose
+    if (error.name === 'ValidationError') {
+      const mensajesError = Object.values(error.errors).map(e => e.message);
+      return res.status(400).json({ 
+        message: 'Error de validación', 
+        errores: mensajesError 
+      });
+    }
+    
+    // Manejar error de email duplicado
+    if (error.code === 11000) {
+      return res.status(400).json({ 
+        message: 'El correo electrónico ya está en uso' 
+      });
+    }
+    
     res.status(500).json({ message: 'Error al crear usuario', error: error.message });
   }
 };
@@ -188,6 +204,22 @@ const updateUser = async (req, res) => {
         });
 
     } catch (error) {
+        // Manejar errores de validación de Mongoose
+        if (error.name === 'ValidationError') {
+            const mensajesError = Object.values(error.errors).map(e => e.message);
+            return res.status(400).json({ 
+                message: 'Error de validación', 
+                errores: mensajesError 
+            });
+        }
+
+        // Manejar error de email duplicado
+        if (error.code === 11000) {
+            return res.status(400).json({ 
+                message: 'El correo electrónico ya está en uso' 
+            });
+        }
+
         res.status(500).json({ message: 'Error al actualizar usuario', error: error.message });
     }
 };
@@ -252,10 +284,10 @@ const updateProfile = async (req, res) => {
 
         // Validar email si se proporciona
         if (email && email !== user.email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
+            const emailRegex = /^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!emailRegex.test(email) || email.endsWith('.') || email.includes('..')) {
                 return res.status(400).json({ 
-                    message: 'El formato del email no es válido' 
+                    message: 'El formato del email no es válido. Asegúrate de que tenga el formato: usuario@dominio.com' 
                 });
             }
         }
@@ -281,7 +313,12 @@ const updateProfile = async (req, res) => {
 
         const updatedUser = await user.save();
         
+        // Generar nuevo token con los datos actualizados (especialmente objetivo)
+        const newPayload = { id: updatedUser._id, role: updatedUser.role, objetivo: updatedUser.objetivo };
+        const newToken = jwt.sign(newPayload, JWT_SECRET, { expiresIn: '7d' });
+        
         res.json({
+            token: newToken,
             usuario: {
                 _id: updatedUser._id,
                 nombre: updatedUser.nombre,
@@ -296,6 +333,22 @@ const updateProfile = async (req, res) => {
         });
 
     } catch (error) {
+        // Manejar errores de validación de Mongoose
+        if (error.name === 'ValidationError') {
+            const mensajesError = Object.values(error.errors).map(e => e.message);
+            return res.status(400).json({ 
+                message: 'Error de validación', 
+                errores: mensajesError 
+            });
+        }
+
+        // Manejar error de email duplicado
+        if (error.code === 11000) {
+            return res.status(400).json({ 
+                message: 'El correo electrónico ya está en uso' 
+            });
+        }
+
         res.status(500).json({ message: 'Error al actualizar perfil', error: error.message });
     }
 };

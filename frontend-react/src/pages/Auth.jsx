@@ -24,9 +24,65 @@ const Auth = () => {
     password: ''
   })
 
+  // Estados para errores de validación en tiempo real
+  const [validationErrors, setValidationErrors] = useState({
+    name: '',
+    email: '',
+    password: ''
+  })
+
   const showNotification = (message, type = 'success') => {
     setNotification({ message, type })
     setTimeout(() => setNotification(null), 3000)
+  }
+
+  // Validar nombre en tiempo real
+  const validateName = (name) => {
+    const nombreRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ]+\s+[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/
+    if (!name.trim()) {
+      return ''
+    }
+    if (!nombreRegex.test(name.trim())) {
+      return 'El nombre debe contener al menos nombre y apellido (mínimo 2 palabras)'
+    }
+    return ''
+  }
+
+  // Validar email en tiempo real
+  const validateEmail = (email) => {
+    const emailRegex = /^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+    if (!email) {
+      return ''
+    }
+    if (!emailRegex.test(email) || email.endsWith('.') || email.includes('..')) {
+      return 'El formato del email no es válido. Ej: usuario@dominio.com'
+    }
+    return ''
+  }
+
+  // Validar contraseña en tiempo real
+  const validatePassword = (password) => {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/
+    if (!password) {
+      return ''
+    }
+    if (!passwordRegex.test(password)) {
+      return 'Al menos 8 caracteres, una mayúscula, una minúscula y un número'
+    }
+    return ''
+  }
+
+  const handleRegisterInputChange = (field, value) => {
+    setRegisterData({ ...registerData, [field]: value })
+    
+    // Validar en tiempo real
+    if (field === 'name') {
+      setValidationErrors({ ...validationErrors, name: validateName(value) })
+    } else if (field === 'email') {
+      setValidationErrors({ ...validationErrors, email: validateEmail(value) })
+    } else if (field === 'password') {
+      setValidationErrors({ ...validationErrors, password: validatePassword(value) })
+    }
   }
 
   const handleLogin = async (e) => {
@@ -57,9 +113,9 @@ const Auth = () => {
     }
 
     // Validar email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(registerData.email)) {
-      showNotification('El formato del email no es válido', 'error')
+    const emailRegex = /^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+    if (!emailRegex.test(registerData.email) || registerData.email.endsWith('.') || registerData.email.includes('..')) {
+      showNotification('El formato del email no es válido. Asegúrate de que tenga el formato: usuario@dominio.com', 'error')
       return
     }
     
@@ -77,11 +133,13 @@ const Auth = () => {
         registerData.password
       )
       login(data.usuario, data.token)
+      // Limpiar cache de usuarios del admin después de registrarse
+      sessionStorage.removeItem('adminUsers')
       showNotification('¡Cuenta creada con éxito!', 'success')
       
-      // Redirigir al dashboard
+      // Redirigir a la página de perfil
       setTimeout(() => {
-        navigate('/dashboard')
+        navigate('/dashboard/perfil')
       }, 1000)
     } catch (error) {
       showNotification(error.message || 'Error al registrarse', 'error')
@@ -99,7 +157,7 @@ const Auth = () => {
               <h2>Iniciar Sesión</h2>
               <div className="input-group">
                 <input
-                  type="email"
+                  type="text"
                   placeholder="Correo electrónico"
                   value={loginData.email}
                   onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
@@ -132,27 +190,30 @@ const Auth = () => {
                   type="text"
                   placeholder="Nombre completo"
                   value={registerData.name}
-                  onChange={(e) => setRegisterData({ ...registerData, name: e.target.value })}
+                  onChange={(e) => handleRegisterInputChange('name', e.target.value)}
                   required
                 />
+                {validationErrors.name && <span className="error-message">{validationErrors.name}</span>}
               </div>
               <div className="input-group">
                 <input
-                  type="email"
+                  type="text"
                   placeholder="Correo electrónico"
                   value={registerData.email}
-                  onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
+                  onChange={(e) => handleRegisterInputChange('email', e.target.value)}
                   required
                 />
+                {validationErrors.email && <span className="error-message">{validationErrors.email}</span>}
               </div>
               <div className="input-group">
                 <input
                   type="password"
                   placeholder="Contraseña"
                   value={registerData.password}
-                  onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
+                  onChange={(e) => handleRegisterInputChange('password', e.target.value)}
                   required
                 />
+                {validationErrors.password && <span className="error-message">{validationErrors.password}</span>}
               </div>
               <button type="submit" className="btn-neon">Registrarse</button>
               <p className="form-switch">

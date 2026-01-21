@@ -12,21 +12,21 @@ const {
 } = require('../controllers/userController');
 const { authenticateJWT, requireAdmin } = require('../middleware/auth');
 
-//Autenticar un usuario (público)
+//Autenticar un usuario 
 router.post('/login', loginUser);
-//Crear un nuevo usuario (público)
+//Crear un nuevo usuario 
 router.post('/', createUser);
-//Obtener perfil del usuario autenticado (protegido)
+//Obtener perfil del usuario autenticado 
 router.get('/profile', authenticateJWT, getProfile);
-//Actualizar perfil del usuario autenticado (protegido)
+//Actualizar perfil del usuario autenticado 
 router.put('/profile', authenticateJWT, updateProfile);
-//Obtener todos los usuarios (protegido - solo admin)
+//Obtener todos los usuarios 
 router.get('/', authenticateJWT, requireAdmin, getUsers);
-//Actualizar usuario por ID (protegido - usuario autenticado)
+//Actualizar usuario por ID 
 router.put('/:id', authenticateJWT, updateUser);
-//Eliminar cuenta propia (protegido - usuario autenticado)
+//Eliminar cuenta propia 
 router.delete('/me', authenticateJWT, deleteMyAccount);
-//Eliminar un usuario por ID (protegido - solo admin)
+//Eliminar un usuario por ID 
 router.delete('/:id', authenticateJWT, requireAdmin, deleteUser);
 
 module.exports = router;

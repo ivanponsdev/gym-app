@@ -1,7 +1,6 @@
 // seeds/index.js
 const mongoose = require('mongoose');
 const connectDB = require('../config/db');
-
 const seedUsuarios = require('./usuariosSeed');
 const { seedClases } = require('./clasesSeed');
 const seedEjercicios = require('./ejerciciosSeed');

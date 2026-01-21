@@ -11,15 +11,12 @@
     "preview:frontend": "vite preview"
   },
   "dependencies": {
-    "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
-    "bootstrap": "^5.3.8",
     "dotenv": "^17.2.3",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.19.2",
     "multer": "^2.0.2",
-    "node-cron": "^4.2.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.9.5",
@@ -36,7 +33,7 @@
     "express",
     "mongodb",
     "jwt",
-    "bcrypt",
+    "bcryptjs",
     "usuarios",
     "autenticacion"
   ],

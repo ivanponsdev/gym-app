@@ -43,21 +43,21 @@ const upload = multer({
 });
 
 //Rutas públicas 
-// GET /api/ejercicios - Obtener todos los ejercicios
+// GET /ejercicios - Obtener todos los ejercicios
 router.get('/', authenticateJWT, obtenerTodos);
-// GET /api/ejercicios/grupo/:grupoMuscular  Filtrar por grupo muscular
+// GET /ejercicios/grupo/:grupoMuscular  Filtrar por grupo muscular
 router.get('/grupo/:grupoMuscular', authenticateJWT, obtenerPorGrupo);
-// GET /api/ejercicios/equipamiento/:tipo  Filtrar por equipamiento (casa/gimnasio)
+// GET /ejercicios/equipamiento/:tipo  Filtrar por equipamiento (casa/gimnasio)
 router.get('/equipamiento/:tipo', authenticateJWT, obtenerPorEquipamiento);
-// GET /api/ejercicios/:id - Obtener ejercicio específico
+// GET /ejercicios/:id - Obtener ejercicio específico
 router.get('/:id', authenticateJWT, obtenerPorId);
 
 //Rutas protegidas
-// POST /api/ejercicios - Crear nuevo ejercicio
+// POST /ejercicios - Crear nuevo ejercicio
 router.post('/', authenticateJWT, requireAdmin, upload.single('imagenTecnica'), crear);
-// PUT /api/ejercicios/:id - Actualizar ejercicio
+// PUT /ejercicios/:id - Actualizar ejercicio
 router.put('/:id', authenticateJWT, requireAdmin, upload.single('imagenTecnica'), actualizar);
-// DELETE /api/ejercicios/:id - Eliminar ejercicio
+// DELETE /ejercicios/:id - Eliminar ejercicio
 router.delete('/:id', authenticateJWT, requireAdmin, eliminar);
 
 module.exports = router;

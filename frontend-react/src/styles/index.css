@@ -383,6 +383,20 @@ body {
     box-shadow: 0 0 20px var(--primary-color), 0 0 30px var(--primary-color);
 }
 
+/* Botón Refrescar */
+.btn-refresh {
+    background-color: #000000;
+    border-color: #00BFFF;
+    color: #00BFFF;
+    box-shadow: 0 0 10px #00BFFF;
+}
+
+.btn-refresh:hover {
+    background-color: #000000;
+    color: #00BFFF;
+    box-shadow: 0 0 20px #00BFFF, 0 0 30px #00BFFF;
+}
+
 /* --- Info Page --- */
 .info-card {
     background: linear-gradient(135deg, rgba(30, 30, 30, 0.95) 0%, rgba(22, 15, 31, 0.9) 100%);
@@ -490,6 +504,28 @@ body {
         inset 0 0 10px rgba(148, 0, 211, 0.1);
     background-color: rgba(22, 15, 31, 0.8);
     transition: all 0.3s ease;
+}
+
+/* Mensaje de error de validación */
+.error-message {
+    display: block;
+    color: #FFFF00;
+    font-size: 0.8rem;
+    margin-top: 0.4rem;
+    font-weight: 500;
+    text-shadow: 0 0 10px rgba(255, 255, 0, 0.6);
+    animation: slideInError 0.3s ease-out;
+}
+
+@keyframes slideInError {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .form-switch {
@@ -990,6 +1026,19 @@ body {
 
 #profile-edit .form-group select:hover {
     border-color: var(--secondary-color);
+}
+
+/* Estilos para campos obligatorios vacíos */
+#profile-edit .form-group input.input-empty-required,
+#profile-edit .form-group select.input-empty-required {
+    border-color: #ff4757;
+    box-shadow: 0 0 10px rgba(255, 71, 87, 0.3);
+}
+
+#profile-edit .form-group input.input-empty-required:focus,
+#profile-edit .form-group select.input-empty-required:focus {
+    border-color: #ff4757;
+    box-shadow: 0 0 15px rgba(255, 71, 87, 0.5);
 }
 
 #profile-edit .form-group select option {

@@ -21,6 +21,9 @@ const EjerciciosSection = () => {
 
   useEffect(() => {
     cargarEjercicios()
+    // Refrescar ejercicios cada 30 segundos para sincronización en tiempo real
+    const interval = setInterval(cargarEjercicios, 30000)
+    return () => clearInterval(interval)
   }, [])
 
   useEffect(() => {
@@ -157,7 +160,10 @@ const GuiasSection = () => {
 
   useEffect(() => {
     cargarGuias()
-  }, [])
+    // Refrescar guías cada 30 segundos para sincronización en tiempo real
+    const interval = setInterval(cargarGuias, 30000)
+    return () => clearInterval(interval)
+  }, [user?.objetivo]) // Recarga cuando cambia el objetivo del usuario
 
   const cargarGuias = async () => {
     try {
@@ -398,7 +404,39 @@ const Dashboard = () => {
         return
       }
     }
-        // Validar contraseña
+
+    // Validar campos obligatorios
+    if (!profileData.edad || profileData.edad === '') {
+      setModalConfig({
+        isOpen: true,
+        type: 'alert',
+        message: 'La edad es obligatoria',
+        onConfirm: null
+      })
+      return
+    }
+
+    if (!profileData.sexo || profileData.sexo === '') {
+      setModalConfig({
+        isOpen: true,
+        type: 'alert',
+        message: 'El sexo es obligatorio',
+        onConfirm: null
+      })
+      return
+    }
+
+    if (!profileData.objetivo || profileData.objetivo === '') {
+      setModalConfig({
+        isOpen: true,
+        type: 'alert',
+        message: 'El objetivo es obligatorio',
+        onConfirm: null
+      })
+      return
+    }
+
+    // Validar contraseña
     if (profileData.password && profileData.password.trim() !== '') {
       const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/
       if (!passwordRegex.test(profileData.password)) {
@@ -415,7 +453,12 @@ const Dashboard = () => {
     setLoadingProfile(true)
     try {
       const response = await userAPI.updateProfile(profileData)
+      // Actualizar usuario en contexto
       updateUser(response.usuario)
+      // Guardar nuevo token si se devuelve (especialmente importante si cambió el objetivo)
+      if (response.token) {
+        localStorage.setItem('token', response.token)
+      }
       setIsEditingProfile(false)
       setModalConfig({
         isOpen: true,
@@ -571,33 +614,41 @@ const Dashboard = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Edad</label>
+                    <label>Edad *</label>
                     <input
                       type="number"
+                      className={!profileData.edad || profileData.edad === '' ? 'input-empty-required' : ''}
                       value={profileData.edad}
                       onChange={(e) => setProfileData({ ...profileData, edad: e.target.value })}
                       min="14"
                       max="100"
                       placeholder="14-100 años"
+                      required
                     />
                   </div>
                   <div className="form-group">
-                    <label>Sexo</label>
+                    <label>Sexo *</label>
                     <select
+                      className={!profileData.sexo || profileData.sexo === '' ? 'input-empty-required' : ''}
                       value={profileData.sexo}
                       onChange={(e) => setProfileData({ ...profileData, sexo: e.target.value })}
+                      required
                     >
+                      <option value="">-- Selecciona tu sexo --</option>
                       <option value="masculino">Masculino</option>
                       <option value="femenino">Femenino</option>
                       <option value="otro">Otro</option>
                     </select>
                   </div>
                   <div className="form-group">
-                    <label>Objetivo</label>
+                    <label>Objetivo *</label>
                     <select
+                      className={!profileData.objetivo || profileData.objetivo === '' ? 'input-empty-required' : ''}
                       value={profileData.objetivo}
                       onChange={(e) => setProfileData({ ...profileData, objetivo: e.target.value })}
+                      required
                     >
+                      <option value="">-- Selecciona tu objetivo --</option>
                       <option value="aumento_masa_muscular">Aumento de Masa Muscular</option>
                       <option value="recomposicion_corporal">Recomposición Corporal</option>
                       <option value="perdida_grasa">Pérdida de Grasa</option>

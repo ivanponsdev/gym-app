@@ -50,7 +50,7 @@ export const ClaseCard = ({ clase, user, misClases, handleInscribirse }) => {
   // Función para verificar si la clase ya pasó considerando día y hora
   const esClasePasada = () => {
     const ahora = new Date()
-    const diaActual = ahora.getDay() // 0 = domingo, 1 = lunes, ..., 6 = sábado
+    const diaActual = ahora.getDay() // Número del día 
     const horaActual = `${String(ahora.getHours()).padStart(2, '0')}:${String(ahora.getMinutes()).padStart(2, '0')}`
     
     // Convertir nombre del día a número
@@ -66,16 +66,14 @@ export const ClaseCard = ({ clase, user, misClases, handleInscribirse }) => {
     
     const diaClase = diasMap[clase.diaSemana.toLowerCase()] ?? -1
     
-    // Si el día de la clase ya pasó esta semana, está pasada
+    // Si el día de la clase ya pasó esta semana devuelve true = pasada
     if (diaClase < diaActual) {
       return true
     }
-    
     // Si es el mismo día, comparar horas
     if (diaClase === diaActual && clase.horaInicio <= horaActual) {
       return true
     }
-    
     return false
   }
 

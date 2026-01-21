@@ -21,7 +21,6 @@ const storage = multer.diskStorage({ //configura almacenamiento para multer
   filename: function (req, file, cb) { //Define como llamaremos al archivo. Fecha más número aleatorio
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9); 
     //genera un número entre 0 y 1, lo multiplica por 1 billón y lo redondea para tener un número entero.
-
     cb(null, 'guia-' + uniqueSuffix + path.extname(file.originalname));
   }
 });    //Con esta combinación se asegura que no se repita el nombre.

@@ -540,6 +540,12 @@ const AdminDashboard = () => {
     }
   }
 
+  // Función para refrescar usuarios manualmente
+  const refreshUsers = async () => {
+    sessionStorage.removeItem('adminUsers')
+    await loadUsers()
+  }
+
   const loadClases = async () => {
     setLoading(true)
     try {
@@ -1063,13 +1069,23 @@ const AdminDashboard = () => {
               />
             </div>
             <div id="users-list-container">
-              <button 
-                className="btn-neon btn-add" 
-                style={{ marginBottom: '20px', width: 'auto', padding: '0.8rem 1.5rem' }}
-                onClick={handleAddUser}
-              >
-                Añadir Usuario
-              </button>
+              <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+                <button 
+                  className="btn-neon btn-add" 
+                  style={{ width: 'auto', padding: '0.8rem 1.5rem' }}
+                  onClick={handleAddUser}
+                >
+                  Añadir Usuario
+                </button>
+                <button 
+                  className="btn-neon btn-refresh" 
+                  style={{ width: 'auto', padding: '0.8rem 1.5rem' }}
+                  onClick={refreshUsers}
+                  title="Actualizar lista de usuarios"
+                >
+                  🔄 Refrescar
+                </button>
+              </div>
               <div className="table-wrapper">
                 {loading && users.length === 0 ? (
                   <div className="spinner-container">
@@ -1089,6 +1105,7 @@ const AdminDashboard = () => {
                           return user.nombre.toLowerCase().includes(searchLower) || 
                                  user.email.toLowerCase().includes(searchLower)
                         })
+                        .sort((a, b) => new Date(b.createdAt || b.fechaRegistro) - new Date(a.createdAt || a.fechaRegistro))
                         .map((user) => (
                         <div key={user._id} className="mobile-admin-item">
                           <div className="mobile-admin-item-text">
@@ -1133,6 +1150,7 @@ const AdminDashboard = () => {
                           return user.nombre.toLowerCase().includes(searchLower) || 
                                  user.email.toLowerCase().includes(searchLower)
                         })
+                        .sort((a, b) => new Date(b.createdAt || b.fechaRegistro) - new Date(a.createdAt || a.fechaRegistro))
                         .map((user) => (
                         <tr key={user._id}>
                           <td>{user._id.substring(0, 8)}...</td>
@@ -1212,6 +1230,14 @@ const AdminDashboard = () => {
                     <div className="mobile-admin-list">
                       {clases
                         .filter(clase => !filtroDiaClase || clase.diaSemana.toLowerCase() === filtroDiaClase.toLowerCase())
+                        .sort((a, b) => {
+                          const aPasada = esClasePasada(a.diaSemana, a.horaInicio)
+                          const bPasada = esClasePasada(b.diaSemana, b.horaInicio)
+                          if (aPasada === bPasada) {
+                            return new Date(b.createdAt) - new Date(a.createdAt)
+                          }
+                          return aPasada ? 1 : -1
+                        })
                         .map((clase) => (
                         <div key={clase._id} className="mobile-admin-item">
                           <div className="mobile-admin-item-text">
@@ -1260,6 +1286,14 @@ const AdminDashboard = () => {
                     <tbody>
                       {clases
                         .filter(clase => !filtroDiaClase || clase.diaSemana.toLowerCase() === filtroDiaClase.toLowerCase())
+                        .sort((a, b) => {
+                          const aPasada = esClasePasada(a.diaSemana, a.horaInicio)
+                          const bPasada = esClasePasada(b.diaSemana, b.horaInicio)
+                          if (aPasada === bPasada) {
+                            return new Date(b.createdAt) - new Date(a.createdAt)
+                          }
+                          return aPasada ? 1 : -1
+                        })
                         .map((clase) => (
                         <tr key={clase._id}>
                           <td>{clase.nombre}</td>
@@ -1338,6 +1372,7 @@ const AdminDashboard = () => {
                           return ejercicio.nombre.toLowerCase().includes(searchLower) || 
                                  ejercicio.grupoMuscular.toLowerCase().includes(searchLower)
                         })
+                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                         .map((ejercicio) => (
                         <div key={ejercicio._id} className="mobile-admin-item">
                           <div className="mobile-admin-item-text">
@@ -1382,6 +1417,7 @@ const AdminDashboard = () => {
                           return ejercicio.nombre.toLowerCase().includes(searchLower) || 
                                  ejercicio.grupoMuscular.toLowerCase().includes(searchLower)
                         })
+                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                         .map((ejercicio) => (
                         <tr key={ejercicio._id}>
                           <td>{ejercicio.nombre}</td>
@@ -1458,6 +1494,7 @@ const AdminDashboard = () => {
                           return guia.titulo.toLowerCase().includes(searchLower) || 
                                  guia.objetivo.toLowerCase().includes(searchLower)
                         })
+                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                         .map((guia) => (
                         <div key={guia._id} className="mobile-admin-item">
                           <div className="mobile-admin-item-text">
@@ -1501,6 +1538,7 @@ const AdminDashboard = () => {
                           return guia.titulo.toLowerCase().includes(searchLower) || 
                                  guia.objetivo.toLowerCase().includes(searchLower)
                         })
+                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                         .map((guia) => (
                         <tr key={guia._id}>
                           <td>{guia.titulo}</td>
@@ -1635,12 +1673,18 @@ const AdminDashboard = () => {
             <h2>{editingClase ? 'Editar Clase' : 'Añadir Clase'}</h2>
             <div className="form-group">
               <label>Nombre *</label>
-              <input
-                type="text"
+              <select
                 value={claseForm.nombre}
                 onChange={(e) => setClaseForm({ ...claseForm, nombre: e.target.value })}
                 required
-              />
+              >
+                <option value="">-- Selecciona una clase --</option>
+                {[...new Set(clases.map(c => c.nombre))].sort().map((nombreClase) => (
+                  <option key={nombreClase} value={nombreClase}>
+                    {nombreClase}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="form-group">
               <label>Descripción</label>
