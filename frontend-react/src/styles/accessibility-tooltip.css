@@ -1,0 +1,52 @@
+/* Widget Accesibilidad*/
+
+/* Tooltip en modo normal */
+.accessibility-tooltip {
+  /* Estilos base aplicados inline */
+  animation: tooltipFadeIn 0.2s ease-in-out;
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Tooltip en modo accesible */
+body.accesible .accessibility-tooltip {
+  background: #333 !important;
+  color: #fff !important;
+  border: 2px solid #666 !important;
+  font-weight: bold !important;
+  font-size: 1rem !important;
+  padding: 10px 14px !important;
+  box-shadow: none !important;
+}
+
+/* Asegurar visibilidad del botón en ambas vistas */
+/* Modo normal */
+button[aria-pressed] {
+  transition: background 0.2s, color 0.2s;
+}
+
+button[aria-pressed]:hover,
+button[aria-pressed]:focus {
+  outline: 2px solid #333;
+  outline-offset: 2px;
+}
+
+/* Modo accesible */
+body.accesible button[aria-pressed] {
+  border: 3px solid #666 !important;
+}
+
+body.accesible button[aria-pressed]:hover,
+body.accesible button[aria-pressed]:focus {
+  border: 3px solid #fff !important;
+  outline: 2px solid #fff !important;
+}

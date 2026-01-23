@@ -1,0 +1,263 @@
+/* Modo Accesible */
+/* Sin efectos neón, blur o luminosos */
+
+
+body.accesible {
+  background: #000 !important;
+  color: #fff !important;
+  font-size: 1.15em !important;
+  letter-spacing: 0.04em !important;
+  line-height: 1.6 !important;
+  /* Evitar efectos luminosos excesivos */
+  filter: none !important;
+}
+
+/* Quitar todos los blur, glow y sombras luminosas */
+body.accesible * {
+  backdrop-filter: none !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+/* Skiplink - solo visible en modo accesible cuando se enfoca */
+body.accesible a[href="#main-content"] {
+  display: block !important;
+}
+
+/* Enlaces: Blanco con subrayado claro */
+body.accesible a {
+  color: #fff !important;
+  text-decoration: underline solid 2px #fff !important;
+  background-color: transparent !important;
+}
+
+body.accesible a:hover,
+body.accesible a:focus {
+  background: #444 !important;
+  color: #fff !important;
+  text-decoration: underline solid 3px #fff !important;
+}
+
+/* Botones: Contraste simple sin efectos */
+body.accesible button,
+body.accesible input[type="button"],
+body.accesible input[type="submit"],
+body.accesible input[type="reset"] {
+  background: #ccc !important;
+  color: #000 !important;
+  border: 3px solid #000 !important;
+  font-size: 1.1em !important;
+  padding: 10px 16px !important;
+  cursor: pointer !important;
+}
+
+body.accesible button:hover,
+body.accesible button:focus,
+body.accesible input[type="button"]:hover,
+body.accesible input[type="button"]:focus,
+body.accesible input[type="submit"]:hover,
+body.accesible input[type="submit"]:focus {
+  background: #999 !important;
+  color: #000 !important;
+  border: 3px solid #000 !important;
+}
+
+/* Inputs y campos de formulario: Simple y claro */
+body.accesible input,
+body.accesible select,
+body.accesible textarea {
+  background: #222 !important;
+  color: #fff !important;
+  border: 3px solid #666 !important;
+  font-size: 1.1em !important;
+  padding: 8px 12px !important;
+}
+
+body.accesible input:focus,
+body.accesible select:focus,
+body.accesible textarea:focus {
+  border: 3px solid #fff !important;
+  background: #111 !important;
+  outline: none !important;
+}
+
+/* Labels claros sin efectos */
+body.accesible label {
+  color: #fff !important;
+  font-weight: bold !important;
+  font-size: 1.1em !important;
+}
+
+/* Títulos: Blanco, sin colores de alerta */
+body.accesible h1,
+body.accesible h2,
+body.accesible h3,
+body.accesible h4,
+body.accesible h5,
+body.accesible h6 {
+  color: #fff !important;
+  letter-spacing: 0.06em !important;
+  font-weight: bold !important;
+}
+
+/* Cartas y contenedores: Bordes sólidos claros */
+body.accesible .card,
+body.accesible .sidebar,
+body.accesible .modal,
+body.accesible .content-section {
+  background: #111 !important;
+  color: #fff !important;
+  border: 2px solid #555 !important;
+}
+
+/* Navegación: Simple y clara */
+body.accesible nav {
+  background: #000 !important;
+  border: 2px solid #555 !important;
+}
+
+body.accesible nav a {
+  color: #fff !important;
+  display: block !important;
+  padding: 12px 16px !important;
+  text-decoration: none !important;
+}
+
+body.accesible nav a:hover,
+body.accesible nav a:focus,
+body.accesible nav a.active {
+  background: #333 !important;
+  color: #fff !important;
+}
+
+/* Tablas accesibles: Bordes claros sin colores chillones */
+body.accesible table {
+  background: #111 !important;
+  border-collapse: collapse !important;
+  border: 2px solid #555 !important;
+}
+
+body.accesible table thead {
+  background: #333 !important;
+  color: #fff !important;
+}
+
+body.accesible table th,
+body.accesible table td {
+  border: 1px solid #555 !important;
+  padding: 12px !important;
+  text-align: left !important;
+}
+
+body.accesible table tbody tr:nth-child(even) {
+  background: #222 !important;
+}
+
+body.accesible table tbody tr:hover {
+  background: #333 !important;
+}
+
+/* Enfoque visible: Línea punteada clara sin efectos */
+body.accesible *:focus {
+  outline: 3px solid #fff !important;
+  outline-offset: 2px !important;
+}
+
+/* Mensajes de error: Colores naturales sin brillo */
+body.accesible .error,
+body.accesible [role="alert"] {
+  background: #400 !important;
+  color: #fff !important;
+  border: 2px solid #ccc !important;
+  padding: 12px !important;
+  font-weight: bold !important;
+}
+
+body.accesible .success,
+body.accesible [role="status"] {
+  background: #040 !important;
+  color: #fff !important;
+  border: 2px solid #ccc !important;
+  padding: 12px !important;
+  font-weight: bold !important;
+}
+
+body.accesible .warning {
+  background: #440 !important;
+  color: #fff !important;
+  border: 2px solid #ccc !important;
+  padding: 12px !important;
+  font-weight: bold !important;
+}
+
+/* Reducir animaciones para usuarios sensibles */
+@media (prefers-reduced-motion: reduce) {
+  body.accesible * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Reducir transparencias y efectos para fotofobia */
+@media (prefers-color-scheme: dark) {
+  body.accesible {
+    background: #000 !important;
+  }
+}
+
+/* Zoom de fuente para legibilidad extrema */
+body.accesible {
+  word-spacing: 0.05em !important;
+}
+
+/* Bordes claros entre elementos sin colores de alerta */
+body.accesible hr {
+  border: 1px solid #555 !important;
+}
+
+/* Listas con espaciado claro */
+body.accesible ul,
+body.accesible ol {
+  margin: 1.5em 0 !important;
+  padding-left: 2em !important;
+}
+
+body.accesible li {
+  margin: 0.5em 0 !important;
+  line-height: 1.8 !important;
+}
+
+/* Código y bloques de código: Sin verde neón */
+body.accesible code,
+body.accesible pre {
+  background: #222 !important;
+  color: #ddd !important;
+  border: 1px solid #555 !important;
+  padding: 8px !important;
+}
+
+/*  Accesibilidad mejorada */
+/* Asegurar espacios suficientes */
+body.accesible button,
+body.accesible a,
+body.accesible input {
+  min-height: 44px !important;
+  min-width: 44px !important;
+}
+
+/* Sin transiciones bruscas - cambios instantáneos */
+body.accesible {
+  transition: none !important;
+}
+
+body.accesible * {
+  transition: none !important;
+}
+
+/* Remover cualquier efecto de blur de fondo */
+body.accesible::before,
+body.accesible::after {
+  display: none !important;
+}
+
