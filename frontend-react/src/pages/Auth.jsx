@@ -17,18 +17,22 @@ const Auth = () => {
     password: ''
   })
 
+
   // Estados del formulario de registro
   const [registerData, setRegisterData] = useState({
     name: '',
     email: '',
-    password: ''
+    password: '',
+    confirmPassword: ''
   })
+
 
   // Estados para errores de validación en tiempo real
   const [validationErrors, setValidationErrors] = useState({
     name: '',
     email: '',
-    password: ''
+    password: '',
+    confirmPassword: ''
   })
 
   const showNotification = (message, type = 'success') => {
@@ -74,14 +78,22 @@ const Auth = () => {
 
   const handleRegisterInputChange = (field, value) => {
     setRegisterData({ ...registerData, [field]: value })
-    
     // Validar en tiempo real
     if (field === 'name') {
       setValidationErrors({ ...validationErrors, name: validateName(value) })
     } else if (field === 'email') {
       setValidationErrors({ ...validationErrors, email: validateEmail(value) })
     } else if (field === 'password') {
-      setValidationErrors({ ...validationErrors, password: validatePassword(value) })
+      setValidationErrors({
+        ...validationErrors,
+        password: validatePassword(value),
+        confirmPassword: registerData.confirmPassword && value !== registerData.confirmPassword ? 'Las contraseñas no coinciden' : ''
+      })
+    } else if (field === 'confirmPassword') {
+      setValidationErrors({
+        ...validationErrors,
+        confirmPassword: value !== registerData.password ? 'Las contraseñas no coinciden' : ''
+      })
     }
   }
 
@@ -125,6 +137,11 @@ const Auth = () => {
       showNotification('La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número', 'error')
       return
     }
+    // Validar confirmación de contraseña
+    if (registerData.password !== registerData.confirmPassword) {
+      showNotification('Las contraseñas no coinciden', 'error')
+      return
+    }
     
     try {
       const data = await authAPI.register(
@@ -137,9 +154,9 @@ const Auth = () => {
       sessionStorage.removeItem('adminUsers')
       showNotification('¡Cuenta creada con éxito!', 'success')
       
-      // Redirigir a la página de perfil
+      // Redirigir al dashboard principal
       setTimeout(() => {
-        navigate('/dashboard/perfil')
+        navigate('/dashboard')
       }, 1000)
     } catch (error) {
       showNotification(error.message || 'Error al registrarse', 'error')
@@ -214,6 +231,16 @@ const Auth = () => {
                   required
                 />
                 {validationErrors.password && <span className="error-message">{validationErrors.password}</span>}
+              </div>
+              <div className="input-group">
+                <input
+                  type="password"
+                  placeholder="Confirmar contraseña"
+                  value={registerData.confirmPassword}
+                  onChange={(e) => handleRegisterInputChange('confirmPassword', e.target.value)}
+                  required
+                />
+                {validationErrors.confirmPassword && <span className="error-message">{validationErrors.confirmPassword}</span>}
               </div>
               <button type="submit" className="btn-neon">Registrarse</button>
               <p className="form-switch">

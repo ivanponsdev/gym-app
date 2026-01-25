@@ -18,7 +18,7 @@ export const EjercicioCard = ({ ejercicio }) => {
   )
 }
 
-export const GuiaCard = ({ guia, descargarGuia, formatearObjetivo, obtenerColorObjetivo }) => {
+export const GuiaCard = ({ guia, descargarGuia, formatearObjetivo, obtenerColorObjetivo, enviarGuiaEmail }) => {
   return (
     <div className="card guia-card">
       <div className="guia-header">
@@ -41,6 +41,16 @@ export const GuiaCard = ({ guia, descargarGuia, formatearObjetivo, obtenerColorO
         >
           📥 Descargar PDF
         </button>
+        {enviarGuiaEmail && (
+          <button 
+            className="btn-neon btn-email"
+            onClick={() => enviarGuiaEmail()}
+            title="Enviar guías por email"
+            style={{ marginLeft: '0.5rem' }}
+          >
+            ✉️ Enviar por Email
+          </button>
+        )}
       </div>
     </div>
   )

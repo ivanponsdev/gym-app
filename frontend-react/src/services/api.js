@@ -388,3 +388,23 @@ export const statsAPI = {
     return handleResponse(response)
   }
 }
+
+// Email
+export const emailAPI = {
+  // Enviar guías por email
+  enviarGuiasEmail: async () => {
+    const response = await fetch(`${API_URL}/email/send-guides`, {
+      method: 'POST',
+      headers: getHeaders()
+    })
+    return handleResponse(response)
+  },
+
+  // Obtener estado del último envío
+  obtenerEstadoEmail: async () => {
+    const response = await fetch(`${API_URL}/email/status`, {
+      headers: getHeaders()
+    })
+    return handleResponse(response)
+  }
+}

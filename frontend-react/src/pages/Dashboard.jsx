@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { userAPI, clasesAPI, ejerciciosAPI, guiasAPI } from '../services/api'
+import { userAPI, clasesAPI, ejerciciosAPI, guiasAPI, emailAPI } from '../services/api'
 import Sidebar from '../components/Sidebar'
 import CustomModal from '../components/CustomModal'
 import LandBotWidget from '../components/LandBotWidget'
@@ -156,6 +156,7 @@ const GuiasSection = () => {
   const [guias, setGuias] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [enviandoEmail, setEnviandoEmail] = useState(false)
   const { user, isAdmin } = useAuth()
 
   useEffect(() => {
@@ -213,6 +214,19 @@ const GuiasSection = () => {
     document.body.removeChild(link)
   }
 
+  const enviarGuiasEmail = async () => {
+    try {
+      setEnviandoEmail(true)
+      await emailAPI.enviarGuiasEmail()
+      alert('✉️ Guías enviadas correctamente a tu correo')
+    } catch (error) {
+      console.error('Error al enviar guías:', error)
+      alert('❌ Error al enviar guías: ' + (error.message))
+    } finally {
+      setEnviandoEmail(false)
+    }
+  }
+
   if (loading) {
     return (
       <section className="content-section active">
@@ -248,6 +262,17 @@ const GuiasSection = () => {
         }
       </p>
 
+      {!isAdmin && guias.length > 0 && (
+        <button 
+          onClick={enviarGuiasEmail}
+          disabled={enviandoEmail}
+          className="btn-neon"
+          style={{ marginBottom: '1.5rem' }}
+        >
+          {enviandoEmail ? '⏳ Enviando...' : '✉️ Enviar todas al correo'}
+        </button>
+      )}
+
       {guias.length === 0 ? (
         <div className="sin-resultados">
           <h3>📖 No hay guías disponibles</h3>
@@ -262,6 +287,7 @@ const GuiasSection = () => {
               descargarGuia={descargarGuia}
               formatearObjetivo={formatearObjetivo}
               obtenerColorObjetivo={obtenerColorObjetivo}
+              enviarGuiaEmail={!isAdmin ? enviarGuiasEmail : null}
             />
           ))}
         </div>
@@ -276,15 +302,15 @@ const Dashboard = () => {
   const [activeSection, setActiveSection] = useState('profile')
   const [isEditingProfile, setIsEditingProfile] = useState(false)
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
-  const [profileData, setProfileData] = useState({
-    nombre: '',
-    edad: '',
-    sexo: '',
-    objetivo: '',
-    objetivoClasesSemana: 3,
-    password: ''
-
-  })
+    const [profileData, setProfileData] = useState({
+      nombre: '',
+      edad: '',
+      sexo: '',
+      objetivo: '',
+      objetivoClasesSemana: 3,
+      password: '',
+      confirmPassword: ''
+    })
   
   // Inicializar desde sessionStorage si existe
   const [clases, setClases] = useState(() => {
@@ -387,7 +413,8 @@ const Dashboard = () => {
       sexo: user.sexo || 'otro',
       objetivo: user.objetivo || 'recomposicion_corporal',
        objetivoClasesSemana: user.objetivoClasesSemana || 5,
-       password: ''
+      password: '',
+      confirmPassword: ''
     })
   }
 
@@ -444,6 +471,15 @@ const Dashboard = () => {
           isOpen: true,
           type: 'alert',
           message: 'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número',
+          onConfirm: null
+        })
+        return
+      }
+      if (profileData.password !== profileData.confirmPassword) {
+        setModalConfig({
+          isOpen: true,
+          type: 'alert',
+          message: 'Las contraseñas no coinciden',
           onConfirm: null
         })
         return
@@ -678,6 +714,15 @@ const Dashboard = () => {
                       placeholder="Dejar vacío para no cambiar"
                     />
                     <span className="form-helper">Mínimo 8 caracteres, una mayúscula, una minúscula y un número</span>
+                  </div>
+                  <div className="form-group">
+                    <label>Confirmar nueva contraseña</label>
+                    <input
+                      type="password"
+                      value={profileData.confirmPassword}
+                      onChange={(e) => setProfileData({ ...profileData, confirmPassword: e.target.value })}
+                      placeholder="Repite la nueva contraseña"
+                    />
                   </div>
                   <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
                     <button 
